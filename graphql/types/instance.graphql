@@ -16,6 +16,7 @@ type Instance {
     user_id: ID!
     status: InstanceStatus!
     phone: String!
+    settings:Settings!
 }
 
 type QRCode{

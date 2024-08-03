@@ -1,0 +1,11 @@
+extend type Query @guard {
+    settings(instance_id:String @eq): Settings @find
+}
+
+# types
+type Settings {
+    id: ID!
+    instance_id: ID!
+    pipeline_id: ID!
+    status_id: ID!
+}
