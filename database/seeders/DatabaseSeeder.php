@@ -12,9 +12,10 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        $user = User::factory()->create([
+        $user = User::query()->updateOrCreate([
             'name' => 'Test User',
             'email' => 'test@example.com',
+            'domain' => 'tech8.amocrm.ru',
             'password' => bcrypt('password'),
         ]);
 
