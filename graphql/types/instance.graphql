@@ -10,13 +10,13 @@ extend type Mutation @guard {
 
 # types
 type Instance {
+    settings: Settings @hasOne
     id: ID!
     name: String
     token: String!
     user_id: ID!
     status: InstanceStatus!
     phone: String!
-    settings: Settings @hasOne
 }
 
 type QRCode{
@@ -26,7 +26,6 @@ type QRCode{
 }
 
 # input
-
 input createNewInstanceInput{
     user_id:ID!
     name:String
