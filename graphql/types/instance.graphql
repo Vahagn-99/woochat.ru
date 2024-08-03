@@ -1,0 +1,32 @@
+extend type Query @guard {
+    instances: [Instance!]! @all
+    instance(id:String @eq): Instance @find
+    getInstanceQRCode(id:ID!):QRCode! @field(resolver: "\\App\\GraphQL\\Queries\\Instance\\GetInstanceQRCode")
+}
+
+extend type Mutation @guard {
+    createNewInstance(input:createNewInstanceInput!):String! @field(resolver: "\\App\\GraphQL\\Mutations\\Instance\\CreateInstance")
+}
+
+# types
+type Instance {
+    id: ID!
+    name: String
+    token: String!
+    user_id: ID!
+    status: InstanceStatus!
+    phone: String!
+}
+
+type QRCode{
+    instance_id:ID!
+    type:String!
+    message:String!
+}
+
+# input
+
+input createNewInstanceInput{
+    user_id:ID!
+    name:String
+}

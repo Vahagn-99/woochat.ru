@@ -1,0 +1,38 @@
+extend type Query @guard {
+    users:[User!]! @all
+    user(email:String @eq):User @find
+    userById(id:ID @eq):User @find
+    me:User! @auth
+}
+
+extend type Mutation @guard {
+    createUser(input:CreateUserInput!):User! @field(resolver: "\\App\\GraphQL\\Mutations\\User\\CreateUser")
+    updateUser(input:CreateUserInput!):User! @update
+    deleteUser(id:ID!): User @delete
+}
+
+# types
+type User {
+    id: ID!
+    name: String!
+    email:String!
+    created_at: String!
+    instances: [Instance]! @hasMany
+}
+
+# inputs
+input CreateUserInput{
+    id:ID
+    name:String!
+    email:String!
+}
+
+input UpdateUserInput{
+    id:ID
+    name:String!
+    email:String!
+}
+
+# enums
+
+# interfaces
