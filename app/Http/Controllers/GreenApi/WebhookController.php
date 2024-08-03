@@ -15,6 +15,8 @@ class WebhookController extends Controller
         $webhookType = $request->input('typeWebhook');
         $payload = $request->all('payload');
 
+        logger()->info("$webhookType was received", $payload);
+
         $this->dispatchAppropriateEvent($webhookType, $payload);
 
         return response()->json();
