@@ -7,9 +7,10 @@ use App\Models\Instance;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
-class HandleStateInstance implements ShouldQueue
+class HandleStateInstance
+//    implements ShouldQueue
 {
-    use InteractsWithQueue;
+//    use InteractsWithQueue;
 
     public function __construct()
     {
