@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->string('token')->unique();
             $table->string('name')->nullable();
             $table->string('phone')->nullable()->unique();
-            $table->string('status')->default(InstanceStatus::NOT_AUTHORIZED);
+            $table->string('status')->default(InstanceStatus::STARTING);
             $table->timestamp('created_at')->useCurrent();
 
             $table->foreignIdFor(User::class, 'user_id')
