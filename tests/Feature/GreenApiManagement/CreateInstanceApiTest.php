@@ -3,11 +3,10 @@
 namespace Tests\Feature\GreenApiManagement;
 
 use App\Enums\InstanceStatus;
-use App\Models\User;
 use App\Services\GreenApi\Instance\CreatedInstanceDTO;
 use App\Services\GreenApi\Instance\CreateInstanceApiInterface;
-use App\Services\GreenApi\Instance\InstanceManager;
-use App\Services\GreenApi\Instance\InstanceManagerInterface;
+use App\Services\GreenApi\Instance\InstanceService;
+use App\Services\GreenApi\Instance\InstanceServiceInterface;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery;
 use Tests\GraphqlTestCase;
@@ -27,18 +26,17 @@ class CreateInstanceApiTest extends GraphqlTestCase
             ->once()
             ->andReturn($this->instanceDTO = new CreatedInstanceDTO('test_instance_id', 'test_instance_token', 'test_instance_type'));
 
-        $fakeManager = new InstanceManager($mockGreenApiCreateInstance);
+        $fakeManager = new InstanceService($mockGreenApiCreateInstance);
 
-        $this->app->instance(InstanceManagerInterface::class, $fakeManager);
+        $this->app->instance(InstanceServiceInterface::class, $fakeManager);
     }
 
     public function test_user_can_create_new_instance(): void
     {
-        $user = User::factory()->create();
+        $user = $this->authenticateUser();
 
         $params = [
             'name' => 'test instance name',
-            'user_id' => $user->getKey(),
         ];
 
         $response = $this->graphQL('
@@ -53,7 +51,7 @@ class CreateInstanceApiTest extends GraphqlTestCase
         $this->assertDatabaseHas('instances', [
             'id' => $this->instanceDTO->id,
             'token' => $this->instanceDTO->token,
-            'status' => InstanceStatus::INACTIVE,
+            'status' => InstanceStatus::NOT_AUTHORIZED,
             'name' => 'test instance name',
             'user_id' => $user->getKey(),
         ]);

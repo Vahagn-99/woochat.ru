@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\InstanceStatus;
+use App\Services\GreenApi\DTO\InstanceDTO;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -50,5 +51,12 @@ final class Instance extends Model
     public function chats(): HasMany
     {
         return $this->hasMany(Chat::class, 'instance_id', 'id');
+    }
+
+    public static function dto(string $instanceId): InstanceDTO
+    {
+        /** @var Instance $instance */
+        $instance = self::query()->findOrFail($instanceId);
+        return new InstanceDTO($instance->id, $instance->token);
     }
 }

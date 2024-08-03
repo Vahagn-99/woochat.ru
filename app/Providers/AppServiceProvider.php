@@ -4,8 +4,8 @@ namespace App\Providers;
 
 use App\Services\GreenApi\Instance\CreateInstanceApi;
 use App\Services\GreenApi\Instance\CreateInstanceApiInterface;
-use App\Services\GreenApi\Instance\InstanceManager;
-use App\Services\GreenApi\Instance\InstanceManagerInterface;
+use App\Services\GreenApi\Instance\InstanceService;
+use App\Services\GreenApi\Instance\InstanceServiceInterface;
 use App\Services\GreenApi\QRCode\QRCodeApi;
 use App\Services\GreenApi\QRCode\QRCodeApiInterface;
 use Illuminate\Auth\Notifications\ResetPassword;

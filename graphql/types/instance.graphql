@@ -1,6 +1,6 @@
 extend type Query @guard {
     instances: [Instance!]! @all
-    instance(id:String @eq): Instance @find
+    instance(id:ID @eq): Instance @find
     getInstanceQRCode(id:ID!):QRCode! @field(resolver: "\\App\\GraphQL\\Queries\\Instance\\GetInstanceQRCode")
 }
 
@@ -27,6 +27,5 @@ type QRCode{
 
 # input
 input createNewInstanceInput{
-    user_id:ID!
     name:String
 }

@@ -6,8 +6,8 @@ use App\Enums\InstanceStatus;
 use App\Models\Instance;
 use App\Models\User;
 use App\Services\GreenApi\QRCode\QRCodeApiInterface;
-use App\Services\GreenApi\QRCode\QRCodeManager;
-use App\Services\GreenApi\QRCode\QRCodeManagerInterface;
+use App\Services\GreenApi\QRCode\QRCodeService;
+use App\Services\GreenApi\QRCode\QRCodeServiceInterface;
 use App\Services\GreenApi\QRCode\QRCodeResponseDTO;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery;
@@ -28,9 +28,9 @@ class GetInstanceQRCodeApiTest extends GraphqlTestCase
             ->once()
             ->andReturn($this->instanceDTO = new QRCodeResponseDTO('qrCode', 'test_instance_qr_code_in_base64'));
 
-        $fakeManager = new QRCodeManager($mockQRCodeRequester);
+        $fakeManager = new QRCodeService($mockQRCodeRequester);
 
-        $this->app->instance(QRCodeManagerInterface::class, $fakeManager);
+        $this->app->instance(QRCodeServiceInterface::class, $fakeManager);
     }
 
     public function test_user_can_get_instance_qr_code(): void
@@ -39,7 +39,7 @@ class GetInstanceQRCodeApiTest extends GraphqlTestCase
 
         $instance = Instance::factory()->create([
             'user_id' => $user->getKey(),
-            'status' => InstanceStatus::INACTIVE,
+            'status' => InstanceStatus::NOT_AUTHORIZED,
         ]);
 
         $params = [

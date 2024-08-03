@@ -4,8 +4,8 @@ namespace App\GraphQL\Queries\Instance;
 
 use App\Models\Instance;
 use App\Services\GreenApi\DTO\InstanceDTO;
-use App\Services\GreenApi\Facades\Greenapi;
-use App\Services\GreenApi\QRCode\QRCodeManagerInterface;
+use App\Services\GreenApi\Facades\GreenApi;
+use App\Services\GreenApi\QRCode\QRCodeServiceInterface;
 
 final readonly class GetInstanceQRCode
 {
@@ -13,9 +13,9 @@ final readonly class GetInstanceQRCode
     public function __invoke(null $_, array $args): array
     {
         $instance = Instance::query()->findOrFail($args['id']);
-        Greenapi::for(new InstanceDTO($instance->id, $instance->token));
-        /** @var QRCodeManagerInterface $qrCodeManager */
-        $qrCodeManager = app(QRCodeManagerInterface::class);
+        GreenApi::for(new InstanceDTO($instance->id, $instance->token));
+        /** @var QRCodeServiceInterface $qrCodeManager */
+        $qrCodeManager = app(QRCodeServiceInterface::class);
         $response = $qrCodeManager->getQRCode();
 
         return $response->toArray();

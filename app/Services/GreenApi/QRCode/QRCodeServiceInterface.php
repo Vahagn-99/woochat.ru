@@ -2,7 +2,7 @@
 
 namespace App\Services\GreenApi\QRCode;
 
-interface QRCodeManagerInterface
+interface QRCodeServiceInterface
 {
     public function getQRCode(): QRCodeResponseDTO;
 }

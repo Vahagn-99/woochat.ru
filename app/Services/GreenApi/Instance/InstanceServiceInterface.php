@@ -2,7 +2,7 @@
 
 namespace App\Services\GreenApi\Instance;
 
-interface InstanceManagerInterface
+interface InstanceServiceInterface
 {
     public function create(string $name): CreatedInstanceDTO;
 }

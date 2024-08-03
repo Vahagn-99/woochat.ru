@@ -2,7 +2,7 @@
 
 namespace App\Services\GreenApi\QRCode;
 
-class QRCodeManager implements QRCodeManagerInterface
+class QRCodeService implements QRCodeServiceInterface
 {
     public function __construct(private readonly QRCodeApiInterface $api)
     {

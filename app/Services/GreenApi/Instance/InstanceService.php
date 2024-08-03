@@ -2,7 +2,7 @@
 
 namespace App\Services\GreenApi\Instance;
 
-class InstanceManager implements InstanceManagerInterface
+class InstanceService implements InstanceServiceInterface
 {
     public function __construct(private readonly CreateInstanceApiInterface $api, private array $config = [])
     {
