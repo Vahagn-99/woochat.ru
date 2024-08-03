@@ -7,19 +7,19 @@ return [
     ],
     'instance' => [
         "webhookUrl" => ENV('GREENAPI_WEBHOOK_API_ROUTE_NAME', 'webhooks.greenapi'),
-//        "webhookUrlToken" => "f93537eb3e8fed66847b5bd",
-//        "delaySendMessagesMilliseconds" => 1000,
-//        "markIncomingMessagesReaded" => "no",
-//        "markIncomingMessagesReadedOnReply" => "no",
-        "outgoingAPIMessageWebhook" => "yes",
         "outgoingWebhook" => "yes",
         "outgoingMessageWebhook" => "yes",
         "incomingWebhook" => "yes",
+        "incomingCallWebhook" => "yes",
+        "stateWebhook" => "yes",
+//        "webhookUrlToken" => "f93537eb3e8fed66847b5bd",
+//        "outgoingAPIMessageWebhook" => "yes",
+//        "delaySendMessagesMilliseconds" => 1000,
+//        "markIncomingMessagesReaded" => "no",
+//        "markIncomingMessagesReadedOnReply" => "no",
 //        "deviceWebhook" => "no",
-//        "stateWebhook" => "no",
 //        "keepOnlineStatus" => "no",
 //        "pollMessageWebhook" => "no",
 //        "incomingBlockWebhook" => "yes",
-//        "incomingCallWebhook" => "yes"
     ]
 ];

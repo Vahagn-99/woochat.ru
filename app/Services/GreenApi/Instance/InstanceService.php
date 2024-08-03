@@ -11,6 +11,7 @@ class InstanceService implements InstanceServiceInterface
         if (isset($this->config['webhookUrl'])) {
             $this->config['webhookUrl'] = route($this->config['webhookUrl']);
         }
+
     }
 
     public function create(string $name): CreatedInstanceDTO
