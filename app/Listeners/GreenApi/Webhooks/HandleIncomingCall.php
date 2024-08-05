@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Listeners\Webhooks\GreenApi;
+namespace App\Listeners\GreenApi\Webhooks;
 
-use App\Events\Webhooks\GreenApi\IncomingCall;
+use App\Events\GreenApi\Webhooks\IncomingCall;
 
 class HandleIncomingCall
 {

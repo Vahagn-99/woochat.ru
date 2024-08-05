@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Events\Webhooks\GreenApi;
+namespace App\Events\GreenApi\Webhooks;
 
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;

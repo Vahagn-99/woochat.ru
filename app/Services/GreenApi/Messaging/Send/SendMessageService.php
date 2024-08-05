@@ -55,7 +55,7 @@ class SendMessageService implements SendMessageServiceInterface
             $message->getContent('message')
         );
 
-        return new MessageId($response->idMessage);
+        return new MessageId($response->data->idMessage);
     }
 
     public function sendLocation(MessageInterface $message): MessageId

@@ -4,16 +4,13 @@ namespace App\Console\Commands;
 
 use App\Services\GreenApi\DTO\InstanceDTO;
 use App\Services\GreenApi\Facades\GreenApi;
-use App\Services\GreenApi\Messaging\MessagingServiceInterface;
-use App\Services\GreenApi\Messaging\Send\SendMessageServiceInterface;
 use App\Services\GreenApi\Messaging\Types\TextMessage;
-use GreenApi\RestApi\GreenApiClient;
 use Illuminate\Console\Command;
 
 class TestWhatsAppSDKCommand extends Command
 {
-    const ID_INSTANCE = '1103961649';
-    const API_TOKEN_INSTANCE = '51ac2d99bdac4774be095445340ff8881b3f3ff6ea5d492683';
+    const ID_INSTANCE = '5700965447';
+    const API_TOKEN_INSTANCE = 'f405f25b00144083b404e9de9e6d5ad480d66e6fe6e341d8ad';
 
     protected $signature = 'test:message';
 
@@ -25,8 +22,9 @@ class TestWhatsAppSDKCommand extends Command
      */
     public function handle(): void
     {
-        GreenApi::fromDTO(new InstanceDTO(self::ID_INSTANCE, self::API_TOKEN_INSTANCE));
-        $messageId = GreenApi::massaging()->send(new TextMessage("37493270709", "test message"));
-        dd($messageId);
+        $instance = new InstanceDTO(self::ID_INSTANCE, self::API_TOKEN_INSTANCE);
+        $message = new TextMessage("37493270709@c.us", "test message");
+
+        $messageId = GreenApi::fromDTO($instance)->massaging()->send($message);
     }
 }

@@ -33,7 +33,7 @@ class WebhookController extends Controller
 
             if ($eventNameFormatted === $webhookTypeFormatted) {
                 // Determine the full class name with namespace
-                $eventClass = 'App\\Events\\Webhooks\\GreenApi\\' . $event->getBasename('.php');
+                $eventClass = 'App\\Events\\GreenApi\\Webhooks\\' . $event->getBasename('.php');
 
                 // Check if the class exists before attempting to dispatch
                 if (class_exists($eventClass)) {

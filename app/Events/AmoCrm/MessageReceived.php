@@ -1,24 +1,20 @@
 <?php
 
-namespace App\Events\Webhooks\GreenApi;
+namespace App\Events\AmoCrm;
 
+use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class IncomingCall
+class MessageReceived
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public function __construct(public array $webhookPayload)
+    public function __construct(public array $payload)
     {
-    }
-
-    public function broadcastOn(): array
-    {
-        return [
-            new PrivateChannel('channel-name'),
-        ];
     }
 }

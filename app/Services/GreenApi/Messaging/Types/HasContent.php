@@ -9,9 +9,7 @@ trait HasContent
 {
     public function getContent(?string $key = null): mixed
     {
-        $properties = (new ReflectionClass($this))->getProperties();
-
-        $data = array_filter($properties);
+        $data = array_filter(get_object_vars($this));
 
         if ($key) {
             return Arr::get($data, $key);

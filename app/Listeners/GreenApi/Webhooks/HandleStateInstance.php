@@ -1,11 +1,9 @@
 <?php
 
-namespace App\Listeners\Webhooks\GreenApi;
+namespace App\Listeners\GreenApi\Webhooks;
 
-use App\Events\Webhooks\GreenApi\StateInstanceChanged;
+use App\Events\GreenApi\Webhooks\StateInstanceChanged;
 use App\Models\Instance;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 
 class HandleStateInstance
 //    implements ShouldQueue

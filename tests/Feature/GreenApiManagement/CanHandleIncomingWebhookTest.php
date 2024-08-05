@@ -2,9 +2,9 @@
 
 namespace Tests\Feature\GreenApiManagement;
 
-use App\Events\Webhooks\GreenApi\IncomingCall;
-use App\Events\Webhooks\GreenApi\IncomingMessageReceived;
-use App\Events\Webhooks\GreenApi\StateInstanceChanged;
+use App\Events\GreenApi\Webhooks\IncomingCall;
+use App\Events\GreenApi\Webhooks\IncomingMessageReceived;
+use App\Events\GreenApi\Webhooks\StateInstanceChanged;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use PHPUnit\Framework\Attributes\DataProvider;

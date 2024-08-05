@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Listeners\Webhooks\GreenApi;
+namespace App\Listeners\GreenApi\Webhooks;
 
-use App\Events\Webhooks\GreenApi\IncomingMessageReceived;
+use App\Events\GreenApi\Webhooks\IncomingMessageReceived;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
