@@ -30,7 +30,7 @@ class CreateInstanceApi implements CreateInstanceApiInterface
         $endpoint = str_replace('{{partnerApiUrl}}', $this->partnerApiUrl, self::$endpoint);
         $endpoint = str_replace('{{partnerToken}}', $this->partnerToken, $endpoint);
 
-        $request = Http::createPendingRequest()->setClient($client);
+        $request = Http::acceptJson()->setClient($client);
         try {
 
             $response = $request->post($endpoint, $params)->json();
