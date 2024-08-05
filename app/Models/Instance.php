@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\InstanceStatus;
+use App\Events\GreenApi\InstanceCreated;
 use App\Services\GreenApi\DTO\InstanceDTO;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -38,6 +39,11 @@ final class Instance extends Model
         'status' => InstanceStatus::class,
     ];
 
+    protected static function booted(): void
+    {
+        Instance::created(fn(Instance $instance) => InstanceCreated::dispatch($instance));
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
@@ -58,5 +64,10 @@ final class Instance extends Model
         /** @var Instance $instance */
         $instance = self::query()->findOrFail($instanceId);
         return new InstanceDTO($instance->id, $instance->token);
+    }
+
+    public function toDto(): InstanceDTO
+    {
+        return new InstanceDTO($this->id, $this->token);
     }
 }

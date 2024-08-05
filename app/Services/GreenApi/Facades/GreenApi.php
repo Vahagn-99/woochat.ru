@@ -2,12 +2,15 @@
 
 namespace App\Services\GreenApi\Facades;
 
+use App\Enums\InstanceStatus;
+use App\Models\Instance;
 use App\Services\GreenApi\ClientService\GreenApiServiceInterface;
 use App\Services\GreenApi\DTO\InstanceDTO;
 use App\Services\GreenApi\GreenManager;
 use App\Services\GreenApi\GreenManagerInterface;
 use App\Services\GreenApi\Instance\CreatedInstanceDTO;
 use App\Services\GreenApi\Instance\InstanceServiceInterface;
+use App\Services\GreenApi\Messaging\MessagingServiceInterface;
 use App\Services\GreenApi\QRCode\QRCodeResponseDTO;
 use App\Services\GreenApi\QRCode\QRCodeServiceInterface;
 use GreenApi\RestApi\GreenApiClient;
@@ -18,6 +21,9 @@ use Mockery;
  * @method static GreenApiServiceInterface api()
  * @method static QRCodeServiceInterface qr()
  * @method static InstanceServiceInterface instance()
+ * @method static InstanceStatus status()
+ * @method static MessagingServiceInterface massaging()
+ *
  * @see GreenManagerInterface
  */
 class GreenApi extends Facade
@@ -27,8 +33,22 @@ class GreenApi extends Facade
         return 'green-api';
     }
 
-    public static function for(InstanceDTO $instance): GreenManagerInterface
+    public static function fromModel(Instance $instance): GreenManagerInterface
     {
+
+        $client = new GreenApiClient(
+            $instance->id,
+            $instance->token
+        );
+
+        app()->instance(GreenApiClient::class, $client);
+
+        return app(GreenManagerInterface::class);
+    }
+
+    public static function fromDTO(InstanceDTO $instance): GreenManagerInterface
+    {
+
         $client = new GreenApiClient(
             $instance->id,
             $instance->token

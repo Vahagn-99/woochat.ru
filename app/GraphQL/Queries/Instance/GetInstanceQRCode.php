@@ -13,7 +13,7 @@ final readonly class GetInstanceQRCode
     public function __invoke(null $_, array $args): array
     {
         $instance = Instance::query()->findOrFail($args['id']);
-        GreenApi::for(new InstanceDTO($instance->id, $instance->token));
+        GreenApi::fromModel($instance);
         GreenApi::api()->getClient()->account->logout();
         $response = GreenApi::qr()->getQRCode();
 
