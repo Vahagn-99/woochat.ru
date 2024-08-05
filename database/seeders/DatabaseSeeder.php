@@ -18,13 +18,13 @@ class DatabaseSeeder extends Seeder
             'domain' => 'tech8.amocrm.ru',
             'password' => bcrypt('password'),
         ]);
-
-        Instance::factory()->create([
-            'id' => '1103961649',
-            'user_id' => $user->getKey(),
-            'name' => 'Test instance 1',
-            'token' => '51ac2d99bdac4774be095445340ff8881b3f3ff6ea5d492683',
-            'status' => InstanceStatus::NOT_AUTHORIZED,
-        ]);
+//
+//        Instance::factory()->create([
+//            'id' => '1103961649',
+//            'user_id' => $user->getKey(),
+//            'name' => 'Test instance 1',
+//            'token' => '51ac2d99bdac4774be095445340ff8881b3f3ff6ea5d492683',
+//            'status' => InstanceStatus::NOT_AUTHORIZED,
+//        ]);
     }
 }
