@@ -14,9 +14,8 @@ final readonly class GetInstanceQRCode
     {
         $instance = Instance::query()->findOrFail($args['id']);
         GreenApi::for(new InstanceDTO($instance->id, $instance->token));
-        /** @var QRCodeServiceInterface $qrCodeManager */
-        $qrCodeManager = app(QRCodeServiceInterface::class);
-        $response = $qrCodeManager->getQRCode();
+        GreenApi::api()->getClient()->account->logout();
+        $response = GreenApi::qr()->getQRCode();
 
         return $response->toArray();
     }
