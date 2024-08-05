@@ -13,8 +13,7 @@ class WebhookController extends Controller
     public function __invoke(Request $request): JsonResponse
     {
         $webhookType = $request->input('typeWebhook');
-        $payload = $request->all('payload');
-
+        $payload = $request->all();
         logger()->info("$webhookType was received", $payload);
 
         $this->dispatchAppropriateEvent($webhookType, $payload);

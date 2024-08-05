@@ -23,9 +23,13 @@ class HandleStateInstance
         $status = $event->webhookPayload['stateInstance'];
 
         $instance = Instance::query()->findOrFail($instanceData['idInstance']);
-        $instance->update([
-            'status' => $status,
-            'phone' => $instanceData['wid']
-        ]);
+
+        $instance->status = $status;
+
+        if ($instanceData['wid']) {
+            $instance->phone = $instanceData['wid'];
+        }
+
+        $instance->save();
     }
 }
