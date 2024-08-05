@@ -21,7 +21,8 @@ return Application::configure(basePath: dirname(__DIR__))
             \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
         ]);
         $middleware->validateCsrfTokens(except: [
-            'graphql'
+            'graphql',
+            'webhooks'
         ]);
 
         $middleware->alias([
