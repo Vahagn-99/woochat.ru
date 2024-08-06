@@ -16,8 +16,6 @@ class MessageFactory extends Factory
             'amo_message_id' => $this->faker->uuid(),
             'whatsapp_message_id' => $this->faker->uuid(),
             'chat_id' => $this->faker->uuid(),
-            'message' => $this->faker->text(),
-            'source_path' => array_rand([null, $this->faker->filePath()])
         ];
     }
 }

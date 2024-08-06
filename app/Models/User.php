@@ -6,12 +6,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\HasApiTokens;
 
 /**
  * @property int $id
- * @property string $name
+ * @property string $amojo_id
+ * @property string $domain
  * @property string $email
+ * @property string $phone
  * @property string $password
  */
 final class User extends Authenticatable
@@ -19,10 +22,11 @@ final class User extends Authenticatable
     use HasFactory, Notifiable, HasApiTokens;
 
     protected $fillable = [
-        'name',
-        'email',
         'domain',
-        'password',
+        'email',
+        'phone',
+        'amojo_id',
+        'password'
     ];
 
     protected $hidden = [
@@ -38,8 +42,20 @@ final class User extends Authenticatable
         ];
     }
 
+    protected static function booting(): void
+    {
+        User::creating(function (User $user) {
+            $user->password = Hash::make($user->password ?? 'password');
+        });
+    }
+
     public function instances(): HasMany
     {
         return $this->hasMany(Instance::class, 'user_id', 'id');
+    }
+
+    public function amoConnections(): HasMany
+    {
+        return $this->hasMany(AmoConnection::class, 'user_id', 'id');
     }
 }

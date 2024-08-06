@@ -15,14 +15,14 @@ class RegisterController extends Controller
     public function __invoke(Request $request): JsonResponse
     {
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
+            'domain' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'confirmed', Password::defaults()],
         ]);
 
         /** @var User $user */
         $user = User::query()->create([
-            'name' => $request->input('name'),
+            'domain' => $request->input('domain'),
             'email' => $request->input('email'),
             'password' => Hash::make($request->string('password')),
         ]);

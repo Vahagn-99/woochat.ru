@@ -10,8 +10,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $amo_message_id
  * @property string $whatsapp_message_id
  * @property string $chat_id
- * @property ?string $message
- * @property string $source_pat
  */
 final class Message extends Model
 {
@@ -21,9 +19,7 @@ final class Message extends Model
     protected $fillable = [
         'amo_message_id',
         'whatsapp_message_id',
-        'chat_id',
-        'message',
-        'source_path'
+        'chat_id'
     ];
 
     public function chat(): BelongsTo

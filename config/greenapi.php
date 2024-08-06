@@ -11,7 +11,8 @@ return [
      * \
      */
     'instance' => [
-        "webhookUrl" => ENV('GREENAPI_WEBHOOK_API_ROUTE_NAME', 'webhooks.greenapi'), // URL для получения входящих уведомлений
+        "webhookRouteName" => ENV('GREENAPI_WEBHOOK_API_ROUTE_NAME', 'webhooks.greenapi'), // URL для получения входящих уведомлений
+        "webhookUrl" => ENV('GREENAPI_WEBHOOK_API_URL', null), // URL для получения входящих уведомлений
         "webhookUrlToken" => ENV("WEBHOOK_URL_TOKEN", ""), // токен для доступа к вашему серверу уведомлений
         "delaySendMessagesMilliseconds" => ENV("DELAY_SEND_MESSAGES_MILLISECONDS", 3000), // время отправки сообщений из очереди
         "markIncomingMessagesReaded" => ENV("MARK_INCOMING_MESSAGES_READED", "no"), // отмечать входящие сообщения прочитанными

@@ -44,7 +44,7 @@ class SendMessageService implements SendMessageServiceInterface
 
     public function sendLink(MessageInterface $message): MessageId
     {
-        $response = $this->greenApiClient->sending->MessageInterface();
+        $response = $this->greenApiClient->sending->sendLink();
         return new MessageId($response->idMessage);
     }
 
@@ -54,7 +54,6 @@ class SendMessageService implements SendMessageServiceInterface
             $message->getChatId(),
             $message->getContent('message')
         );
-
         return new MessageId($response->data->idMessage);
     }
 

@@ -10,16 +10,23 @@ return new class extends Migration {
     {
         Schema::create('chats', function (Blueprint $table) {
             $table->id();
-            $table->string('amo_chat_id');
-            $table->string('whatsapp_chat_id');
-            $table->string('instance_id');
+            $table->string('amo_chat_id')->nullable();
+            $table->string('whatsapp_chat_id')->nullable();
+            $table->string('instance_id')->nullable();
             $table->foreign('instance_id')
                 ->on('instances')
                 ->references('id')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
-            $table->timestamp('created_at')->useCurrent();
 
+            $table->string('connection_id')->nullable();
+            $table->foreign('connection_id')
+                ->on('amo_connections')
+                ->references('account_id')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+
+            $table->timestamp('created_at')->useCurrent();
             $table->unique(['amo_chat_id', 'whatsapp_chat_id']);
         });
     }

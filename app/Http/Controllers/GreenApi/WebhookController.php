@@ -14,6 +14,7 @@ class WebhookController extends Controller
     {
         $webhookType = $request->input('typeWebhook');
         $payload = $request->all();
+
         logger()->info("$webhookType was received", $payload);
 
         $this->dispatchAppropriateEvent($webhookType, $payload);
@@ -24,8 +25,7 @@ class WebhookController extends Controller
     private function dispatchAppropriateEvent(mixed $webhookType, array $payload): void
     {
         // Get all event files
-        $events = File::allFiles(app_path('Events/Webhooks/GreenApi'));
-
+        $events = File::allFiles(app_path('Events/GreenApi/Webhooks'));
         foreach ($events as $event) {
             // Convert webhook type and event name to the same format
             $webhookTypeFormatted = $this->convertToTheSameFormat($webhookType);

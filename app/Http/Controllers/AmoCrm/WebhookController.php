@@ -9,9 +9,10 @@ use Illuminate\Http\Request;
 
 class WebhookController extends Controller
 {
-    public function __invoke(Request $request): JsonResponse
+    public function __invoke(Request $request, string $scopeId): JsonResponse
     {
         $payload = $request->all();
+        $payload['scope_id'] = $scopeId;
 
         logger()->info("Message from AmoCRM was received", $payload);
 

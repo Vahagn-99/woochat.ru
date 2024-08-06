@@ -14,8 +14,9 @@ extend type Mutation @guard {
 # api
 type User {
     id: ID!
-    name: String!
-    email:String!
+    domain: String!
+    email:String
+    phone:String
     created_at: String!
     instances: [Instance]! @hasMany
 }

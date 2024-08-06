@@ -1,6 +1,8 @@
 <?php
 
+use App\Exceptions\AmoChatConnectionException;
 use App\Exceptions\InstanceCreationException;
+use App\Services\AmoChat\Providers\AmoChatServiceProvider;
 use App\Services\GreenApi\Provider\GreenApiServiceProvider;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -12,7 +14,10 @@ return Application::configure(basePath: dirname(__DIR__))
             __DIR__ . '/../routes/web.php',
             __DIR__ . '/../routes/webhook.php'
         ],
-        api: __DIR__ . '/../routes/api.php',
+        api: [
+            __DIR__ . '/../routes/api.php',
+            __DIR__ . '/../routes/amocrm.php',
+        ],
         commands: __DIR__ . '/../routes/console.php',
         health: '/up',
     )
@@ -22,7 +27,8 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
         $middleware->validateCsrfTokens(except: [
             'graphql',
-            'webhooks/*'
+            'webhooks/*',
+            'amocrm/*',
         ]);
 
         $middleware->alias([
@@ -32,10 +38,16 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withProviders([
-        GreenApiServiceProvider::class
+        GreenApiServiceProvider::class,
+        AmoChatServiceProvider::class,
     ])
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->render(function (InstanceCreationException $e) {
+            return response()->json([
+                'message' => $e->getMessage(),
+            ], $e->getCode());
+        });
+        $exceptions->render(function (AmoChatConnectionException $e) {
             return response()->json([
                 'message' => $e->getMessage(),
             ], $e->getCode());

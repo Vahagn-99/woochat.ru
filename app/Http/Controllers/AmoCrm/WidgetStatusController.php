@@ -5,7 +5,7 @@ namespace App\Http\Controllers\AmoCrm;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class InstallController extends Controller
+class WidgetStatusController extends Controller
 {
     /**
      * Handle the incoming request.

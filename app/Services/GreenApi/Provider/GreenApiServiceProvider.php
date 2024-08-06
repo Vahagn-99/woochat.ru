@@ -48,7 +48,6 @@ class GreenApiServiceProvider extends ServiceProvider
         $this->app->bind(QRCodeServiceInterface::class, QRCodeService::class);
         $this->app->bind(GetInstanceStatusServiceInterface::class, GetInstanceStatusService::class);
 
-
         //facade
         $this->app->singleton('green-api', GreenManagerInterface::class);
     }

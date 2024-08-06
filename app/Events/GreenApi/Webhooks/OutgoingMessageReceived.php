@@ -12,6 +12,5 @@ class OutgoingMessageReceived
 
     public function __construct(public array $webhookPayload)
     {
-
     }
 }

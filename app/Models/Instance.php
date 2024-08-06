@@ -18,6 +18,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property InstanceStatus $status
  * @property string $token
  * @property string $phone
+ *
+ * @property User $user
  */
 final class Instance extends Model
 {
@@ -38,6 +40,12 @@ final class Instance extends Model
     protected $casts = [
         'status' => InstanceStatus::class,
     ];
+
+    public static function firstInAccount(User $user): ?Instance
+    {
+        /** @var ?Instance */
+        return $user->instances()->where('status', InstanceStatus::AUTHORIZED)->first();
+    }
 
     protected static function booted(): void
     {

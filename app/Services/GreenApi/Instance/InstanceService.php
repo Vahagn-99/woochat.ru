@@ -8,8 +8,8 @@ class InstanceService implements InstanceServiceInterface
     {
         $this->config = array_merge(config('greenapi.instance') ?? [], $this->config);
 
-        if (isset($this->config['webhookUrl'])) {
-            $this->config['webhookUrl'] = route($this->config['webhookUrl']);
+        if (!isset($this->config['webhookUrl']) && isset($this->config['webhookRouteName'])) {
+            $this->config['webhookUrl'] = route($this->config['webhookRouteName']);
         }
 
     }

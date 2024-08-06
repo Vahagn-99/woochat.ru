@@ -12,6 +12,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $amo_chat_id
  * @property string $whatsapp_chat_id
  * @property string $instance_id
+ * @property string $connection_id
+ *
+ * @property Instance $instance
+ * @property AmoConnection $amoConnection
  */
 final class Chat extends Model
 {
@@ -21,7 +25,8 @@ final class Chat extends Model
     protected $fillable = [
         'amo_chat_id',
         'whatsapp_chat_id',
-        'instance_id'
+        'instance_id',
+        'connection_id',
     ];
 
     public $timestamps = false;
@@ -29,6 +34,11 @@ final class Chat extends Model
     public function instance(): BelongsTo
     {
         return $this->belongsTo(Instance::class, 'instance_id', 'id');
+    }
+
+    public function connection(): BelongsTo
+    {
+        return $this->belongsTo(AmoConnection::class, 'connection_id', 'account_id');
     }
 
     public function messages(): HasMany

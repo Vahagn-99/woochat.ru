@@ -2,7 +2,9 @@
 
 namespace App\Services\GreenApi\Messaging;
 
-interface MessageInterface
+use App\Contracts\Arrayable;
+
+interface MessageInterface extends Arrayable
 {
     public function getContent(?string $key = null): mixed;
 

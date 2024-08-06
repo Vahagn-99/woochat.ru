@@ -4,7 +4,6 @@ namespace App\Services\GreenApi\Messaging\Types;
 
 
 use App\Services\GreenApi\Messaging\MessageInterface;
-use Illuminate\Support\Arr;
 
 class TextMessage implements MessageInterface
 {
@@ -27,5 +26,14 @@ class TextMessage implements MessageInterface
     public function getType(): string
     {
         return 'sendMessage';
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'chat_id' => $this->chatId,
+            'message' => $this->message,
+            'quoted_message_id' => $this->quotedMessageId,
+        ];
     }
 }
