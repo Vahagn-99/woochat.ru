@@ -5,10 +5,10 @@ extend type Query @guard {
 }
 
 extend type Mutation @guard {
-    createNewInstance(input:createNewInstanceInput!):String! @field(resolver: "\\App\\GraphQL\\Mutations\\Instance\\CreateInstance")
+    createNewInstance(input:CreateNewInstanceInput!):Instance! @field(resolver: "\\App\\GraphQL\\Mutations\\Instance\\CreateInstance")
 }
 
-# types
+# api
 type Instance {
     settings: Settings @hasOne
     id: ID!
@@ -26,6 +26,6 @@ type QRCode{
 }
 
 # input
-input createNewInstanceInput{
+input CreateNewInstanceInput{
     name:String
 }

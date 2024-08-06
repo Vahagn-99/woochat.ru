@@ -12,21 +12,16 @@ final readonly class CreateInstance
     }
 
     /** @param array{} $args */
-    public function __invoke(null $_, array $args): string
+    public function __invoke(null $_, array $args): Instance
     {
-
         $instanceName = $args['input']['name'];
         $instance = $this->instanceManager->create($instanceName);
 
-        Instance::query()->create([
+       return Instance::query()->create([
             'id' => $instance->id,
             'name' => $instanceName,
             'user_id' => auth()->id(),
             'token' => $instance->token,
         ]);
-
-
-
-        return 'success';
     }
 }

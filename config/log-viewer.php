@@ -139,7 +139,7 @@ return [
         '*.log',
         '**/*.log',
 
-        // You can include paths to other log types as well, such as apache, nginx, and more.
+        // You can include paths to other log api as well, such as apache, nginx, and more.
         '/var/log/httpd/*',
         '/var/log/nginx/*',
 

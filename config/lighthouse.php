@@ -37,7 +37,7 @@ return [
             // Always set the `Accept: application/json` header.
             Nuwave\Lighthouse\Http\Middleware\AcceptJson::class,
 
-            // Logs in a types if they are authenticated. In contrast to Laravel's 'auth'
+            // Logs in a api if they are authenticated. In contrast to Laravel's 'auth'
             // middleware, this delegates auth and permission checks to the field level.
             Nuwave\Lighthouse\Http\Middleware\AttemptAuthentication::class,
             // Logs every incoming GraphQL query.
@@ -165,7 +165,7 @@ return [
         'queries' => 'App\\GraphQL\\Queries',
         'mutations' => 'App\\GraphQL\\Mutations',
         'subscriptions' => 'App\\GraphQL\\Subscriptions',
-        'types' => 'App\\GraphQL\\Types',
+        'api' => 'App\\GraphQL\\Types',
         'interfaces' => 'App\\GraphQL\\Interfaces',
         'unions' => 'App\\GraphQL\\Unions',
         'scalars' => 'App\\GraphQL\\Scalars',

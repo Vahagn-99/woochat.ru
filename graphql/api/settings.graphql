@@ -1,0 +1,19 @@
+extend type Mutation @guard {
+    saveInstanceSettings(input:SaveInstanceSettingsInput!):Instance! @field(resolver: "\\App\\GraphQL\\Mutations\\Instance\\SaveInstanceSettings")
+}
+
+# api
+type Settings {
+    id: ID!
+    instance_id: ID!
+    pipeline_id: ID!
+    status_id: ID!
+}
+
+# inputs
+
+input SaveInstanceSettingsInput {
+    instance_id:ID! @rules(apply: ["exists:instances,id"])
+    pipeline_id:ID!
+    status_id:ID!
+}

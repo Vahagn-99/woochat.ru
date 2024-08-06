@@ -1,0 +1,14 @@
+extend type Query @guard {
+    getAccountPipelines:[Pipeline]! @field(resolver: "\\App\\GraphQL\\Queries\\AmoCrm\\GetAccountPipelines")
+    getAccountStatuses:[Status]! @field(resolver: "\\App\\GraphQL\\Queries\\AmoCrm\\GetAccountStatuses")
+}
+
+# types
+type Pipeline {
+    id: ID!
+    statuses:[Status]!
+}
+
+type Status {
+    id: ID!
+}

@@ -1,8 +1,8 @@
-#import types/*.graphql
+#import api/*.graphql
 
 type Query
 type Mutation
 
-# types
+# api
 
 
