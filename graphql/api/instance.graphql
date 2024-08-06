@@ -6,6 +6,7 @@ extend type Query @guard {
 
 extend type Mutation @guard {
     createNewInstance(input:CreateNewInstanceInput!):Instance! @field(resolver: "\\App\\GraphQL\\Mutations\\Instance\\CreateInstance")
+    deleteInstance(id:ID!):Boolean! @field(resolver: "\\App\\GraphQL\\Mutations\\Instance\\DeleteInstance")
 }
 
 # api
