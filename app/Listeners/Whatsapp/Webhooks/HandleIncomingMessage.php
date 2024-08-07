@@ -103,7 +103,7 @@ class HandleIncomingMessage implements ShouldQueue
 
         $payload = new Text(
             chatId: $chat->amo_chat_id,
-            text: $messageData['textMessageData']['textMessage'],
+            text: $messageData['textMessageData']['textMessage'] ?? $messageData['textMessageData']['extendedTextMessageData'],
         );
 
         $message = new IAmoMessage(
