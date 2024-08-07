@@ -17,7 +17,7 @@ type Instance {
     token: String!
     user_id: ID!
     status: InstanceStatus!
-    phone: String!
+    phone: String
 }
 
 type QRCode{
