@@ -2,11 +2,11 @@
 
 namespace App\Services\AmoChat\Messaging\Types;
 
-use App\Services\GreenApi\Messaging\Types\HasContent;
+use App\Base\Chat\Message\Manageable;
 
 class Contact implements Payload
 {
-    use HasContent;
+    use Manageable;
 
     public function __construct(
         public string $chatId,

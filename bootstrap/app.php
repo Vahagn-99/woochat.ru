@@ -3,7 +3,7 @@
 use App\Exceptions\AmoChatConnectionException;
 use App\Exceptions\InstanceCreationException;
 use App\Services\AmoChat\Providers\AmoChatServiceProvider;
-use App\Services\GreenApi\Provider\GreenApiServiceProvider;
+use App\Services\Whatsapp\Provider\WhatsappServiceProvider;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -38,7 +38,7 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withProviders([
-        GreenApiServiceProvider::class,
+        WhatsappServiceProvider::class,
         AmoChatServiceProvider::class,
     ])
     ->withExceptions(function (Exceptions $exceptions) {

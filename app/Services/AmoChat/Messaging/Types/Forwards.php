@@ -2,11 +2,11 @@
 
 namespace App\Services\AmoChat\Messaging\Types;
 
-use App\Services\GreenApi\Messaging\Types\HasContent;
+use App\Base\Chat\Message\Manageable;
 
 class Forwards implements Payload
 {
-    use HasContent;
+    use Manageable;
 
     /**
      * @param array<Payload> $messages

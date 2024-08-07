@@ -3,8 +3,8 @@
 namespace App\GraphQL\Mutations\Instance;
 
 use App\Models\Instance;
-use App\Services\GreenApi\Facades\GreenApi;
-use App\Services\GreenApi\Instance\InstanceServiceInterface;
+use App\Services\Whatsapp\Facades\Whatsapp;
+use App\Services\Whatsapp\Instance\InstanceServiceInterface;
 
 final readonly class DeleteInstance
 {
@@ -12,7 +12,7 @@ final readonly class DeleteInstance
     public function __invoke(null $_, array $args): bool
     {
         $instance = Instance::query()->find($args['id']);
-        GreenApi::fromModel($instance)->api()->getClient()->account->logout();
+        Whatsapp::for($instance)->api()->getClient()->account->logout();
 
         return $instance->delete();
     }

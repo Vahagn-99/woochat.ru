@@ -2,9 +2,9 @@
 
 namespace App\Services\AmoChat\Messaging\Types;
 
-use App\Services\GreenApi\Messaging\MessageInterface;
+use App\Base\Chat\Message\IMessage;
 
-interface Payload extends MessageInterface
+interface Payload extends IMessage
 {
 
 }

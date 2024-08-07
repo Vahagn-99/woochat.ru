@@ -3,7 +3,7 @@
 namespace App\GraphQL\Mutations\Instance;
 
 use App\Models\Instance;
-use App\Services\GreenApi\Instance\InstanceServiceInterface;
+use App\Services\Whatsapp\Instance\InstanceServiceInterface;
 
 final readonly class CreateInstance
 {

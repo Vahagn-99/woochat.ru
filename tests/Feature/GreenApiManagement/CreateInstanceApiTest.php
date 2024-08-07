@@ -3,10 +3,10 @@
 namespace Tests\Feature\GreenApiManagement;
 
 use App\Enums\InstanceStatus;
-use App\Services\GreenApi\Instance\CreatedInstanceDTO;
-use App\Services\GreenApi\Instance\CreateInstanceApiInterface;
-use App\Services\GreenApi\Instance\InstanceService;
-use App\Services\GreenApi\Instance\InstanceServiceInterface;
+use App\Services\Whatsapp\Instance\CreatedInstanceDTO;
+use App\Services\Whatsapp\Instance\CreateInstanceApiInterface;
+use App\Services\Whatsapp\Instance\InstanceService;
+use App\Services\Whatsapp\Instance\InstanceServiceInterface;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery;
 use Tests\GraphqlTestCase;

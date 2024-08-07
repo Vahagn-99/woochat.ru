@@ -2,15 +2,15 @@
 
 namespace App\Listeners\AmoChat;
 
+use App\Base\Chat\Message\Response;
 use App\Events\AmoCrm\MessageReceived;
 use App\Models\AmoConnection;
 use App\Models\Chat;
 use App\Models\Instance;
 use App\Models\Message;
 use App\Models\User;
-use App\Services\GreenApi\Facades\GreenApi;
-use App\Services\GreenApi\Messaging\MessageId;
-use App\Services\GreenApi\Messaging\Types\TextMessage;
+use App\Services\Whatsapp\Facades\Whatsapp;
+use App\Services\Whatsapp\Messaging\Types\Text;
 use Exception;
 
 class HandleReceivedMessage
@@ -37,13 +37,13 @@ class HandleReceivedMessage
 
         $instance = $this->getInstance($chat, $user);
 
-        $this->ensureChatFilled($chat, $instance, $receiverData);
+        $this->ensureChatFilled($chat, $receiverData);
 
         $whatsMessage = $this->sendMessage($message, $instance, $chat);
         Message::query()->updateOrCreate(
             [
                 'amo_message_id' => $message['id'],
-                'whatsapp_message_id' => $whatsMessage->messageId,
+                'whatsapp_message_id' => $whatsMessage->id,
             ],
             [
                 'chat_id' => $chat->id,
@@ -79,7 +79,7 @@ class HandleReceivedMessage
         return AmoConnection::findByScopeId($scopeId);
     }
 
-    private function ensureChatFilled(Chat $chat, Instance $instance, array $receiverData): void
+    private function ensureChatFilled(Chat $chat, array $receiverData): void
     {
         if (!$chat->whatsapp_chat_id) {
             $chat->whatsapp_chat_id = $receiverData['phone'] . '@c.us';
@@ -87,14 +87,14 @@ class HandleReceivedMessage
         }
     }
 
-    private function sendMessage(array $messageData, Instance $instance, Chat $chat): MessageId
+    private function sendMessage(array $messageData, Instance $instance, Chat $chat): Response
     {
-        $message = new TextMessage(
+        $message = new Text(
             $chat->whatsapp_chat_id,
             $messageData['text']
         );
 
-        return GreenApi::fromModel($instance)->massaging()->send($message);
+        return Whatsapp::for($instance)->massaging()->send($message);
     }
 
 }

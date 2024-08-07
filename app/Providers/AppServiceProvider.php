@@ -2,12 +2,12 @@
 
 namespace App\Providers;
 
-use App\Services\GreenApi\Instance\CreateInstanceApi;
-use App\Services\GreenApi\Instance\CreateInstanceApiInterface;
-use App\Services\GreenApi\Instance\InstanceService;
-use App\Services\GreenApi\Instance\InstanceServiceInterface;
-use App\Services\GreenApi\QRCode\QRCodeApi;
-use App\Services\GreenApi\QRCode\QRCodeApiInterface;
+use App\Services\Whatsapp\Instance\CreateInstanceApi;
+use App\Services\Whatsapp\Instance\CreateInstanceApiInterface;
+use App\Services\Whatsapp\Instance\InstanceService;
+use App\Services\Whatsapp\Instance\InstanceServiceInterface;
+use App\Services\Whatsapp\QRCode\QRCodeApi;
+use App\Services\Whatsapp\QRCode\QRCodeApiInterface;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Support\ServiceProvider;
 

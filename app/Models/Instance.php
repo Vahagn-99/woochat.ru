@@ -3,8 +3,8 @@
 namespace App\Models;
 
 use App\Enums\InstanceStatus;
-use App\Events\GreenApi\InstanceCreated;
-use App\Services\GreenApi\DTO\InstanceDTO;
+use App\Events\Whatsapp\InstanceCreated;
+use App\Services\Whatsapp\DTO\InstanceDTO;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

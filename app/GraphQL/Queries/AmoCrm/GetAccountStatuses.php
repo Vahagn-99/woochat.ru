@@ -3,9 +3,9 @@
 namespace App\GraphQL\Queries\AmoCrm;
 
 use App\Models\Instance;
-use App\Services\GreenApi\DTO\InstanceDTO;
-use App\Services\GreenApi\Facades\GreenApi;
-use App\Services\GreenApi\QRCode\QRCodeServiceInterface;
+use App\Services\Whatsapp\DTO\InstanceDTO;
+use App\Services\Whatsapp\Facades\Whatsapp;
+use App\Services\Whatsapp\QRCode\QRCodeServiceInterface;
 
 final readonly class GetAccountStatuses
 {

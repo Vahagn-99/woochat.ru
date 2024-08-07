@@ -3,8 +3,8 @@
 namespace Tests\Unit\GreenApiManagement;
 
 use App\Enums\InstanceStatus;
-use App\Events\GreenApi\Webhooks\StateInstanceChanged;
-use App\Listeners\GreenApi\Webhooks\HandleStateInstance;
+use App\Events\Whatsapp\Webhooks\StateInstanceChanged;
+use App\Listeners\Whatsapp\Webhooks\HandleStateInstance;
 use App\Models\Instance;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;

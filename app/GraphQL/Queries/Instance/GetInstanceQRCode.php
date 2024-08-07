@@ -3,9 +3,9 @@
 namespace App\GraphQL\Queries\Instance;
 
 use App\Models\Instance;
-use App\Services\GreenApi\DTO\InstanceDTO;
-use App\Services\GreenApi\Facades\GreenApi;
-use App\Services\GreenApi\QRCode\QRCodeServiceInterface;
+use App\Services\Whatsapp\DTO\InstanceDTO;
+use App\Services\Whatsapp\Facades\Whatsapp;
+use App\Services\Whatsapp\QRCode\QRCodeServiceInterface;
 
 final readonly class GetInstanceQRCode
 {
@@ -13,9 +13,9 @@ final readonly class GetInstanceQRCode
     public function __invoke(null $_, array $args): array
     {
         $instance = Instance::query()->findOrFail($args['id']);
-        GreenApi::fromModel($instance);
-        GreenApi::api()->getClient()->account->logout();
-        $response = GreenApi::qr()->getQRCode();
+        Whatsapp::for($instance);
+        Whatsapp::api()->getClient()->account->logout();
+        $response = Whatsapp::qr()->getQRCode();
 
         return $response->toArray();
     }
