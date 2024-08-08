@@ -17,23 +17,29 @@ final readonly class GetAccountPipelines
         return [
             [
                 'id' => 1,
+                'name'=>"Alex 1",
                 'statuses' => [
                     [
                         'id' => 1,
+                        'name'=>'Hasmik'
                     ],
                     [
                         'id' => 2,
+                        'name'=>'Vahagn'
                     ]
                 ]
             ],
             [
                 'id' => 2,
+                'name'=>"Alax 2" ,
                 'statuses' => [
                     [
                         'id' => 3,
+                        'name'=>'Hasmik 2'
                     ],
                     [
                         'id' => 4,
+                        'name'=>"Vahagn 2"
                     ]
                 ]
             ],
