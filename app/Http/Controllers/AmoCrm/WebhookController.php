@@ -13,6 +13,8 @@ class WebhookController extends Controller
     public function __invoke(Request $request, string $scopeId): JsonResponse
     {
         if (! AmoConnection::whereScopeId($scopeId)->exists()) {
+            logger()->warning("The $scopeId is not a valid AMO connection");
+
             return response()->json([
                 'The connection with the specified scopes does not exist.',
             ]);
