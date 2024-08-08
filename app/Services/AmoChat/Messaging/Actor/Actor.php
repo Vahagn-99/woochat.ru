@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Services\AmoChat\Messaging\Types;
+namespace App\Services\AmoChat\Messaging\Actor;
 
 use App\Contracts\Arrayable;
 
 class Actor implements Arrayable
 {
     public function __construct(
-        public string  $id,
-        public string  $name,
+        public string $id,
+        public string $name,
+        public Profile $profile,
         public ?string $avatar = null,
         public ?string $ref_id = null,
-    )
-    {
+    ) {
     }
 
     public function toArray(): array

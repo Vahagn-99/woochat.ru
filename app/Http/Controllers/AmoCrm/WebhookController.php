@@ -23,7 +23,7 @@ class WebhookController extends Controller
         $payload = $request->all();
         $payload['scope_id'] = $scopeId;
 
-        logger()->info("IMessage from AmoCRM was received", $payload);
+        logger()->info("message from AmoCRM was received", $payload);
 
         event(new MessageReceived($payload));
 

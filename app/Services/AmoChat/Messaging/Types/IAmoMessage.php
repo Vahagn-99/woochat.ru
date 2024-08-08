@@ -4,6 +4,7 @@ namespace App\Services\AmoChat\Messaging\Types;
 
 use App\Base\Chat\Message\IMessage as BaseMessage;
 use App\Base\Chat\Message\Manageable;
+use App\Services\AmoChat\Messaging\Actor\Actor;
 
 class IAmoMessage implements BaseMessage
 {

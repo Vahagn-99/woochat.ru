@@ -11,11 +11,13 @@ use App\Models\Message;
 use App\Models\User;
 use App\Services\AmoChat\Chat\Create\CreateAmoChatDTO;
 use App\Services\AmoChat\Facades\AmoChat;
-use App\Services\AmoChat\Messaging\Types\Actor;
+use App\Services\AmoChat\Messaging\Actor\Actor;
+use App\Services\AmoChat\Messaging\Actor\Profile;
 use App\Services\AmoChat\Messaging\Types\IAmoMessage;
 use App\Services\AmoChat\Messaging\Types\Text;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Support\Str;
 
 class HandleIncomingMessage implements ShouldQueue
 {
@@ -99,6 +101,9 @@ class HandleIncomingMessage implements ShouldQueue
         $sender = new Actor(
             id: $senderData['sender'],
             name: $senderData['senderName'],
+            profile: new Profile(
+                phone: Str::beforeLast("@",$senderData['sender'])
+            )
         );
 
         $payload = new Text(
