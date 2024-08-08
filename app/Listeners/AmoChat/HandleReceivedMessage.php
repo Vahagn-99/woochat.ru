@@ -15,7 +15,6 @@ use Exception;
 
 class HandleReceivedMessage
 {
-
     public function __construct()
     {
     }
@@ -40,15 +39,12 @@ class HandleReceivedMessage
         $this->ensureChatFilled($chat, $receiverData);
 
         $whatsMessage = $this->sendMessage($message, $instance, $chat);
-        Message::query()->updateOrCreate(
-            [
-                'amo_message_id' => $message['id'],
-                'whatsapp_message_id' => $whatsMessage->id->value,
-            ],
-            [
-                'chat_id' => $chat->id,
-            ]
-        );
+        Message::query()->updateOrCreate([
+            'amo_message_id' => $message['id'],
+            'whatsapp_message_id' => $whatsMessage->id->value,
+        ], [
+            'chat_id' => $chat->id,
+        ]);
     }
 
     /**
@@ -81,20 +77,14 @@ class HandleReceivedMessage
 
     private function ensureChatFilled(Chat $chat, array $receiverData): void
     {
-        if (!$chat->whatsapp_chat_id) {
-            $chat->whatsapp_chat_id = $receiverData['phone'] . '@c.us';
-            $chat->save();
-        }
+        $chat->whatsapp_chat_id = $receiverData['client_id'];
+        $chat->save();
     }
 
     private function sendMessage(array $messageData, Instance $instance, Chat $chat): Response
     {
-        $message = new Text(
-            $chat->whatsapp_chat_id,
-            $messageData['text']
-        );
+        $message = new Text($chat->whatsapp_chat_id, $messageData['text']);
 
         return Whatsapp::for($instance)->massaging()->send($message);
     }
-
 }
