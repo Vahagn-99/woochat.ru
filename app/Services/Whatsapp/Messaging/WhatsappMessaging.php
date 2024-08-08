@@ -20,17 +20,13 @@ class WhatsappMessaging implements WhatsappMessagingInterface
     {
         $messageToArray = $message->toArray();
         $method = $this->getSendingMethodByMessageType($message->getType());
-
         $resp = $this->apiClient->sending->{$method}(...$messageToArray);
 
-        return new Response(
-            new EventType("new message"),
-            new MessageId($resp->data->idMessage)
-        );
+        return new Response(new EventType("new message"), new MessageId($resp->data->idMessage));
     }
 
     private function getSendingMethodByMessageType(string $messageType): string
     {
-        return Str::camel("send_" . $messageType);
+        return Str::camel("send_".$messageType);
     }
 }

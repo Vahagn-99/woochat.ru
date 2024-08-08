@@ -23,9 +23,9 @@ class Text implements IMessage
     public function toArray(): array
     {
         return [
-            'chat_id' => $this->chatId,
+            'chatId' => $this->chatId,
             'message' => $this->message,
-            'quoted_message_id' => $this->quotedMessageId,
+            'quotedMessageId' => $this->quotedMessageId,
         ];
     }
 }
