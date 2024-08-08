@@ -102,7 +102,7 @@ class HandleIncomingMessage implements ShouldQueue
             id: $senderData['sender'],
             name: $senderData['senderName'],
             profile: new Profile(
-                phone: Str::beforeLast("@",$senderData['sender'])
+                phone: Str::replace(["@c.us","@g.us"],"",$senderData['sender'])
             )
         );
 
