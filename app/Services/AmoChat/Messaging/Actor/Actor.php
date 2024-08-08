@@ -22,6 +22,7 @@ class Actor implements Arrayable
             'avatar' => $this->avatar,
             'name' => $this->name,
             'ref_id' => $this->ref_id,
+            'profile' => $this->profile->toArray(),
         ]);
     }
 }
