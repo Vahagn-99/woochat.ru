@@ -43,7 +43,7 @@ class HandleReceivedMessage
         Message::query()->updateOrCreate(
             [
                 'amo_message_id' => $message['id'],
-                'whatsapp_message_id' => $whatsMessage->id,
+                'whatsapp_message_id' => $whatsMessage->id->messageId,
             ],
             [
                 'chat_id' => $chat->id,
