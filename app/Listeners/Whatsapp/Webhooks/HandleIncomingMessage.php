@@ -46,7 +46,7 @@ class HandleIncomingMessage implements ShouldQueue
 
         Message::query()->updateOrCreate(
             [
-                'amo_message_id' => $message->id->messageId,
+                'amo_message_id' => $message->id->value,
                 'whatsapp_message_id' => $messageId,
             ],
             [
