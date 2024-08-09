@@ -13,7 +13,7 @@ use App\Services\AmoChat\Chat\Create\CreateAmoChatDTO;
 use App\Services\AmoChat\Facades\AmoChat;
 use App\Services\AmoChat\Messaging\Actor\Actor;
 use App\Services\AmoChat\Messaging\Actor\Profile;
-use App\Services\AmoChat\Messaging\Types\IAmoMessage;
+use App\Services\AmoChat\Messaging\Types\AmoMessage;
 use App\Services\AmoChat\Messaging\Types\Text;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
@@ -114,7 +114,7 @@ class HandleIncomingMessage implements ShouldQueue
             text: $messageTextValue,
         );
 
-        $message = new IAmoMessage(
+        $message = new AmoMessage(
             sender: $sender,
             payload: $payload,
             silent: false,

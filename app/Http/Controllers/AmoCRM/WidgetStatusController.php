@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\AmoCrm;
+namespace App\Http\Controllers\AmoCRM;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;

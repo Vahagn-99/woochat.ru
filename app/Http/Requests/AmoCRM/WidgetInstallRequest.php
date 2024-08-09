@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\AmoCrmApi;
+namespace App\Http\Requests\AmoCRM;
 
 use App\Contracts\DTOable;
 use App\DTO\AmoAccountInfoDTO;

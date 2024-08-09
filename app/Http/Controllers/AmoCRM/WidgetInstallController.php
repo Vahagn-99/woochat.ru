@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\AmoCrm;
+namespace App\Http\Controllers\AmoCRM;
 
 use App\Events\AmoChat\UserCreated;
 use App\Events\AmoCrm\WidgetInstalled;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\AmoCrmApi\WidgetInstallRequest;
+use App\Http\Requests\AmoCRM\WidgetInstallRequest;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 
@@ -30,6 +30,5 @@ class WidgetInstallController extends Controller
             'user_id' => $user->getKey(),
             'access_token' => $user->createToken('amocrm')->plainTextToken,
         ], 201);
-
     }
 }

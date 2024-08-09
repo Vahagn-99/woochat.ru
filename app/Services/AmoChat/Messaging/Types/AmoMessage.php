@@ -6,22 +6,21 @@ use App\Base\Chat\Message\IMessage as BaseMessage;
 use App\Base\Chat\Message\Manageable;
 use App\Services\AmoChat\Messaging\Actor\Actor;
 
-class IAmoMessage implements BaseMessage
+class AmoMessage implements BaseMessage
 {
     use Manageable;
 
     public function __construct(
-        public Actor   $sender,
+        public Actor $sender,
         public Payload $payload,
-        public bool    $silent,
-        public ?Actor  $receiver = null,
+        public bool $silent,
+        public ?Actor $receiver = null,
         public ?string $conversation_id = null,
         public ?string $conversation_ref_id = null,
-        public string  $event_type = 'new_message',
+        public string $event_type = 'new_message',
         public ?string $id = null,
         public ?string $msgid = null,
-    )
-    {
+    ) {
     }
 
     public function toArray(): array
@@ -38,8 +37,8 @@ class IAmoMessage implements BaseMessage
                 'sender' => $this->sender->toArray(),
                 'receiver' => $this->receiver?->toArray(),
                 'message' => $this->payload->toArray(),
-                'silent' => $this->silent
-            ], fn($item) => !is_null($item))
+                'silent' => $this->silent,
+            ], fn($item) => ! is_null($item)),
         ];
     }
 

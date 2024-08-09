@@ -39,6 +39,7 @@ class HandleReceivedMessage
         $this->ensureChatFilled($chat, $receiverData);
 
         $whatsMessage = $this->sendMessage($message, $instance, $chat);
+
         Message::query()->updateOrCreate([
             'amo_message_id' => $message['id'],
             'whatsapp_message_id' => $whatsMessage->id->value,

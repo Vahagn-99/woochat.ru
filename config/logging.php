@@ -65,6 +65,13 @@ return [
             'replace_placeholders' => true,
         ],
 
+        'do_log' => [
+            'driver' => 'do_log',
+            'path' => storage_path('logs/check.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+            'days' => 14,
+        ],
+
         'daily' => [
             'driver' => 'daily',
             'path' => storage_path('logs/laravel.log'),

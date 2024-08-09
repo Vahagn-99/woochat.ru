@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
@@ -16,6 +17,8 @@ use Laravel\Sanctum\HasApiTokens;
  * @property string $email
  * @property string $phone
  * @property string $password
+ *
+ * @property-read \App\Models\AmoAccessToken $amoAccessToken
  */
 final class User extends Authenticatable
 {
@@ -26,7 +29,7 @@ final class User extends Authenticatable
         'email',
         'phone',
         'amojo_id',
-        'password'
+        'password',
     ];
 
     protected $hidden = [
@@ -57,5 +60,15 @@ final class User extends Authenticatable
     public function amoConnections(): HasMany
     {
         return $this->hasMany(AmoConnection::class, 'user_id', 'id');
+    }
+
+    public function amoAccessToken(): HasOne
+    {
+        return $this->hasOne(AmoAccessToken::class, 'domain', 'domain');
+    }
+
+    public static function findByDomain(mixed $domain): ?User
+    {
+        return User::query()->where('domain', $domain)->first();
     }
 }

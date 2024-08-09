@@ -1,0 +1,44 @@
+<?php
+
+namespace App\Services\AmoCRM\Auth;
+
+use AmoCRM\Exceptions\AmoCRMoAuthApiException;
+use App\Services\AmoCRM\Core\ApiClient\ApiClient;
+use League\OAuth2\Client\Token\AccessTokenInterface;
+
+class AmoCrmAuthManager implements AuthManagerInterface
+{
+    const AUTH_MODE_POST_MESSAGE_TYPE = 'post_message';
+
+    public function __construct(
+        private readonly ApiClient $apiClient
+    ) {
+
+    }
+
+    public function url(): string
+    {
+        return $this->apiClient->getOAuthClient()->getAuthorizeUrl([
+            'mode' => self::AUTH_MODE_POST_MESSAGE_TYPE,
+            'state' => config('app.name'),
+        ]);
+    }
+
+    /**
+     * @throws AmoCRMoAuthApiException
+     */
+    public function exchangeCodeWithAccessToken(string $domain, string $code): AccessTokenInterface
+    {
+        $oauth = $this->apiClient->getOAuthClient();
+        $oauth->setBaseDomain($domain);
+        // if no access token but there is a code from redirect
+        // we can get token from that code
+        $accessToken = $oauth->getAccessTokenByCode($code);
+
+        if ($accessToken->hasExpired()) {
+            $accessToken = $oauth->getAccessTokenByRefreshToken($accessToken);
+        }
+
+        return $accessToken;
+    }
+}

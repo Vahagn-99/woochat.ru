@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\AmoCrm;
+namespace App\Http\Controllers\AmoChat;
 
 use App\Events\AmoCrm\MessageReceived;
 use App\Http\Controllers\Controller;
