@@ -15,8 +15,8 @@ use Illuminate\Support\Facades\Facade;
 use Illuminate\Testing\TestResponse;
 
 /**
- * @method static ApiClient reConnect()
- * @method static ApiClient api()
+ * @method static ApiClient reConnect(string $domain)
+ * @method static ApiClient api(string $domain)
  * @method static AuthManagerInterface authenticator()
  * @method static AccessTokenManagerInterface tokenizer()
  *

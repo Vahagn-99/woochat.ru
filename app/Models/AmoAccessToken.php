@@ -37,7 +37,7 @@ class AmoAccessToken extends Model
 
     public static function findByDomain(string $domain): AmoAccessToken
     {
-        return AmoAccessToken::query()->first(["domain" => $domain]);
+        return AmoAccessToken::query()->where("domain", $domain)->first();
     }
 
     public function user(): BelongsTo

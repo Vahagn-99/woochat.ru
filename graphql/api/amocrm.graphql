@@ -1,6 +1,5 @@
 extend type Query @guard {
     getAccountPipelines:[Pipeline]! @field(resolver: "\\App\\GraphQL\\Queries\\AmoCrm\\GetAccountPipelines")
-    getAccountStatuses:[Status]! @field(resolver: "\\App\\GraphQL\\Queries\\AmoCrm\\GetAccountStatuses")
 }
 
 # types

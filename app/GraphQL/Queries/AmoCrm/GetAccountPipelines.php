@@ -2,47 +2,34 @@
 
 namespace App\GraphQL\Queries\AmoCrm;
 
-use App\Models\Instance;
-use App\Services\Whatsapp\DTO\InstanceDTO;
-use App\Services\Whatsapp\Facades\Whatsapp;
-use App\Services\Whatsapp\QRCode\QRCodeServiceInterface;
+use App\Services\AmoCRM\Core\Facades\Amo;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
 
 final readonly class GetAccountPipelines
 {
-    /** @param array{} $args */
+    /**
+     * @param null $_
+     * @param array{} $args
+     * @return array
+     * @throws \AmoCRM\Exceptions\AmoCRMApiException
+     * @throws \AmoCRM\Exceptions\AmoCRMMissedTokenException
+     * @throws \AmoCRM\Exceptions\AmoCRMoAuthApiException
+     */
     public function __invoke(null $_, array $args): array
     {
         // amocrm api call
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
 
-        return [
-            [
-                'id' => 1,
-                'name'=>"Alex 1",
-                'statuses' => [
-                    [
-                        'id' => 1,
-                        'name'=>'Hasmik'
-                    ],
-                    [
-                        'id' => 2,
-                        'name'=>'Vahagn'
-                    ]
-                ]
-            ],
-            [
-                'id' => 2,
-                'name'=>"Alax 2" ,
-                'statuses' => [
-                    [
-                        'id' => 3,
-                        'name'=>'Hasmik 2'
-                    ],
-                    [
-                        'id' => 4,
-                        'name'=>"Vahagn 2"
-                    ]
-                ]
-            ],
-        ];
+        $data = Amo::api($user->domain)->pipelines()->get(with: ['leads'])->toArray();
+
+        return Arr::map($data, function ($item) {
+            return [
+                'id' => $item['id'],
+                'name' => $item['name'],
+                'statuses' => Arr::map($item['statuses'], fn($item) => ['id' => $item['id'], 'name' => $item['name']]),
+            ];
+        });
     }
 }

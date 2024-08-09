@@ -1,5 +1,8 @@
 <?php
 
+use AmoCRM\Exceptions\AmoCRMApiException;
+use AmoCRM\Exceptions\AmoCRMMissedTokenException;
+use AmoCRM\Exceptions\AmoCRMoAuthApiException;
 use App\Exceptions\AmoChatConnectionException;
 use App\Exceptions\InstanceCreationException;
 use App\Exceptions\UserNotFoundException;
@@ -48,6 +51,12 @@ return Application::configure(basePath: dirname(__DIR__))->withRouting(web: [
     });
 
     $exceptions->render(function (UserNotFoundException $e) {
+        return response()->json([
+            'message' => $e->getMessage(),
+        ], $e->getCode());
+    });
+
+    $exceptions->render(function (AmoCRMMissedTokenException|AmoCRMoAuthApiException|AmoCRMApiException $e) {
         return response()->json([
             'message' => $e->getMessage(),
         ], $e->getCode());
