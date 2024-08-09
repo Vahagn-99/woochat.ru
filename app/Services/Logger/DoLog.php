@@ -12,7 +12,7 @@ class DoLog
     public function file(string $file): LoggerInterface
     {
         return Log::build([
-            'driver' => 'do_log',
+            'driver' => 'single',
             'path' => storage_path('logs/'.$file.'.log'),
         ]);
     }
