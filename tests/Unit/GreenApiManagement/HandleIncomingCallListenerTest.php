@@ -3,10 +3,10 @@
 namespace Tests\Unit\GreenApiManagement;
 
 use App\Enums\InstanceStatus;
-use App\Events\Whatsapp\Webhooks\StateInstanceChanged;
-use App\Listeners\Whatsapp\Webhooks\HandleStateInstance;
-use App\Models\Instance;
+use App\Events\Whatsapp\InstanceStatusChanged;
+use App\Listeners\Whatsapp\UpdateInstanceStatus;
 use App\Models\User;
+use App\Models\WhatsappInstance;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -18,13 +18,13 @@ class HandleIncomingCallListenerTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $instance = Instance::factory()->create([
+        $instance = WhatsappInstance::factory()->create([
             'user_id' => $user->getKey(),
             'status' => InstanceStatus::NOT_AUTHORIZED
         ]);
 
-        $listener = new HandleStateInstance();
-        $listener->handle(new StateInstanceChanged([
+        $listener = new UpdateInstanceStatus();
+        $listener->handle(new InstanceStatusChanged([
             "typeWebhook" => "stateInstanceChanged",
             "instanceData" => [
                 "idInstance" => $instance->getKey(),

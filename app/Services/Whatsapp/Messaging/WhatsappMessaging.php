@@ -2,10 +2,8 @@
 
 namespace App\Services\Whatsapp\Messaging;
 
-use App\Base\Chat\Message\EventType;
-use App\Base\Chat\Message\IMessage;
-use App\Base\Chat\Message\MessageId;
-use App\Base\Chat\Message\Response;
+use App\Base\Messaging\IMessage;
+use App\Base\Messaging\SentMessage;
 use GreenApi\RestApi\GreenApiClient;
 use Illuminate\Support\Str;
 
@@ -16,13 +14,15 @@ class WhatsappMessaging implements WhatsappMessagingInterface
 
     }
 
-    public function send(IMessage $message): Response
+    public function send(IMessage $message): SentMessage
     {
         $messageToArray = $message->toArray();
+
         $method = $this->getSendingMethodByMessageType($message->getType());
+
         $resp = $this->apiClient->sending->{$method}(...$messageToArray);
 
-        return new Response(new EventType("new message"), new MessageId($resp->data->idMessage));
+        return new SentMessage($resp->data->idMessage);
     }
 
     private function getSendingMethodByMessageType(string $messageType): string

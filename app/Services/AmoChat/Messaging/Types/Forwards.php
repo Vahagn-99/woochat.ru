@@ -2,7 +2,7 @@
 
 namespace App\Services\AmoChat\Messaging\Types;
 
-use App\Base\Chat\Message\Manageable;
+use App\Base\Messaging\Manageable;
 
 class Forwards implements Payload
 {

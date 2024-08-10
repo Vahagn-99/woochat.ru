@@ -2,8 +2,8 @@
 
 namespace App\Services\Whatsapp\Messaging\Types;
 
-use App\Base\Chat\Message\IMessage;
-use App\Base\Chat\Message\Manageable;
+use App\Base\Messaging\IMessage;
+use App\Base\Messaging\Manageable;
 
 class Button implements IMessage
 {

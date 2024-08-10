@@ -26,6 +26,6 @@ final class Settings extends Model
 
     public function instance(): BelongsTo
     {
-        return $this->belongsTo(Instance::class, 'instance_id', 'id');
+        return $this->belongsTo(WhatsappInstance::class, 'instance_id', 'id');
     }
 }

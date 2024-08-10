@@ -6,7 +6,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Default Database AmoConnection Name
+    | Default Database AmoInstance Name
     |--------------------------------------------------------------------------
     |
     | Here you may specify which of the database connections below you wish

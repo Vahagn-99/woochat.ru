@@ -18,7 +18,7 @@ type User {
     email:String
     phone:String
     created_at: String!
-    instances: [Instance]! @hasMany
+    instances: [WhatsappInstance]! @hasMany
 }
 
 # inputs

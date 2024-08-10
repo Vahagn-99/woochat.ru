@@ -3,13 +3,13 @@
 namespace Database\Factories;
 
 use App\Enums\InstanceStatus;
-use App\Models\Instance;
+use App\Models\WhatsappInstance;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Arr;
 
 /**
- * @extends Factory<Instance>
+ * @extends Factory<WhatsappInstance>
  */
 class InstanceFactory extends Factory
 {

@@ -1,16 +1,16 @@
 extend type Query @guard {
-    instances: [Instance!]! @all
-    instance(id:ID @eq): Instance @find
+    instances: [WhatsappInstance!]! @all
+    instance(id:ID @eq): WhatsappInstance @find
     getInstanceQRCode(id:ID!):QRCode! @field(resolver: "\\App\\GraphQL\\Queries\\Instance\\GetInstanceQRCode")
 }
 
 extend type Mutation @guard {
-    createNewInstance(input:CreateNewInstanceInput!):Instance! @field(resolver: "\\App\\GraphQL\\Mutations\\Instance\\CreateInstance")
+    createNewInstance(input:CreateNewInstanceInput!):WhatsappInstance! @field(resolver: "\\App\\GraphQL\\Mutations\\Instance\\CreateInstance")
     deleteInstance(id:ID!):Boolean! @field(resolver: "\\App\\GraphQL\\Mutations\\Instance\\DeleteInstance")
 }
 
 # api
-type Instance {
+type WhatsappInstance {
     settings: Settings @hasOne
     id: ID!
     name: String

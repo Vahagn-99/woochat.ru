@@ -4,7 +4,7 @@ namespace Tests\Feature\GreenApiManagement;
 
 use App\Enums\InstanceStatus;
 use App\Services\Whatsapp\Instance\CreatedInstanceDTO;
-use App\Services\Whatsapp\Instance\CreateInstanceApiInterface;
+use App\Services\Whatsapp\Instance\InstanceApiInterface;
 use App\Services\Whatsapp\Instance\InstanceService;
 use App\Services\Whatsapp\Instance\InstanceServiceInterface;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -21,10 +21,8 @@ class CreateInstanceApiTest extends GraphqlTestCase
     {
         parent::setUp();
 
-        $mockGreenApiCreateInstance = Mockery::mock(CreateInstanceApiInterface::class);
-        $mockGreenApiCreateInstance->shouldReceive('newInstance')
-            ->once()
-            ->andReturn($this->instanceDTO = new CreatedInstanceDTO('test_instance_id', 'test_instance_token', 'test_instance_type'));
+        $mockGreenApiCreateInstance = Mockery::mock(InstanceApiInterface::class);
+        $mockGreenApiCreateInstance->shouldReceive('newInstance')->once()->andReturn($this->instanceDTO = new CreatedInstanceDTO('test_instance_id', 'test_instance_token'));
 
         $fakeManager = new InstanceService($mockGreenApiCreateInstance);
 
@@ -43,7 +41,7 @@ class CreateInstanceApiTest extends GraphqlTestCase
           mutation createNewInstance($input: createNewInstanceInput!) {
             createNewInstance(input: $input)
           }', [
-            'input' => $params
+            'input' => $params,
         ]);
 
         $response->assertSee('success');

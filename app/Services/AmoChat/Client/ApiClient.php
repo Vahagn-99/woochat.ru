@@ -2,7 +2,7 @@
 
 namespace App\Services\AmoChat\Client;
 
-use App\Exceptions\AmoChatConnectionException;
+use App\Exceptions\AmoChat\AmoChatConnectionException;
 use DateTimeInterface;
 use Exception;
 use Illuminate\Support\Facades\Http;
@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Http;
 class ApiClient implements ApiClientInterface
 {
     protected string $baseUrl;
+
     protected string $secretKey;
 
     public function __construct()
@@ -45,8 +46,7 @@ class ApiClient implements ApiClientInterface
         string $url,
         string $httpMethod = 'POST',
         string $contentType = 'application/json'
-    ): string
-    {
+    ): string {
         $str = implode("\n", [
             strtoupper($httpMethod),
             $checkSum,
@@ -70,8 +70,7 @@ class ApiClient implements ApiClientInterface
         string $checkSum,
         string $signature,
         string $contentType = 'application/json'
-    ): array
-    {
+    ): array {
         return [
             'Date' => date(DateTimeInterface::RFC2822),
             'Content-Type' => $contentType,
@@ -92,28 +91,24 @@ class ApiClient implements ApiClientInterface
      */
     public function request(
         string $url,
-        array  $body,
+        array $body,
         string $httpMethod = 'POST'
-    ): array
-    {
+    ): array {
         $requestBody = json_encode($body);
         $checkSum = $this->createBodyChecksum($requestBody);
         $signature = $this->createSignature($this->secretKey, $checkSum, $url, $httpMethod);
         $headers = $this->prepareHeaders($checkSum, $signature);
 
-        $response = Http::withHeaders($headers)
-            ->baseUrl($this->baseUrl)
-            ->send($httpMethod, $url, [
+        $response = Http::withHeaders($headers)->baseUrl($this->baseUrl)->send($httpMethod, $url, [
                 'body' => $requestBody,
             ]);
 
         if ($response->failed()) {
-            $message = " " . PHP_EOL;
-            $message .= "error_code: " . json_decode($response->body(), true)['error_code'] . PHP_EOL;
-            $message .= "error_type: " . json_decode($response->body(), true)['error_type'] . PHP_EOL;
-            $message .= "error_description: " . json_decode($response->body(), true)['error_description'];
-
-            throw new AmoChatConnectionException($message);
+            $message = " ".PHP_EOL;
+            $message .= "error_code: ".json_decode($response->body(), true)['error_code'].PHP_EOL;
+            $message .= "error_type: ".json_decode($response->body(), true)['error_type'].PHP_EOL;
+            $message .= "error_description: ".json_decode($response->body(), true)['error_description'];
+            throw new AmoChatConnectionException($message, $response->status());
         }
 
         return $response->json();

@@ -2,12 +2,10 @@
 
 namespace App\Services\Whatsapp\Facades;
 
-use App\Base\Chat\Message\EventType;
-use App\Base\Chat\Message\MessageId;
-use App\Base\Chat\Message\MessagingInterface;
-use App\Base\Chat\Message\Response;
+use App\Base\Messaging\MessagingInterface;
+use App\Base\Messaging\SentMessage;
 use App\Enums\InstanceStatus;
-use App\Models\Instance;
+use App\Models\WhatsappInstance;
 use App\Services\Whatsapp\ClientService\WhatsappApiServiceInterface;
 use App\Services\Whatsapp\DTO\InstanceDTO;
 use App\Services\Whatsapp\Instance\CreatedInstanceDTO;
@@ -38,58 +36,47 @@ class Whatsapp extends Facade
         return 'whatsapp';
     }
 
-    public static function for(Instance|InstanceDTO|array $instance): WhatsappManagerInterface
+    public static function for(WhatsappInstance|InstanceDTO|array $instance): WhatsappManagerInterface
     {
         $instance = is_array($instance) ? InstanceDTO::fromArray($instance) : $instance;
-        $instance = $instance instanceof Instance ? $instance->toDto() : $instance;
+        $instance = $instance instanceof WhatsappInstance ? $instance->toDto() : $instance;
 
-        $client = new GreenApiClient(
-            $instance->id,
-            $instance->token
-        );
+        $client = new GreenApiClient($instance->id, $instance->token);
 
         app()->instance(GreenApiClient::class, $client);
 
         return app(WhatsappManagerInterface::class);
     }
 
-    public static function fake(string $id = 'test-id', string $token = 'test-token', string $host = 'https://test.com'): void
-    {
+    public static function fake(
+        string $id = 'test-id',
+        string $token = 'test-token',
+        string $host = 'https://test.com'
+    ): void {
         $fakeGreenApiClient = new GreenApiClient($id, $token, $host);
         app()->instance(GreenApiClient::class, $fakeGreenApiClient);
 
         // fake instance service
         $fakeInstanceService = Mockery::mock(InstanceServiceInterface::class);
-        $fakeInstanceService->shouldReceive('create')
-            ->andReturn(new CreatedInstanceDTO($id, $token, 'whatsapp'));
+        $fakeInstanceService->shouldReceive('create')->andReturn(new CreatedInstanceDTO($id, $token));
 
         // fake qr code service
         $fakeQRCodeService = Mockery::mock(QRCodeServiceInterface::class);
-        $fakeQRCodeService->shouldReceive('getQRCode')
-            ->andReturn(new QRCodeResponseDTO("qrCode", "test-qr-base64-code"));
+        $fakeQRCodeService->shouldReceive('getQRCode')->andReturn(new QRCodeResponseDTO("qrCode", "test-qr-base64-code"));
 
         // fake client api service
         $fakeClientService = Mockery::mock(WhatsappApiServiceInterface::class);
-        $fakeClientService->shouldReceive('getClient')
-            ->andReturn($fakeGreenApiClient);
+        $fakeClientService->shouldReceive('getClient')->andReturn($fakeGreenApiClient);
 
         // fake messaging service
         $fakeMessagingService = Mockery::mock(WhatsappMessagingInterface::class);
-        $fakeMessagingService->shouldReceive('send')
-            ->andReturn(new Response(new EventType('new message'), new MessageId('test-id')));
+        $fakeMessagingService->shouldReceive('send')->andReturn(new SentMessage('test-id'));
 
         // fake messaging service
         $fakeInstanceStatus = Mockery::mock(GetInstanceStatusServiceInterface::class);
-        $fakeInstanceStatus->shouldReceive('get')
-            ->andReturn(InstanceStatus::AUTHORIZED);
+        $fakeInstanceStatus->shouldReceive('get')->andReturn(InstanceStatus::AUTHORIZED);
 
-        $fakeManager = new WhatsappManager(
-            $fakeClientService,
-            $fakeQRCodeService,
-            $fakeInstanceService,
-            $fakeInstanceStatus,
-            $fakeMessagingService
-        );
+        $fakeManager = new WhatsappManager($fakeClientService, $fakeQRCodeService, $fakeInstanceService, $fakeInstanceStatus, $fakeMessagingService);
 
         app()->instance(WhatsappManagerInterface::class, $fakeManager);
     }

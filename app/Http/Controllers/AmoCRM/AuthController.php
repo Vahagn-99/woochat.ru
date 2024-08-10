@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\AmoCRM;
 
-use App\Exceptions\UserNotFoundException;
+use App\Exceptions\AmoChat\UserNotFoundException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AmoCRM\Oauth\CallbackRequest;
 use App\Models\User;
@@ -18,7 +18,7 @@ class AuthController extends Controller
     }
 
     /**
-     * @throws \App\Exceptions\UserNotFoundException
+     * @throws \App\Exceptions\AmoChat\UserNotFoundException
      */
     public function callback(CallbackRequest $request): JsonResponse
     {

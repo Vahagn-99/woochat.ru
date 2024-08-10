@@ -3,7 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Chat;
-use App\Models\Instance;
+use App\Models\WhatsappInstance;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -16,7 +16,7 @@ class ChatFactory extends Factory
         return [
             'amo_chat_id' => $this->faker->uuid(),
             'whatsapp_chat_id' => $this->faker->uuid(),
-            'instance_id' => Instance::factory()->create()->getKey(),
+            'instance_id' => WhatsappInstance::factory()->create()->getKey(),
         ];
     }
 }

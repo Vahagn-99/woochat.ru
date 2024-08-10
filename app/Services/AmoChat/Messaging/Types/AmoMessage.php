@@ -2,8 +2,8 @@
 
 namespace App\Services\AmoChat\Messaging\Types;
 
-use App\Base\Chat\Message\IMessage as BaseMessage;
-use App\Base\Chat\Message\Manageable;
+use App\Base\Messaging\IMessage as BaseMessage;
+use App\Base\Messaging\Manageable;
 use App\Services\AmoChat\Messaging\Actor\Actor;
 
 class AmoMessage implements BaseMessage
@@ -13,7 +13,7 @@ class AmoMessage implements BaseMessage
     public function __construct(
         public Actor $sender,
         public Payload $payload,
-        public bool $silent,
+        public bool $silent = true,
         public ?Actor $receiver = null,
         public ?string $conversation_id = null,
         public ?string $conversation_ref_id = null,

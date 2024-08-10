@@ -3,9 +3,11 @@
 use AmoCRM\Exceptions\AmoCRMApiException;
 use AmoCRM\Exceptions\AmoCRMMissedTokenException;
 use AmoCRM\Exceptions\AmoCRMoAuthApiException;
-use App\Exceptions\AmoChatConnectionException;
-use App\Exceptions\InstanceCreationException;
-use App\Exceptions\UserNotFoundException;
+use App\Exceptions\AmoChat\AmoChatConnectionException;
+use App\Exceptions\AmoChat\GivenScopeNotFoundException;
+use App\Exceptions\AmoChat\UserNotFoundException;
+use App\Exceptions\Whatsapp\InstanceCreationException;
+use App\Exceptions\Whatsapp\UnsupportedWebhookType;
 use App\Services\AmoChat\Providers\AmoChatServiceProvider;
 use App\Services\AmoCRM\Core\Providers\AmoCRMServiceProvider;
 use App\Services\Whatsapp\Provider\WhatsappServiceProvider;
@@ -57,6 +59,26 @@ return Application::configure(basePath: dirname(__DIR__))->withRouting(web: [
     });
 
     $exceptions->render(function (AmoCRMMissedTokenException|AmoCRMoAuthApiException|AmoCRMApiException $e) {
+        return response()->json([
+            'message' => $e->getMessage(),
+        ], $e->getCode());
+    });
+
+    $exceptions->report(function (UnsupportedWebhookType $e) {
+
+        do_log("whatsapp/webhooks")->warning($e->getMessage());
+
+        return false;
+    });
+
+    $exceptions->report(function (GivenScopeNotFoundException $e) {
+
+        do_log("amocrm/scopes")->warning($e->getMessage());
+
+        return false;
+    });
+
+    $exceptions->render(function (GivenScopeNotFoundException $e) {
         return response()->json([
             'message' => $e->getMessage(),
         ], $e->getCode());

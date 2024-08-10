@@ -2,21 +2,22 @@
 
 namespace App\GraphQL\Queries\Instance;
 
-use App\Models\Instance;
-use App\Services\Whatsapp\DTO\InstanceDTO;
+use App\Models\WhatsappInstance;
 use App\Services\Whatsapp\Facades\Whatsapp;
-use App\Services\Whatsapp\QRCode\QRCodeServiceInterface;
 
 final readonly class GetInstanceQRCode
 {
     /** @param array{} $args */
     public function __invoke(null $_, array $args): array
     {
-        $instance = Instance::query()->findOrFail($args['id']);
-        Whatsapp::for($instance);
-        Whatsapp::api()->getClient()->account->logout();
-        $response = Whatsapp::qr()->getQRCode();
+        $instance = WhatsappInstance::query()->findOrFail($args['id']);
 
-        return $response->toArray();
+        Whatsapp::for($instance);
+
+        if ($instance->status->isAuthorized()) {
+            Whatsapp::instance()->logout();
+        }
+
+        return Whatsapp::qr()->getQRCode()->toArray();
     }
 }

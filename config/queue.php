@@ -4,7 +4,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Default Queue AmoConnection Name
+    | Default Queue AmoInstance Name
     |--------------------------------------------------------------------------
     |
     | Laravel's queue supports a variety of backends via a single, unified

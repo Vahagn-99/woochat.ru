@@ -2,7 +2,7 @@
 
 namespace App\Services\Whatsapp\Messaging;
 
-use App\Base\Chat\Message\MessagingInterface;
+use App\Base\Messaging\MessagingInterface;
 
 interface WhatsappMessagingInterface extends MessagingInterface
 {

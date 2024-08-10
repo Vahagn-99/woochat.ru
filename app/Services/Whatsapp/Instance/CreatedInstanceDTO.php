@@ -7,9 +7,7 @@ class CreatedInstanceDTO
     public function __construct(
         public string $id,
         public string $token,
-        public string $type
-
-    )
-    {
+        public string $name,
+    ) {
     }
 }

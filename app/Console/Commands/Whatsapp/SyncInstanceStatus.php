@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands\Whatsapp;
 
-use App\Models\Instance;
+use App\Models\WhatsappInstance;
 use App\Services\Whatsapp\Facades\Whatsapp;
 use Illuminate\Console\Command;
 
@@ -14,7 +14,7 @@ class SyncInstanceStatus extends Command
 
     public function handle(): void
     {
-        $instance = Instance::query()->find($this->argument('instance'));
+        $instance = WhatsappInstance::query()->find($this->argument('instance'));
 
         do {
             $status = Whatsapp::for($instance)->status();

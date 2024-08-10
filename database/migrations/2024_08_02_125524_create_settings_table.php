@@ -12,7 +12,7 @@ return new class extends Migration {
             $table->id();
             $table->string('instance_id');
             $table->foreign('instance_id')
-                ->on('instances')
+                ->on('whatsapp_instances')
                 ->references('id')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');

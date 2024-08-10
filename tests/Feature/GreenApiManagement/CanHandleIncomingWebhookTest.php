@@ -2,9 +2,9 @@
 
 namespace Tests\Feature\GreenApiManagement;
 
+use App\Events\Messaging\MessageReceived;
+use App\Events\Whatsapp\InstanceStatusChanged;
 use App\Events\Whatsapp\Webhooks\IncomingCall;
-use App\Events\Whatsapp\Webhooks\IncomingMessageReceived;
-use App\Events\Whatsapp\Webhooks\StateInstanceChanged;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -37,7 +37,7 @@ class CanHandleIncomingWebhookTest extends TestCase
                         "stateInstance" => "authorized"
                     ],
                     // assertion
-                    'event' => StateInstanceChanged::class,
+                    'event' => InstanceStatusChanged::class,
                 ],
             ],
             'incoming IMessage Received' => [
@@ -75,7 +75,7 @@ class CanHandleIncomingWebhookTest extends TestCase
                             ]
                         ]
                     ],
-                    'event' => IncomingMessageReceived::class
+                    'event' => MessageReceived::class
                 ]
             ],
             'incoming Call' => [

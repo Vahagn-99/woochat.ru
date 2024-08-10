@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Chat;
-use App\Models\Instance;
+use App\Models\WhatsappInstance;
 use App\Models\Message;
 use App\Models\Settings;
 use App\Models\User;
@@ -15,7 +15,7 @@ class DemoDataSeeder extends Seeder
     {
         $users = User::factory()->count(3)->create();
         foreach ($users as $user) {
-            $instances = Instance::factory()->count(3)->create(['user_id' => $user->getKey()]);
+            $instances = WhatsappInstance::factory()->count(3)->create(['user_id' => $user->getKey()]);
             foreach ($instances as $instance) {
                 Settings::factory()->create(['instance_id' => $instance->getKey()]);
                 $chats = Chat::factory()->count(3)->create(['instance_id' => $instance->getKey()]);

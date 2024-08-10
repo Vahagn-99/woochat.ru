@@ -64,7 +64,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Session Database AmoConnection
+    | Session Database AmoInstance
     |--------------------------------------------------------------------------
     |
     | When using the "database" or "redis" session drivers, you may specify a

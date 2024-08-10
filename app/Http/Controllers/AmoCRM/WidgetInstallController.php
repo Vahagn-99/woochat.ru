@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\AmoCRM;
 
-use App\Events\AmoChat\UserCreated;
-use App\Events\AmoCrm\WidgetInstalled;
+use App\Events\AmoCRM\UserCreated;
+use App\Events\AmoCRM\WidgetInstalled;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AmoCRM\WidgetInstallRequest;
 use App\Models\User;
@@ -15,15 +15,16 @@ class WidgetInstallController extends Controller
     {
         $data = $request->toDTO();
 
-        $user = User::query()->updateOrCreate(['amojo_id' => $data->user->amojo_id],
-            array_filter([
-                'domain' => $data->user->domain,
-                'email' => $data->user->email,
-                'phone' => $data->user->phone,
-            ])
-        );
+        $user = User::query()->updateOrCreate(['id' => $data->user->id], array_filter([
+            'id' => $data->user->id,
+            'amojo_id' => $data->user->amojo_id,
+            'domain' => $data->user->domain,
+            'email' => $data->user->email,
+            'phone' => $data->user->phone,
+        ]));
 
         WidgetInstalled::dispatch($data->info);
+
         UserCreated::dispatch($user);
 
         return response()->json([

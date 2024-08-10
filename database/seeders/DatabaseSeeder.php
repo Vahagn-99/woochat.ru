@@ -16,7 +16,7 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('password'),
         ]);
 
-        $user->instances()->create([
+        $user->whatsappInstances()->create([
             'id' => '5700100379',
             'name' => 'Test message instance',
             'status' => InstanceStatus::AUTHORIZED,

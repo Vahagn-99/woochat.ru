@@ -3,7 +3,7 @@
 namespace Tests\Feature\GreenApiManagement;
 
 use App\Enums\InstanceStatus;
-use App\Models\Instance;
+use App\Models\WhatsappInstance;
 use App\Models\User;
 use App\Services\Whatsapp\QRCode\QRCodeApiInterface;
 use App\Services\Whatsapp\QRCode\QRCodeService;
@@ -37,7 +37,7 @@ class GetInstanceQRCodeApiTest extends GraphqlTestCase
     {
         $user = User::factory()->create();
 
-        $instance = Instance::factory()->create([
+        $instance = WhatsappInstance::factory()->create([
             'user_id' => $user->getKey(),
             'status' => InstanceStatus::NOT_AUTHORIZED,
         ]);
