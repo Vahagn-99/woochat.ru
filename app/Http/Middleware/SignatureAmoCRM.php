@@ -7,9 +7,9 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class AmoCRMAuthMiddleware
+class SignatureAmoCRM
 {
-    private const HASH_MAX_TIME_EXPIRE_IN_SECONDS = 60;
+    private const HASH_MAX_TIME_EXPIRE_IN_SECONDS = 1;
 
     /**
      * Handle an incoming request.
@@ -25,23 +25,24 @@ class AmoCRMAuthMiddleware
         /** @var \App\Models\User $user */
         $user = $request->user;
 
-        $accessKey = config('app.key');
-        $domain = $user->domain;
-        $now = Carbon::now('UTC'); // Ensure UTC time
+        $api_key   = $user->api_key;
+        $domain    = $user->domain;
+        $now       = Carbon::now('UTC'); // Ensure UTC time
 
         // Generate possible hashes
         $hashes = [];
-        for ($second = 0; $second <= self::HASH_MAX_TIME_EXPIRE_IN_SECONDS; $second++) {
+        for ($second = 1; $second <= self::HASH_MAX_TIME_EXPIRE_IN_SECONDS; $second++) {
             $timestamp = $now->copy()->subSeconds($second)->timestamp;
-            $hashes[] = hash('sha256', $accessKey.$domain.$timestamp);
+            $hashes[] = hash('sha256', "$api_key.$domain.$timestamp");
         }
 
         // Check if the provided hash matches any of the expected hashes
         if (in_array($providedHash, $hashes, true)) {
+
             return $next($request);
         } else {
             // Return an unauthorized response if hashes do not match
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'signature not match'], 401);
         }
     }
 }
