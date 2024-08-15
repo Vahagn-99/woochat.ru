@@ -19,7 +19,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property string $token
  * @property string $phone
  *
- * @property User $user
+ * @property-read User $user
+ * @property-read \App\Models\Settings $settings
  */
 final class WhatsappInstance extends Model
 {

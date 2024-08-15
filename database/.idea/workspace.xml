@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="0012c3e1-a870-40f9-95d4-7d0f7241295a" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/../app/Base/Subscription/Subscribe/Action.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../app/Base/Subscription/Subscribe/Full/Activate.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../app/Base/Subscription/Subscribe/OperationDto.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../app/Base/Subscription/Subscribe/Subscribe.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../app/Base/Subscription/Subscribe/Trial/Activate.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../app/Base/Subscription/Subscribe/Trial/CheckAvailable.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../app/DTO/dct/AmoDctDTO.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../app/DTO/dct/TariffDTO.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../app/Enums/InfoType.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../app/Enums/PlanDurationPeriod.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../app/Enums/SubscriptionStatus.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../app/Events/AmoCRM/PhoneNumberReceived.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../app/Http/Controllers/AmoCRM/DctAuthController.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../app/Http/Controllers/AmoCRM/PhoneNumberController.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../app/Http/Requests/AmoCRM/PhoneNumberRequest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../app/Listeners/AmoAccount/NotifyAboutPhoneNumber.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../app/Repositories/Repository.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../app/Repositories/Subscription.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../app/Repositories/SubscriptionPlan.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../app/Services/AmoCRM/Core/Account/AmoAccountInterface.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../app/Services/AmoCRM/Core/Oauth/OauthConfig.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../app/Services/AmoCRM/Core/Oauth/OauthService.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../app/Services/AmoCRM/CustomFieldAdapter.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../app/Services/AmoCRM/Entities/Source/SourceApi.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../app/Services/AmoCRM/Entities/Source/SourceApiInterface.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../app/Services/AmoChat/Chat/Create/Source.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../config/amocrm-dct.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/seeders/SubscriptionPlanSeeder.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/Console/Commands/TestServiceCommand.php" beforeDir="false" afterPath="$PROJECT_DIR$/../app/Console/Commands/TestServiceCommand.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/DTO/AmoAccountInfoDTO.php" beforeDir="false" afterPath="$PROJECT_DIR$/../app/DTO/AmoAccountInfoDTO.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/DTO/CrateNewUserDTO.php" beforeDir="false" afterPath="$PROJECT_DIR$/../app/DTO/NewAmoUserDTO.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/DTO/WidgetInstalledDTO.php" beforeDir="false" afterPath="$PROJECT_DIR$/../app/DTO/WidgetInstalledDTO.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/Events/AmoCRM/WidgetInstalled.php" beforeDir="false" afterPath="$PROJECT_DIR$/../app/Events/AmoCRM/WidgetInstalled.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/Http/Controllers/AmoCRM/AuthController.php" beforeDir="false" afterPath="$PROJECT_DIR$/../app/Http/Controllers/AmoCRM/AuthController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/Http/Controllers/AmoCRM/WidgetInstallController.php" beforeDir="false" afterPath="$PROJECT_DIR$/../app/Http/Controllers/AmoCRM/WidgetInstallController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/Http/Requests/AmoCRM/WidgetInstallRequest.php" beforeDir="false" afterPath="$PROJECT_DIR$/../app/Http/Requests/AmoCRM/WidgetInstallRequest.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/Listeners/AmoAccount/NotifyAboutInstalling.php" beforeDir="false" afterPath="$PROJECT_DIR$/../app/Listeners/AmoAccount/NotifyAboutInstalling.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/Listeners/Whatsapp/SendMessageAmo.php" beforeDir="false" afterPath="$PROJECT_DIR$/../app/Listeners/Whatsapp/SendMessageAmo.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/Models/Chat.php" beforeDir="false" afterPath="$PROJECT_DIR$/../app/Models/Chat.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/Models/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/../app/Models/User.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/Models/WhatsappInstance.php" beforeDir="false" afterPath="$PROJECT_DIR$/../app/Models/WhatsappInstance.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/Services/AmoCRM/Api/Contact/ContactApi.php" beforeDir="false" afterPath="$PROJECT_DIR$/../app/Services/AmoCRM/Entities/Contact/ContactApi.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/Services/AmoCRM/Api/Contact/ContactApiInterface.php" beforeDir="false" afterPath="$PROJECT_DIR$/../app/Services/AmoCRM/Entities/Contact/ContactApiInterface.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/Services/AmoCRM/Api/Lead/LeadApi.php" beforeDir="false" afterPath="$PROJECT_DIR$/../app/Services/AmoCRM/Entities/Lead/LeadApi.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/Services/AmoCRM/Api/Lead/LeadApiInterface.php" beforeDir="false" afterPath="$PROJECT_DIR$/../app/Services/AmoCRM/Entities/Lead/LeadApiInterface.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/Services/AmoCRM/Api/User/UserApi.php" beforeDir="false" afterPath="$PROJECT_DIR$/../app/Services/AmoCRM/Entities/User/UserApi.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/Services/AmoCRM/Api/User/UserApiInterface.php" beforeDir="false" afterPath="$PROJECT_DIR$/../app/Services/AmoCRM/Entities/User/UserApiInterface.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/Services/AmoCRM/Api/Webhook/SubscriberInterface.php" beforeDir="false" afterPath="$PROJECT_DIR$/../app/Services/AmoCRM/Entities/Webhook/SubscriberInterface.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/Services/AmoCRM/Api/Webhook/WebhookSubscriberApi.php" beforeDir="false" afterPath="$PROJECT_DIR$/../app/Services/AmoCRM/Entities/Webhook/WebhookSubscriberApi.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/Services/AmoCRM/Auth/AmoCrmAuthManager.php" beforeDir="false" afterPath="$PROJECT_DIR$/../app/Services/AmoCRM/Auth/AmoCrmAuthManager.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/Services/AmoCRM/Core/AmoManager.php" beforeDir="false" afterPath="$PROJECT_DIR$/../app/Services/AmoCRM/Core/Manager/AmoManager.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/Services/AmoCRM/Core/AmoManagerInterface.php" beforeDir="false" afterPath="$PROJECT_DIR$/../app/Services/AmoCRM/Core/Manager/AmoManagerInterface.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/Services/AmoCRM/Core/ApiClient/ApiClient.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/Services/AmoCRM/Core/Facades/Amo.php" beforeDir="false" afterPath="$PROJECT_DIR$/../app/Services/AmoCRM/Core/Facades/Amo.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/Services/AmoCRM/Core/Facades/MockAmo.php" beforeDir="false" afterPath="$PROJECT_DIR$/../app/Services/AmoCRM/Core/Facades/MockAmo.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/Services/AmoCRM/Core/ManageAccessToken/AccessTokenManager.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/Services/AmoCRM/Core/ManageAccessToken/AccessTokenManagerInterface.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/Services/AmoCRM/Core/Providers/AmoCRMServiceProvider.php" beforeDir="false" afterPath="$PROJECT_DIR$/../app/Services/AmoCRM/Core/Providers/AmoCRMServiceProvider.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/Services/AmoChat/Chat/Create/CreateAmoChatDTO.php" beforeDir="false" afterPath="$PROJECT_DIR$/../app/Services/AmoChat/Chat/Create/CreateAmoChatDTO.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bootstrap/app.php" beforeDir="false" afterPath="$PROJECT_DIR$/../bootstrap/app.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/../composer.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/../composer.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../config/filesystems.php" beforeDir="false" afterPath="$PROJECT_DIR$/../config/filesystems.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/0001_01_01_000000_create_users_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/migrations/0001_01_01_000000_create_users_table.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/2024_08_06_181028_create_amo_instances_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/migrations/2024_08_06_181028_create_amo_instances_table.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/2024_08_06_181029_create_chats_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/migrations/2024_08_06_181029_create_chats_table.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/seeders/DatabaseSeeder.php" beforeDir="false" afterPath="$PROJECT_DIR$/seeders/DatabaseSeeder.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../routes/amocrm.php" beforeDir="false" afterPath="$PROJECT_DIR$/../routes/amocrm.php" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ComposerSettings">
+    <execution />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 1
+}]]></component>
+  <component name="ProjectId" id="2kglXgDIw4RWtXvtrK5uEOQoydK" />
+  <component name="ProjectViewState">
+    <option name="autoscrollFromSource" value="true" />
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-PS-241.18968.24" />
+        <option value="bundled-php-predefined-ba97393d7c68-48a1a656d44e-com.jetbrains.php.sharedIndexes-PS-241.18968.24" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="0012c3e1-a870-40f9-95d4-7d0f7241295a" name="Changes" comment="" />
+      <created>1723713141936</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1723713141936</updated>
+      <workItem from="1723713143257" duration="3000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>

@@ -24,18 +24,17 @@ class AuthController extends Controller
     {
         $domain = $request->validated("referer");
         $code = $request->validated("code");
-        $user = User::findByDomain($domain);
+        $user = User::getByDomainOrCreate($domain);
 
         do_log("amocrm/auth-callback")->notice("$domain was triggered");
 
         if (! $user) {
-            do_log("amocrm/auth-callback")->error("$domain was not found when trying to callback");
-            throw UserNotFoundException::byDomain($code);
+            throw UserNotFoundException::byDomain($domain);
         }
 
         $accessToken = Amo::authenticator()->exchangeCodeWithAccessToken($domain, $code);
 
-        Amo::tokenizer()->saveAccessToken($domain, $accessToken);
+        Amo::oauth()->saveOAuthToken($accessToken, $domain);
 
         do_log("amocrm/auth-callback")->info("$domain was authenticated successfully");
 

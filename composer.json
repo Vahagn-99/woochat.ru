@@ -6,16 +6,17 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "ext-curl": "*",
         "bensampo/laravel-enum": "*",
         "green-api/whatsapp-api-client-php": "^0.2.0",
-        "amocrm/amocrm-api-library": "^1.9",
         "laravel/framework": "^11.9",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
         "mll-lab/laravel-graphiql": "^3.2",
         "nuwave/lighthouse": "^6.42",
         "opcodesio/log-viewer": "^3.10",
-      "ext-curl": "*"
+        "amocrm/amocrm-api-library": "^1.9",
+        "spatie/laravel-data": "^4.7"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

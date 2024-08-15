@@ -52,6 +52,9 @@ return Application::configure(basePath: dirname(__DIR__))->withRouting(web: [
         ], $e->getCode());
     });
 
+    $exceptions->report(function (UserNotFoundException $e) {
+        do_log("amocrm/auth-callback")->error($e->getMessage());
+    });
     $exceptions->render(function (UserNotFoundException $e) {
         return response()->json([
             'message' => $e->getMessage(),

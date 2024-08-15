@@ -18,6 +18,9 @@ use App\Services\AmoChat\Messaging\Types\Location;
 use App\Services\AmoChat\Messaging\Types\Media;
 use App\Services\AmoChat\Messaging\Types\Payload;
 use App\Services\AmoChat\Messaging\Types\Text;
+use App\Services\AmoCRM\Core\Facades\Amo;
+use App\Services\AmoCRM\Entities\Source\SourceApi;
+use App\Services\AmoCRM\Entities\Source\SourceApiInterface;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Str;
@@ -78,6 +81,16 @@ class SendMessageAmo implements ShouldQueue
         /** @var Chat $chat */
         $chat = Chat::query()->firstOrCreate(['whatsapp_chat_id' => $whatsappChatId]);
 
+        if (! $chat->amo_chat_source_id) {
+            $settings = $whatsappInstance->settings;
+
+            Amo::domain($whatsappInstance->user->domain);
+
+            /** @var SourceApiInterface $sourceApi */
+            $sourceApi = app(SourceApiInterface::class);
+            //$sourceApi->create();
+        }
+
         if (! $chat->amo_chat_id) {
             $data = new CreateAmoChatDTO($chat->id, $chat->whatsapp_chat_id, $sender);
             $amoChat = AmoChat::chat($amoInstance->scope_id)->create($data);
@@ -111,8 +124,7 @@ class SendMessageAmo implements ShouldQueue
         $type = $messageData['typeMessage'];
 
         return match ($type) {
-            'textMessage' => $this->createTextMessage($chatId, $messageData),
-            //'imageMessage'       => $this->createImageMessage($chatId, $messageData),
+            'textMessage' => $this->createTextMessage($chatId, $messageData), //'imageMessage'       => $this->createImageMessage($chatId, $messageData),
             //'audioMessage'       => $this->createAudioMessage($chatId, $messageData),
             //'locationMessage'    => $this->createLocationMessage($chatId, $messageData),
             //'contactMessage'     => $this->createContactMessage($chatId, $messageData),

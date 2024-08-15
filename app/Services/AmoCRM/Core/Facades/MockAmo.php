@@ -4,10 +4,10 @@ namespace App\Services\AmoCRM\Core\Facades;
 
 use AmoCRM\OAuth\AmoCRMOAuth;
 use App\Services\AmoCRM\Auth\AmoCrmAuthManager;
-use App\Services\AmoCRM\Core\AmoManager;
-use App\Services\AmoCRM\Core\AmoManagerInterface;
 use App\Services\AmoCRM\Core\ApiClient\ApiClient;
 use App\Services\AmoCRM\Core\ManageAccessToken\AccessTokenManagerInterface;
+use App\Services\AmoCRM\Core\Manager\AmoManager;
+use App\Services\AmoCRM\Core\Manager\AmoManagerInterface;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Testing\TestResponse;
 use League\OAuth2\Client\Token\AccessToken;

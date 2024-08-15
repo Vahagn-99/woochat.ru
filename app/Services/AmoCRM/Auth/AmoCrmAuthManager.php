@@ -2,8 +2,8 @@
 
 namespace App\Services\AmoCRM\Auth;
 
+use AmoCRM\Client\AmoCRMApiClient;
 use AmoCRM\Exceptions\AmoCRMoAuthApiException;
-use App\Services\AmoCRM\Core\ApiClient\ApiClient;
 use League\OAuth2\Client\Token\AccessTokenInterface;
 
 class AmoCrmAuthManager implements AuthManagerInterface
@@ -11,7 +11,7 @@ class AmoCrmAuthManager implements AuthManagerInterface
     const AUTH_MODE_POST_MESSAGE_TYPE = 'post_message';
 
     public function __construct(
-        private readonly ApiClient $apiClient
+        private readonly AmoCRMApiClient $apiClient
     ) {
 
     }

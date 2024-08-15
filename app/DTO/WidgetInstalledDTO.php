@@ -5,7 +5,7 @@ namespace App\DTO;
 class WidgetInstalledDTO
 {
     public function __construct(
-        public CrateNewUserDTO   $user,
+        public NewAmoUserDTO   $user,
         public AmoAccountInfoDTO $info
     )
     {

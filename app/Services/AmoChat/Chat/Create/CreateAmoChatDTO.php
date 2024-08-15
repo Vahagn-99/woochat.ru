@@ -10,7 +10,8 @@ class CreateAmoChatDTO implements Arrayable
     public function __construct(
         public string $conversation_id,
         public string $external_id,
-        public Actor $sender
+        public Actor $sender,
+        public ?Source $source = null,
     ) {
     }
 

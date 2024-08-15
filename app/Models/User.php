@@ -2,31 +2,32 @@
 
 namespace App\Models;
 
+use App\DTO\NewAmoUserDTO;
+use App\Services\AmoCRM\Core\Account\AmoAccountInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\HasApiTokens;
+use League\OAuth2\Client\Token\AccessToken;
 
 /**
  * @property int $id
+ * @property string $domain
  * @property string $amojo_id
  * @property string $deleted_at
- * @property string $domain
  * @property string $email
  * @property string $phone
- * @property string $password
  *
  * @property-read \Illuminate\Database\Eloquent\Collection<\App\Models\WhatsappInstance> $instances
  * @property-read \App\Models\AmoInstance $amoInstance
- *
- *
  * @property-read \App\Models\AmoAccessToken $amoAccessToken
+ * @property-read \App\Models\Info $info
  */
-final class User extends Authenticatable
+final class User extends Authenticatable implements AmoAccountInterface
 {
     use HasFactory, Notifiable, HasApiTokens, SoftDeletes;
 
@@ -40,28 +41,8 @@ final class User extends Authenticatable
         'email',
         'phone',
         'amojo_id',
-        'password',
+        'deleted_at'
     ];
-
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
-
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
-
-    protected static function booting(): void
-    {
-        User::creating(function (User $user) {
-            $user->password = Hash::make($user->password ?? 'password');
-        });
-    }
 
     public function whatsappInstances(): HasMany
     {
@@ -78,8 +59,49 @@ final class User extends Authenticatable
         return $this->hasOne(AmoAccessToken::class, 'domain', 'domain');
     }
 
-    public static function findByDomain(mixed $domain): ?User
+    public function Info(): MorphOne
     {
-        return User::query()->where('domain', $domain)->first();
+        return $this->morphOne(Info::class, 'infoable');
+    }
+
+    public static function getByDomainOrCreate(string $domain): ?User
+    {
+        /** @var \App\Models\User $user */
+        $user = self::withTrashed()->where('domain', $domain)->first();
+
+        if (! $user) {
+            $user = new User();
+            $user->domain = $domain;
+
+            $user->save();
+        } elseif ($user->trashed()) {
+            $user->restore();
+        }
+
+        return $user;
+    }
+
+    public static function getByDomainOrId(NewAmoUserDTO $data): ?User
+    {
+        /** @var User */
+        return User::withTrashed()
+        ->where('id', $data->id)
+        ->orWhere('domain', $data->domain)
+        ->first();
+    }
+
+    public function getAccessToken(): AccessToken
+    {
+        return $this->amoAccessToken->getAccessToken();
+    }
+
+    public function getDomain(): string
+    {
+        return $this->domain;
+    }
+
+    public function getId(): int
+    {
+        return $this->id;
     }
 }

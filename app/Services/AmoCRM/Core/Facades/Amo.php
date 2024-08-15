@@ -2,29 +2,44 @@
 
 namespace App\Services\AmoCRM\Core\Facades;
 
-use AmoCRM\EntitiesServices\BaseEntity;
-use AmoCRM\EntitiesServices\Contacts;
-use AmoCRM\EntitiesServices\Leads;
-use AmoCRM\EntitiesServices\Users;
+use AmoCRM\Client\AmoCRMApiClient;
+use AmoCRM\OAuth\OAuthServiceInterface;
+use App\Models\User;
 use App\Services\AmoCRM\Auth\AuthManagerInterface;
-use App\Services\AmoCRM\Core\AmoManager;
-use App\Services\AmoCRM\Core\ApiClient\ApiClient;
-use App\Services\AmoCRM\Core\ManageAccessToken\AccessTokenManagerInterface;
-use Exception;
+use App\Services\AmoCRM\Core\Manager\AmoManager;
 use Illuminate\Support\Facades\Facade;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Testing\TestResponse;
+use League\OAuth2\Client\Token\AccessToken;
 
 /**
- * @method static ApiClient reConnect(string $domain)
- * @method static ApiClient api(string $domain)
+ * @method static AmoCRMApiClient api()
+ * @method static OAuthServiceInterface oauth()
  * @method static AuthManagerInterface authenticator()
- * @method static AccessTokenManagerInterface tokenizer()
  *
  * @see AmoManager
  * @mixin AuthManagerInterface
  */
 class Amo extends Facade
 {
+    public static function main(): AmoManager
+    {
+        /** @var AmoCRMApiClient $client */
+        $client = app("dct-amo-client");
+
+        $file = json_decode(Storage::disk("dct")->get('/amocrm/access_token.json'), true);
+
+        if ($file) {
+            $accessToken = new AccessToken($file);
+            $client->setAccessToken($accessToken);
+        }
+
+        app()->instance(AmoCRMApiClient::class, $client);
+
+        /** @var AmoManager */
+        return app('amocrm');
+    }
+
     protected static function getFacadeAccessor(): string
     {
         return 'amocrm';
@@ -44,5 +59,18 @@ class Amo extends Facade
     public static function assertRedirectedAuthScreen(TestResponse $response): void
     {
         MockAmo::assertRedirectedAuthScreen($response);
+    }
+
+    public static function domain(string $domain): AmoManager
+    {
+        $user = User::getByDomainOrCreate($domain);
+
+        /** @var  AmoCRMApiClient $client */
+        $client = app(AmoCRMApiClient::class);
+
+        $client->setAccessToken($user->getAccessToken());
+
+        /** @var AmoManager */
+        return app('amocrm');
     }
 }
