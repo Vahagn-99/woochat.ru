@@ -1,16 +1,11 @@
 <?php
 
-use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Auth\LogoutController;
-use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Api\GenerateAccessTokenController;
+use App\Http\Middleware\AmoCRMAuthMiddleware;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['api'])->group(function () {
-    Route::middleware(['guest'])->group(function () {
-        Route::post('register', RegisterController::class);
-        Route::post('login', LoginController::class);
-    });
-    Route::middleware(['auth:sanctum'])->group(function () {
-        Route::post('logout', LogoutController::class);
+    Route::middleware([AmoCRMAuthMiddleware::class])->group(function () {
+        Route::get('user/{user}/generate-access-token', GenerateAccessTokenController::class);
     });
 });

@@ -35,13 +35,15 @@ final class User extends Authenticatable implements AmoAccountInterface
 
     public $incrementing = false;
 
+    public $timestamps = false;
+
     protected $fillable = [
         'id',
         'domain',
         'email',
         'phone',
         'amojo_id',
-        'deleted_at'
+        'deleted_at',
     ];
 
     public function whatsappInstances(): HasMany
@@ -84,10 +86,7 @@ final class User extends Authenticatable implements AmoAccountInterface
     public static function getByDomainOrId(NewAmoUserDTO $data): ?User
     {
         /** @var User */
-        return User::withTrashed()
-        ->where('id', $data->id)
-        ->orWhere('domain', $data->domain)
-        ->first();
+        return User::withTrashed()->where('id', $data->id)->orWhere('domain', $data->domain)->first();
     }
 
     public function getAccessToken(): AccessToken
