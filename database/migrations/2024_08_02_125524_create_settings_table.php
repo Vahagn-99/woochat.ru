@@ -18,6 +18,7 @@ return new class extends Migration {
                 ->onDelete('cascade');
             $table->unsignedBigInteger('pipeline_id');
             $table->unsignedBigInteger('status_id');
+            $table->unsignedBigInteger('source_id')->nullable();
             $table->timestamp('created_at')->useCurrent();
         });
     }

@@ -10,6 +10,7 @@ class PhoneNumberRequest extends FormRequest
     {
         return [
             'phone' => ['required', 'string'],
+            'country' => ['required', 'string'],
         ];
     }
 }

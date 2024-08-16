@@ -13,6 +13,7 @@ class PhoneNumberController extends Controller
     public function __invoke(PhoneNumberRequest $request, User $user): JsonResponse
     {
         $user->phone = $request->input('phone');
+        $user->country = $request->input('country');
         $user->save();
 
         PhoneNumberReceived::dispatch($user);

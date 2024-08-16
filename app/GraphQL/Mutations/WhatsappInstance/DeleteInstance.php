@@ -1,10 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace App\GraphQL\Mutations\Instance;
+namespace App\GraphQL\Mutations\WhatsappInstance;
 
 use App\Models\WhatsappInstance;
 use App\Services\Whatsapp\Facades\Whatsapp;
-use App\Services\Whatsapp\Instance\InstanceServiceInterface;
 
 final readonly class DeleteInstance
 {

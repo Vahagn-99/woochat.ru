@@ -13,4 +13,6 @@ interface AmoManagerInterface
     public function authenticator(): AuthManagerInterface;
 
     public function oauth(): OAuthServiceInterface;
+
+    public function domain(string $domain): static;
 }

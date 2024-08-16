@@ -32,7 +32,9 @@ class AuthController extends Controller
             throw UserNotFoundException::byDomain($domain);
         }
 
-        $accessToken = Amo::authenticator()->exchangeCodeWithAccessToken($domain, $code);
+        $authenticator = Amo::domain($domain)->authenticator();
+
+        $accessToken = $authenticator->exchangeCodeWithAccessToken($code);
 
         Amo::oauth()->saveOAuthToken($accessToken, $domain);
 

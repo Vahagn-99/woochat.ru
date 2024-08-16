@@ -11,5 +11,5 @@ interface AuthManagerInterface
 
     public function url(): string;
 
-    public function exchangeCodeWithAccessToken(string $domain, string $code):  AccessTokenInterface;
+    public function exchangeCodeWithAccessToken(string $code):  AccessTokenInterface;
 }

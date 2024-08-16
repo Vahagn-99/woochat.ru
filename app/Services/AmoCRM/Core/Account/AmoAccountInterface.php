@@ -12,7 +12,7 @@ interface AmoAccountInterface
 {
     public static function getByDomainOrCreate(string $domain): ?AmoAccountInterface;
 
-    public function getAccessToken(): AccessToken;
+    public function getAccessToken(): ?AccessToken;
 
     public function getDomain(): string;
 

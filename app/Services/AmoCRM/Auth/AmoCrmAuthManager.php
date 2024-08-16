@@ -27,10 +27,9 @@ class AmoCrmAuthManager implements AuthManagerInterface
     /**
      * @throws AmoCRMoAuthApiException
      */
-    public function exchangeCodeWithAccessToken(string $domain, string $code): AccessTokenInterface
+    public function exchangeCodeWithAccessToken(string $code): AccessTokenInterface
     {
         $oauth = $this->apiClient->getOAuthClient();
-        $oauth->setBaseDomain($domain);
         // if no access token but there is a code from redirect
         // we can get token from that code
         $accessToken = $oauth->getAccessTokenByCode($code);

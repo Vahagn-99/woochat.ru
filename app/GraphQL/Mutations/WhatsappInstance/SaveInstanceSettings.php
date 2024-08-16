@@ -1,7 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace App\GraphQL\Mutations\Instance;
+namespace App\GraphQL\Mutations\WhatsappInstance;
 
+use App\Events\Whatsapp\InstanceSettingsSaved;
 use App\Models\WhatsappInstance;
 
 final readonly class SaveInstanceSettings
@@ -11,11 +12,15 @@ final readonly class SaveInstanceSettings
     {
         /** @var WhatsappInstance $instance */
         $instance = WhatsappInstance::query()->find($args['input']['instance_id']);
-        $instance->settings()->firstOrCreate([
+
+        $settings = $instance->settings()->firstOrCreate([
             'instance_id' => $args['input']['instance_id'],
+        ], [
             'pipeline_id' => $args['input']['pipeline_id'],
             'status_id' => $args['input']['status_id'],
         ]);
+
+        InstanceSettingsSaved::dispatch($instance, $settings);
 
         return $instance;
     }

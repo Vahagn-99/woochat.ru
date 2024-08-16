@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class SignatureAmoCRM
 {
-    private const HASH_MAX_TIME_EXPIRE_IN_SECONDS = 1;
+    private const HASH_MAX_TIME_EXPIRE_IN_SECONDS = 60;
 
     /**
      * Handle an incoming request.
@@ -25,15 +25,17 @@ class SignatureAmoCRM
         /** @var \App\Models\User $user */
         $user = $request->user;
 
-        $api_key   = $user->api_key;
-        $domain    = $user->domain;
-        $now       = Carbon::now('UTC'); // Ensure UTC time
+        $api_key = $user->api_key;
+        $domain = $user->domain;
+        $now = Carbon::now('UTC'); // Ensure UTC time
 
         // Generate possible hashes
         $hashes = [];
-        for ($second = 1; $second <= self::HASH_MAX_TIME_EXPIRE_IN_SECONDS; $second++) {
+
+        for ($second = 0; $second <= self::HASH_MAX_TIME_EXPIRE_IN_SECONDS; $second++) {
             $timestamp = $now->copy()->subSeconds($second)->timestamp;
-            $hashes[] = hash('sha256', "$api_key.$domain.$timestamp");
+
+            $hashes[] = hash('sha256', $api_key.$domain.$timestamp);
         }
 
         // Check if the provided hash matches any of the expected hashes

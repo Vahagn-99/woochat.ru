@@ -22,6 +22,7 @@ use League\OAuth2\Client\Token\AccessToken;
  * @property string $deleted_at
  * @property string $email
  * @property string $phone
+ * @property string $country
  *
  * @property-read \Illuminate\Database\Eloquent\Collection<\App\Models\WhatsappInstance> $instances
  * @property-read \App\Models\AmoInstance $amoInstance
@@ -44,6 +45,7 @@ final class User extends Authenticatable implements AmoAccountInterface
         'domain',
         'email',
         'phone',
+        'country',
         'amojo_id',
         'deleted_at',
     ];
@@ -91,9 +93,9 @@ final class User extends Authenticatable implements AmoAccountInterface
         return User::withTrashed()->where('id', $data->id)->orWhere('domain', $data->domain)->first();
     }
 
-    public function getAccessToken(): AccessToken
+    public function getAccessToken(): ?AccessToken
     {
-        return $this->amoAccessToken->getAccessToken();
+        return $this->amoAccessToken?->getAccessToken();
     }
 
     public function getDomain(): string

@@ -17,6 +17,7 @@ return new class extends Migration{
             $table->uuid('amojo_id')->nullable()->unique();
             $table->string('email')->nullable()->unique();
             $table->string('phone')->nullable()->unique();
+            $table->string('country')->nullable();
             $table->timestamp('created_at')->useCurrent();
             $table->softDeletes();
         });

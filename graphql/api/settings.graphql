@@ -1,5 +1,5 @@
 extend type Mutation @guard {
-    saveInstanceSettings(input:SaveInstanceSettingsInput!):Instance! @field(resolver: "\\App\\GraphQL\\Mutations\\Instance\\SaveInstanceSettings")
+    saveInstanceSettings(input:SaveInstanceSettingsInput!):WhatsappInstance! @field(resolver: "\\App\\GraphQL\\Mutations\\WhatsappInstance\\SaveInstanceSettings")
 }
 
 # api
@@ -13,7 +13,7 @@ type Settings {
 # inputs
 
 input SaveInstanceSettingsInput {
-    instance_id:ID! @rules(apply: ["exists:instances,id"])
+    instance_id:ID! @rules(apply: ["exists:whatsapp_instances,id"])
     pipeline_id:ID!
     status_id:ID!
 }

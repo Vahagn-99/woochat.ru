@@ -16,7 +16,7 @@ class DctAuthController extends Controller
         $code = $request->validated("code");
         do_log("amocrm/auth-callback")->notice("$domain was triggered");
 
-        $accessToken = Amo::main()->authenticator()->exchangeCodeWithAccessToken($domain, $code);
+        $accessToken = Amo::main()->authenticator()->exchangeCodeWithAccessToken($code);
 
         Storage::disk('dct')->put('/amocrm/access_token.json', json_encode($accessToken, JSON_PRETTY_PRINT));
 

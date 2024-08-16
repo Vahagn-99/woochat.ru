@@ -26,6 +26,7 @@ class WidgetInstallRequest extends FormRequest implements DTOable
             "paid_till" => ['required', 'string'],
             "pay_type" => ['required', 'string'],
             "timezone" => ['required', 'string'],
+            "phone" => ['nullable', 'string'],
         ];
     }
 

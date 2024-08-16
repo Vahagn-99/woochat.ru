@@ -1,12 +1,12 @@
 extend type Query @guard {
     instances: [WhatsappInstance!]! @all
     instance(id:ID @eq): WhatsappInstance @find
-    getInstanceQRCode(id:ID!):QRCode! @field(resolver: "\\App\\GraphQL\\Queries\\Instance\\GetInstanceQRCode")
+    getInstanceQRCode(id:ID!):QRCode! @field(resolver: "\\App\\GraphQL\\Queries\\WhatsappInstance\\GetInstanceQRCode")
 }
 
 extend type Mutation @guard {
-    createNewInstance(input:CreateNewInstanceInput!):WhatsappInstance! @field(resolver: "\\App\\GraphQL\\Mutations\\Instance\\CreateInstance")
-    deleteInstance(id:ID!):Boolean! @field(resolver: "\\App\\GraphQL\\Mutations\\Instance\\DeleteInstance")
+    createNewInstance:WhatsappInstance! @field(resolver: "\\App\\GraphQL\\Mutations\\WhatsappInstance\\CreateInstance")
+    deleteInstance(id:ID!):Boolean! @field(resolver: "\\App\\GraphQL\\Mutations\\WhatsappInstance\\DeleteInstance")
 }
 
 # api
@@ -26,7 +26,3 @@ type QRCode{
     message:String!
 }
 
-# input
-input CreateNewInstanceInput{
-    name:String
-}

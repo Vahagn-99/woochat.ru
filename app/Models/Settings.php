@@ -8,8 +8,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @property int $instance_id
- * @property string $pipeline_id
- * @property string $status_id
+ * @property int $pipeline_id
+ * @property int $status_id
+ * @property ?int $source_id
  */
 final class Settings extends Model
 {
@@ -19,7 +20,8 @@ final class Settings extends Model
     protected $fillable = [
         'instance_id',
         'pipeline_id',
-        'status_id'
+        'status_id',
+        'source_id',
     ];
 
     public $timestamps = false;

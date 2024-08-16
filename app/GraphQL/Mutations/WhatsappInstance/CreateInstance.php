@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace App\GraphQL\Mutations\Instance;
+namespace App\GraphQL\Mutations\WhatsappInstance;
 
 use App\Models\WhatsappInstance;
 use App\Services\Whatsapp\Instance\InstanceServiceInterface;
@@ -14,10 +14,14 @@ final readonly class CreateInstance
     /** @param array{} $args */
     public function __invoke(null $_, array $args): WhatsappInstance
     {
-        $instanceName = $args['input']['name'];
+        /** @var \App\Models\User $user */
+        $user = auth()->user();
+
+        $instanceName = "Инстанс N".($user->whatsappInstances()->count() + 1);
+
         $instance = $this->instanceManager->create($instanceName);
 
-       return WhatsappInstance::query()->create([
+        return WhatsappInstance::query()->create([
             'id' => $instance->id,
             'name' => $instanceName,
             'user_id' => auth()->id(),
