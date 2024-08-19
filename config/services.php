@@ -38,7 +38,7 @@ return [
     'amocrm' => [
         'client_id' => env('AMOCRM_CLIENT_ID', '02b4822e-1b63-4f2f-a0c9-d178c9527444'),
         'client_secret' => env('AMOCRM_CLIENT_SECRET', '5VO0DErbk6esWmKNM1N3U5pEUe1STi5RK5uNpcP3EADEOf24YpbzFbDRpkM5O1jL'),
-        'redirect_url' => env('AMOCRM_REDIRECT_URL', 'https://united-gopher-amazing.ngrok-free.app/api/amocrm/auth/callback'),
-        'account_delete' => env('AMOCRM_ACCOUNT_DELETE', 'https://united-gopher-amazing.ngrok-free.app/api/amocrm/widget/delete'),
+        'redirect_url' => env('AMOCRM_REDIRECT_URL', 'https://api.woochat.ru/api/amocrm/auth/callback'),
+        'account_delete' => env('AMOCRM_ACCOUNT_DELETE', 'https://api.woochat.ru/api/amocrm/widget/delete'),
     ],
 ];
