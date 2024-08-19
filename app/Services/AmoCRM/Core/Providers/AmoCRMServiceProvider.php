@@ -28,16 +28,14 @@ class AmoCRMServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        $this->app->singleton(OAuthConfigInterface::class, function () {
-            return new OAuthConfig(config('services.amocrm.client_id'), config('services.amocrm.client_secret'), config('services.amocrm.redirect_url'));
-        });
+        //$this->app->singleton(OAuthConfigInterface::class, function () {
+        //    return new OAuthConfig(config('services.amocrm.client_id'), config('services.amocrm.client_secret'), config('services.amocrm.redirect_url'));
+        //});
         $this->app->singleton(OAuthServiceInterface::class, OauthService::class);
         $this->app->singleton(AmoCRMApiClient::class, function () {
-            $config = app(OAuthConfigInterface::class);
-            $oauth = app(OAuthServiceInterface::class);
-            $factory = new AmoCRMApiClientFactory($config, $oauth);
-
-            return $factory->make();
+           return new AmoCRMApiClient(
+               config('services.amocrm.client_id'), config('services.amocrm.client_secret'), config('services.amocrm.redirect_url')
+           );
         });
         $this->app->singleton("dct-amo-client", function () {
             return new AmoCRMApiClient(config('amocrm-dct.widget.client_id'), config('amocrm-dct.widget.client_secret'), config('amocrm-dct.widget.redirect_url'));
