@@ -50,6 +50,8 @@ final class User extends Authenticatable implements AmoAccountInterface
         'deleted_at',
     ];
 
+    protected $primaryKey = 'domain';
+
     public function whatsappInstances(): HasMany
     {
         return $this->hasMany(WhatsappInstance::class, 'user_id', 'id');
