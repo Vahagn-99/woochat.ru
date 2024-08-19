@@ -3,21 +3,25 @@
 namespace App\Listeners\AmoAccount;
 
 use AmoCRM\Collections\Leads\LeadsCollection;
+use AmoCRM\Collections\LinksCollection;
 use AmoCRM\Collections\TagsCollection;
 use AmoCRM\Enum\Tags\TagColorsEnum;
 use AmoCRM\Exceptions\AmoCRMApiException;
 use AmoCRM\Exceptions\AmoCRMMissedTokenException;
 use AmoCRM\Exceptions\AmoCRMoAuthApiException;
-use AmoCRM\Filters\TagsFilter;
+use AmoCRM\Exceptions\InvalidArgumentException;
 use AmoCRM\Helpers\EntityTypesInterface;
 use AmoCRM\Models\ContactModel;
 use AmoCRM\Models\CustomFieldsValues\DateCustomFieldValuesModel;
+use AmoCRM\Models\CustomFieldsValues\MultitextCustomFieldValuesModel;
 use AmoCRM\Models\CustomFieldsValues\NumericCustomFieldValuesModel;
 use AmoCRM\Models\CustomFieldsValues\SelectCustomFieldValuesModel;
 use AmoCRM\Models\CustomFieldsValues\ValueCollections\DateCustomFieldValueCollection;
+use AmoCRM\Models\CustomFieldsValues\ValueCollections\MultitextCustomFieldValueCollection;
 use AmoCRM\Models\CustomFieldsValues\ValueCollections\NumericCustomFieldValueCollection;
 use AmoCRM\Models\CustomFieldsValues\ValueCollections\SelectCustomFieldValueCollection;
 use AmoCRM\Models\CustomFieldsValues\ValueModels\DateCustomFieldValueModel;
+use AmoCRM\Models\CustomFieldsValues\ValueModels\MultitextCustomFieldValueModel;
 use AmoCRM\Models\CustomFieldsValues\ValueModels\NumericCustomFieldValueModel;
 use AmoCRM\Models\CustomFieldsValues\ValueModels\SelectCustomFieldValueModel;
 use AmoCRM\Models\LeadModel;
@@ -27,7 +31,7 @@ use App\DTO\dct\AmoDctDTO;
 use App\DTO\dct\TariffDTO;
 use App\Enums\InfoType;
 use App\Events\AmoCRM\WidgetInstalled;
-use App\Models\User as Subdomain;
+use App\Models\User;
 use App\Services\AmoCRM\Core\Facades\Amo;
 use App\Services\AmoCRM\CustomFieldAdapter;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -63,7 +67,7 @@ class NotifyAboutInstalling implements ShouldQueue
      * @throws \AmoCRM\Exceptions\AmoCRMoAuthApiException
      * @throws \AmoCRM\Exceptions\AmoCRMMissedTokenException
      */
-    public function notify(Subdomain $user, AmoAccountInfoDTO $data, AmoDctDTO $config): void
+    public function notify(User $user, AmoAccountInfoDTO $data, AmoDctDTO $config): void
     {
         $mappedCustomFields = $this->mapCustomFields($user, $data, $config);
 
@@ -71,12 +75,14 @@ class NotifyAboutInstalling implements ShouldQueue
         $leadsCf = $mappedCustomFields['leads'];
 
         $lead = $this->createLead($user, $leadsCf, $config);
-        $contact = $this->addUser($user, $lead, $contactCf, $data);
+        $contact = $this->addContact($user, $lead, $contactCf, $data, $config);
+
+        $this->attachLeadToContact($lead, $contact);
 
         $user->info()->delete();
         $user->info()->create([
             'type' => InfoType::AMOCRM,
-            'payload' => [
+            'data' => [
                 'contact_id' => $contact->getId(),
                 'lead_id' => $lead->getId(),
                 'data' => $data->toArray(),
@@ -84,7 +90,7 @@ class NotifyAboutInstalling implements ShouldQueue
         ]);
     }
 
-    private function mapCustomFields(Subdomain $user, AmoAccountInfoDTO $data, AmoDctDTO $config): array
+    private function mapCustomFields(User $user, AmoAccountInfoDTO $data, AmoDctDTO $config): array
     {
         $customFields = [];
 
@@ -92,12 +98,34 @@ class NotifyAboutInstalling implements ShouldQueue
             return in_array($item->name, explode(' ', $data->tariff));
         }));
 
+        if ($user->phone) {
+            $customFields['contacts'][] = [
+                'custom_field_value_model' => new MultitextCustomFieldValueModel(),
+                'custom_field_values_model' => new MultitextCustomFieldValuesModel(),
+                'custom_field_value_collection' => new MultitextCustomFieldValueCollection(),
+                'custom_field_code' => "PHONE",
+                'custom_field_enum' => "WORKDD",
+                'value' => $user->phone,
+            ];
+        }
+
+        if ($user->email) {
+            $customFields['contacts'][] = [
+                'custom_field_value_model' => new MultitextCustomFieldValueModel(),
+                'custom_field_values_model' => new MultitextCustomFieldValuesModel(),
+                'custom_field_value_collection' => new MultitextCustomFieldValueCollection(),
+                'custom_field_code' => "EMAIL",
+                'custom_field_enum' => "WORK",
+                'value' => $user->email,
+            ];
+        }
+
         $customFields ['contacts'][] = [
             'id' => $config->contact_cf_id,
             'custom_field_value_model' => new SelectCustomFieldValueModel(),
             'custom_field_values_model' => new SelectCustomFieldValuesModel(),
             'custom_field_value_collection' => new SelectCustomFieldValueCollection(),
-            'enum_id' => key($userTariff),
+            'enum_id' => $userTariff->id,
         ];
 
         $customFields['contacts'][] = [
@@ -135,18 +163,22 @@ class NotifyAboutInstalling implements ShouldQueue
         return $customFields;
     }
 
-    private function createLead(Subdomain $user, array $leadsCf, AmoDctDTO $config): LeadModel
+    /**
+     * @throws \AmoCRM\Exceptions\InvalidArgumentException
+     * @throws \AmoCRM\Exceptions\AmoCRMMissedTokenException
+     */
+    private function createLead(User $user, array $leadsCf, AmoDctDTO $config): LeadModel
     {
-
         $model = new LeadModel();
-
+        $model->setStatusId($config->status_id);
+        $model->setPipelineId($config->pipeline_id);
+        $model->setResponsibleUserId($config->responsible_user_id);
         $model->setName(config('app_name').' ( '." $user->domain, $user->id ".')')->setPrice(0)->setPipelineId($config->pipeline_id)->setStatusId($config->status_id)->setResponsibleUserId($config->responsible_user_id);
-        //$model->setTags($this->addTag());
-        $cfs = $this->customFieldAdapter->adapt($leadsCf);
-        $model->setCustomFieldsValues($cfs);
+        $model->setCustomFieldsValues($this->customFieldAdapter->adapt($leadsCf));
+        $model->setTags($this->addTag());
 
         try {
-            return Amo::api()->leads()->addOne($model);
+            $model = Amo::main()->api()->leads()->addOne($model);
         } catch (AmoCRMMissedTokenException|AmoCRMoAuthApiException|AmoCRMApiException $e) {
             do_log('amo_notifications/installing')->error("Can't notify {$user->id}", [
                 'description' => $e->getDescription(),
@@ -167,27 +199,20 @@ class NotifyAboutInstalling implements ShouldQueue
         $api = Amo::api()->tags(EntityTypesInterface::LEADS);
         $collection = new TagsCollection();
 
+        $tag = new TagModel();
+        $tag->setName("woochat")->setColor(TagColorsEnum::AERO_BLUE);
+
         try {
-            $tag = new TagModel();
-            $tag->setName("woochat")->setColor(TagColorsEnum::AERO_BLUE);
-
-            $filter = new TagsFilter;
-            $filter->setName("woochat");
-            $collection = $api->get($filter);
-
-            if (! $collection->count()) {
-                $tag = $api->addOne($tag);
-                $collection->add($tag);
-            }
+            $tag = $api->addOne($tag);
         } catch (AmoCRMMissedTokenException|AmoCRMApiException $e) {
             do_log('amo_notifications/installing/tags')->error($e->getMessage(), [
                 'description' => $e->getDescription(),
                 'info' => $e->getLastRequestInfo(),
             ]);
-            //$this->release($e);
+            $this->release($e);
         }
 
-        return $collection;
+        return $collection->add($tag);
     }
 
     /**
@@ -195,17 +220,21 @@ class NotifyAboutInstalling implements ShouldQueue
      * @throws \AmoCRM\Exceptions\AmoCRMoAuthApiException
      * @throws \AmoCRM\Exceptions\AmoCRMMissedTokenException
      */
-    private function addUser(
-        Subdomain $user,
+    private function addContact(
+        User $user,
         LeadModel $lead,
         array $contactCf,
-        AmoAccountInfoDTO $data
+        AmoAccountInfoDTO $data,
+        AmoDctDTO $config,
     ): ContactModel {
+        $leads = new LeadsCollection;
+        $leads->add($lead);
 
         $contact = new ContactModel();
-        $contact->setLeads(LeadsCollection::make([$lead]));
+        $contact->setLeads($leads);
         $contact->setName($data->name);
         $contact->setAccountId($user->id);
+        $contact->setResponsibleUserId($config->responsible_user_id);
 
         $cfs = $this->customFieldAdapter->adapt($contactCf);
 
@@ -214,5 +243,26 @@ class NotifyAboutInstalling implements ShouldQueue
         $api = Amo::api()->contacts();
 
         return $api->addOne($contact);
+    }
+
+    /**
+     * @throws \AmoCRM\Exceptions\AmoCRMMissedTokenException
+     */
+    private function attachLeadToContact(LeadModel $lead, ContactModel $contact): void
+    {
+        $api = Amo::api()->contacts();
+
+        $collectionOfLink = new LinksCollection();
+        $collectionOfLink->add($lead);
+
+        try {
+            $api->link($contact, $collectionOfLink);
+        } catch (AmoCRMoAuthApiException|InvalidArgumentException|AmoCRMApiException $e) {
+            do_log('amo_notifications/installing/link-contact-lead')->error($e->getMessage(), [
+                'description' => $e->getDescription(),
+                'info' => $e->getLastRequestInfo(),
+            ]);
+            $this->release($e);
+        }
     }
 }

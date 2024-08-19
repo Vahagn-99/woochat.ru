@@ -38,11 +38,13 @@ class NotifyAboutPhoneNumber implements ShouldQueue
             throw new \Exception("The user doesn't have a amocrm information");
         }
 
+        $data = $info->data;
+
         $api = Amo::main()->api()->contacts();
 
         $contact = new ContactModel();
 
-        $contact->setId($info['contact_id']);
+        $contact->setId($data['contact_id']);
 
         $cfs = $this->customFieldAdapter->adapt([
             [

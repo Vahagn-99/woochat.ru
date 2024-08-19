@@ -40,11 +40,7 @@ class AmoCRMServiceProvider extends ServiceProvider
             return $factory->make();
         });
         $this->app->singleton("dct-amo-client", function () {
-            $config = new OauthConfig(config('amocrm-dct.widget.client_id'), config('amocrm-dct.widget.client_secret'), config('amocrm-dct.widget.redirect_url'));
-            $oauth = app(OAuthServiceInterface::class);
-            $factory = new AmoCRMApiClientFactory($config, $oauth);
-
-            return $factory->make();
+            return new AmoCRMApiClient(config('amocrm-dct.widget.client_id'), config('amocrm-dct.widget.client_secret'), config('amocrm-dct.widget.redirect_url'));
         });
         $this->app->singleton(AmoManagerInterface::class, AmoManager::class);
         $this->app->singleton(AuthManagerInterface::class, AmoCrmAuthManager::class);

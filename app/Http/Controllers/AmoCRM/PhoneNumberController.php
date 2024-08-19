@@ -18,6 +18,8 @@ class PhoneNumberController extends Controller
 
         PhoneNumberReceived::dispatch($user);
 
-        return response()->json();
+        return response()->json([
+            'message' => 'User phone number updated successfully!',
+        ]);
     }
 }

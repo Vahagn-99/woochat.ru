@@ -21,6 +21,7 @@ class WidgetInstallController extends Controller
             'amojo_id' => $data->user->amojo_id,
             'domain' => $data->user->domain,
             'email' => $data->user->email,
+            'phone' => $data->user->phone,
             'deleted_at' => null,
         ];
 

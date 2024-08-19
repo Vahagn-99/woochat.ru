@@ -17,7 +17,6 @@ return new class extends Migration {
             $table->timestamp('created_at')->useCurrent();
 
             $table->uuid('account_id')->unique();
-            $table->uuid('account_id')->unique();
             $table->foreign('account_id')
                 ->references('amojo_id')
                 ->on('users')

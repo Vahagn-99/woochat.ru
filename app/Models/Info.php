@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 /**
  * @property string $infoable_id
  * @property string $infoable_type
- * @property array $payload
+ * @property array $data
  * @property string $type
  *
  * @method static Builder whereType(InfoType $type)
@@ -20,17 +20,17 @@ class Info extends Model
 {
     use HasFactory;
 
-    protected $table = 'info';
+    protected $table = 'infos';
 
     protected $fillable = [
         'infoable_id',
         'infoable_type',
-        'payload',
+        'data',
         'type',
     ];
 
     protected $casts = [
-        'payload' => 'array',
+        'data' => 'array',
     ];
 
     public $timestamps = false;
