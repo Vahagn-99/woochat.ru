@@ -52,6 +52,12 @@ final class User extends Authenticatable implements AmoAccountInterface
 
     protected $primaryKey = 'domain';
 
+    // Specify the column to be used for route model binding
+    public function getRouteKeyName(): string
+    {
+        return 'id'; // Replace 'slug' with the column name you want to use
+    }
+
     public function whatsappInstances(): HasMany
     {
         return $this->hasMany(WhatsappInstance::class, 'user_id', 'id');
