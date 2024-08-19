@@ -22,6 +22,7 @@ class AuthController extends Controller
      */
     public function callback(CallbackRequest $request): JsonResponse
     {
+        dd(1);
         $domain = $request->validated("referer");
         $code = $request->validated("code");
         $user = User::getByDomainOrCreate($domain);

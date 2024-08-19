@@ -69,7 +69,7 @@ final class User extends Authenticatable implements AmoAccountInterface
 
     public function Info(): MorphOne
     {
-        return $this->morphOne(Info::class, 'infoable');
+        return $this->morphOne(Info::class, 'infoable', "infoable_type", 'infoable_id', 'id');
     }
 
     public static function getByDomainOrCreate(string $domain): ?User
