@@ -16,7 +16,7 @@ class WidgetStatusController extends Controller
     public function __invoke(Request $request, int $userId): JsonResponse
     {
         /** @var User $user */
-        $user = User::withTrashed()->find($userId);
+        $user = User::withTrashed()->where('id', $userId)->first();
 
         if (! $user) {
             return response()->json([

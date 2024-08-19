@@ -43,7 +43,7 @@ class WidgetInstallController extends Controller
         UserCreated::dispatch($user);
 
         return response()->json([
-            'user_id' => $user->getKey(),
+            'user_id' => $user->id,
             'access_token' => $user->createToken('amocrm')->plainTextToken,
         ], 201);
     }

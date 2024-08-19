@@ -52,10 +52,9 @@ final class User extends Authenticatable implements AmoAccountInterface
 
     protected $primaryKey = 'domain';
 
-    // Specify the column to be used for route model binding
     public function getRouteKeyName(): string
     {
-        return 'id'; // Replace 'slug' with the column name you want to use
+        return 'id';
     }
 
     public function whatsappInstances(): HasMany
@@ -98,7 +97,10 @@ final class User extends Authenticatable implements AmoAccountInterface
     public static function getByDomainOrId(NewAmoUserDTO $data): ?User
     {
         /** @var User */
-        return User::withTrashed()->where('id', $data->id)->orWhere('domain', $data->domain)->first();
+        return User::withTrashed()
+            ->where('id', $data->id)
+            ->orWhere('domain', $data->domain)
+            ->first();
     }
 
     public function getAccessToken(): ?AccessToken

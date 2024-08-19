@@ -15,7 +15,7 @@ class WidgetDeleteController extends Controller
     public function __invoke(Request $request): JsonResponse
     {
         /** @var User $user */
-        $user = User::query()->findOrFail($request->get('account_id'));
+        $user = User::query()->where('id', $request->get('account_id'))->firstOrFail();
         $user->delete();
 
         WidgetDeleted::dispatch($user);
