@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers\AmoCRM;
 
-use App\Exceptions\AmoChat\UserNotFoundException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AmoCRM\Oauth\CallbackRequest;
 use App\Models\User;
 use App\Services\AmoCRM\Core\Facades\Amo;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 
 class AuthController extends Controller
@@ -17,29 +15,20 @@ class AuthController extends Controller
         return redirect(Amo::authenticator()->url());
     }
 
-    /**
-     * @throws \App\Exceptions\AmoChat\UserNotFoundException
-     */
-    public function callback(CallbackRequest $request): JsonResponse
+    public function callback(CallbackRequest $request): RedirectResponse
     {
         $domain = $request->validated("referer");
         $code = $request->validated("code");
         $user = User::getByDomainOrCreate($domain);
 
-        do_log("amocrm/auth-callback")->notice("$domain was triggered");
-
-        if (! $user) {
-            throw UserNotFoundException::byDomain($domain);
-        }
-
-        $authenticator = Amo::domain($domain)->authenticator();
+        $authenticator = Amo::domain($user->domain)->authenticator();
 
         $accessToken = $authenticator->exchangeCodeWithAccessToken($code);
 
-        Amo::oauth()->saveOAuthToken($accessToken, $domain);
+        Amo::oauth()->saveOAuthToken($accessToken, $user->domain);
 
-        do_log("amocrm/auth-callback")->info("$domain was authenticated successfully");
+        do_log("amocrm/auth-callback")->info("{$user->domain} was authenticated successfully");
 
-        return response()->json(['success' => true]);
+        return redirect()->back();
     }
 }
