@@ -64,7 +64,7 @@ return Application::configure(basePath: dirname(__DIR__))->withRouting(web: [
     $exceptions->render(function (AmoCRMMissedTokenException|AmoCRMoAuthApiException|AmoCRMApiException $e) {
         return response()->json([
             'message' => $e->getMessage(),
-        ], $e->getCode());
+        ], 400);
     });
 
     $exceptions->report(function (UnsupportedWebhookType $e) {
