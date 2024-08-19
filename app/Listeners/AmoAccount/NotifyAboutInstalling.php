@@ -120,13 +120,15 @@ class NotifyAboutInstalling implements ShouldQueue
             ];
         }
 
-        $customFields ['contacts'][] = [
-            'id' => $config->contact_cf_id,
-            'custom_field_value_model' => new SelectCustomFieldValueModel(),
-            'custom_field_values_model' => new SelectCustomFieldValuesModel(),
-            'custom_field_value_collection' => new SelectCustomFieldValueCollection(),
-            'enum_id' => $userTariff->id,
-        ];
+        if ($userTariff) {
+            $customFields ['contacts'][] = [
+                'id' => $config->contact_cf_id,
+                'custom_field_value_model' => new SelectCustomFieldValueModel(),
+                'custom_field_values_model' => new SelectCustomFieldValuesModel(),
+                'custom_field_value_collection' => new SelectCustomFieldValueCollection(),
+                'enum_id' => $userTariff->id,
+            ];
+        }
 
         $customFields['contacts'][] = [
             'id' => $config->amocrm_id_cf_id,
