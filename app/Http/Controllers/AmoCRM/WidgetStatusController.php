@@ -18,6 +18,12 @@ class WidgetStatusController extends Controller
         /** @var User $user */
         $user = User::withTrashed()->find($userId);
 
+        if (! $user) {
+            return response()->json([
+                'message' => "user with id {$userId} not found",
+            ]);
+        }
+
         $authStatus = Amo::domain($user->domain)->oauth()->status();
 
         return response()->json([
