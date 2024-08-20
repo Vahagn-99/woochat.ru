@@ -14,36 +14,36 @@ return [
      * \
      */
     'instance' => [
+        // URL для получения входящих уведомлений
         "webhookRouteName" => ENV('WHATSAPP_WEBHOOK_API_ROUTE_NAME', 'webhooks.whatsapp'),
         // URL для получения входящих уведомлений
         "webhookUrl" => ENV('WHATSAPP_WEBHOOK_API_URL', null),
-        // URL для получения входящих уведомлений
-        "webhookUrlToken" => ENV("WEBHOOK_URL_TOKEN", ""),
         // токен для доступа к вашему серверу уведомлений
-        "delaySendMessagesMilliseconds" => ENV("DELAY_SEND_MESSAGES_MILLISECONDS", 3000),
+        "webhookUrlToken" => ENV("WEBHOOK_URL_TOKEN", ""),
         // время отправки сообщений из очереди
-        "markIncomingMessagesReaded" => ENV("MARK_INCOMING_MESSAGES_READED", "no"),
+        "delaySendMessagesMilliseconds" => ENV("DELAY_SEND_MESSAGES_MILLISECONDS", 3000),
         // отмечать входящие сообщения прочитанными
-        "markIncomingMessagesReadedOnReply" => ENV("MARK_INCOMING_MESSAGES_READED_ON_REPLY", "yes"),
+        "markIncomingMessagesReaded" => ENV("MARK_INCOMING_MESSAGES_READED", "no"),
         // отмечать входящие сообщения прочитанными при ответе собеседнику
-        "outgoingWebhook" => ENV("OUTGOING_WEBHOOK", "yes"),
+        "markIncomingMessagesReadedOnReply" => ENV("MARK_INCOMING_MESSAGES_READED_ON_REPLY", "no"),
         // получать уведомления о статусах отправленных сообщений
-        "outgoingMessageWebhook" => ENV("OUTGOING_MESSAGE_WEBHOOK", "yes"),
+        "outgoingWebhook" => ENV("OUTGOING_WEBHOOK", "no"),
         // получать уведомления при отправке с устройства
-        "outgoingAPIMessageWebhook" => ENV("OUTGOING_API_MESSAGE_WEBHOOK", "no"),
+        "outgoingMessageWebhook" => ENV("OUTGOING_MESSAGE_WEBHOOK", "no"),
         // получать уведомления при отправке с API
-        "incomingWebhook" => ENV("INCOMING_WEBHOOK", "yes"),
+        "outgoingAPIMessageWebhook" => ENV("OUTGOING_API_MESSAGE_WEBHOOK", "no"),
         // получать уведомления о входящих сообщениях
-        "deviceWebhook" => ENV("DEVICE_WEBHOOK", "no"),
+        "incomingWebhook" => ENV("INCOMING_WEBHOOK", "yes"),
         // получать уведомления об устройстве. Уведомление временно не работает.
-        "stateWebhook" => ENV("STATE_WEBHOOK", "yes"),
+        "deviceWebhook" => ENV("DEVICE_WEBHOOK", "no"),
         // получать уведомления об изменении состояния авторизации инстанса
-        "keepOnlineStatus" => ENV("KEEP_ONLINE_STATUS", "yes"),
+        "stateWebhook" => ENV("STATE_WEBHOOK", "yes"),
         // выставляет статус 'В сети' для вашего аккаунта
-        "pollMessageWebhook" => ENV("POLL_MESSAGE_WEBHOOK", "yes"),
+        "keepOnlineStatus" => ENV("KEEP_ONLINE_STATUS", "no"),
         // получать уведомления о создании опроса и голосовании в опросе
-        "incomingBlockWebhook" => ENV("INCOMING_BLOCK_WEBHOOK", "yes"),
+        "pollMessageWebhook" => ENV("POLL_MESSAGE_WEBHOOK", "no"),
         // получать уведомления о добавлении чата в список заблокированных контактов. Уведомление временно не работает.
+        "incomingBlockWebhook" => ENV("INCOMING_BLOCK_WEBHOOK", "no"),
     ],
 
     'webhooks' => [
