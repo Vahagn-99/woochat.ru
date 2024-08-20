@@ -105,7 +105,7 @@ class SendMessageWhatsapp implements ShouldQueue
 
     private function mapReceiver(array $payload): string
     {
-        return $payload['message']['receiver']['client_id'];
+        return $payload['message']['receiver']['client_id'] ?? $payload['message']['receiver']['phone'].'@c.us';
     }
 
     private function createTextMessage(string $chatId, array $message): Text
