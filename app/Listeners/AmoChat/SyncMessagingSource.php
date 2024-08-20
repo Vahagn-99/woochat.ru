@@ -3,18 +3,17 @@
 namespace App\Listeners\AmoChat;
 
 use AmoCRM\Exceptions\AmoCRMApiException;
-use AmoCRM\Exceptions\AmoCRMMissedTokenException;
 use AmoCRM\Exceptions\AmoCRMoAuthApiException;
 use AmoCRM\Models\SourceModel;
 use App\Events\Whatsapp\InstanceSettingsSaved;
+use App\Models\Settings;
+use App\Models\User;
+use App\Models\WhatsappInstance;
 use App\Services\AmoCRM\Core\Facades\Amo;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
-/**
- *
- */
-class UpdateAmoChatSource implements ShouldQueue
+class SyncMessagingSource implements ShouldQueue
 {
     use InteractsWithQueue;
 
@@ -26,42 +25,38 @@ class UpdateAmoChatSource implements ShouldQueue
         $whatsappInstance = $event->instance;
         $settings = $whatsappInstance->settings;
         $user = $whatsappInstance->user;
-        $amoInstance = $user->amoInstance;
 
-        $source = $this->updateOrCreate($user, $settings);
-
+        $source = $this->updateOrCreateSource($user, $whatsappInstance, $settings);
         $settings->source_id = $source->getId();
         $settings->save();
     }
 
     /**
-     * @param $user
-     * @param $settings
+     * @param \App\Models\User $user
+     * @param \App\Models\WhatsappInstance $whatsappInstance
+     * @param \App\Models\Settings $settings
      * @return \AmoCRM\Models\SourceModel
      */
-    private function updateOrCreate($user, $settings,): SourceModel
-    {
-        try {
-            $api = Amo::domain($user->domain)->api()->sources();
-        } catch (AmoCRMMissedTokenException $e) {
-            do_log('amocrm/sources')->error($e->getMessage(), [
-                'data' => $e->getLastRequestInfo(),
-            ]);
-
-            $this->release($e);
-        }
+    private function updateOrCreateSource(
+        User $user,
+        WhatsappInstance $whatsappInstance,
+        Settings $settings
+    ): SourceModel {
 
         $source = new SourceModel();
+        $source->setName($whatsappInstance->name);
         $source->setPipelineId($settings->pipeline_id);
-        $source->setName($settings->name);
+        $source->setExternalId($settings->id);
 
         try {
+            $api = Amo::domain($user->domain)->api()->sources();
+
             if ($settings->source_id) {
                 $source->setId($settings->source_id);
 
-                $api->updateOne($source);
+                $source = $api->updateOne($source);
             } else {
-                $api->addOne($source);
+                $source = $api->addOne($source);
             }
         } catch (AmoCRMApiException|AmoCRMoAuthApiException $e) {
             do_log('amocrm/sources')->error($e->getMessage(), [

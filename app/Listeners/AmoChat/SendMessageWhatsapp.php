@@ -37,7 +37,7 @@ class SendMessageWhatsapp implements ShouldQueue
 
         $receiver = $this->mapReceiver($event->payload);
 
-        $message = $this->mapMessage($receiver, $event->payload['message']['message']);
+        $messagePayload = $this->mapMessage($receiver, $event->payload['message']['message']);
 
         $amoInstance = $this->getAmoInstance($event->payload['account_id']);
 
@@ -47,13 +47,18 @@ class SendMessageWhatsapp implements ShouldQueue
 
         $whatsappInstance = $this->getWhatsappInstance($chat, $user);
 
-        $sentMessage = $this->sendMessage($message, $whatsappInstance);
+        $sentMessage = $this->sendMessage($messagePayload, $whatsappInstance);
 
-        Message::query()->updateOrCreate([
+        $record = Message::query()->updateOrCreate([
             'amo_message_id' => $amoMessageId->id,
             'whatsapp_message_id' => $sentMessage->id,
         ], [
             'chat_id' => $chat->id,
+        ]);
+
+        do_log("messaging/amochat")->info("sent message with ID: ".$sentMessage->id, [
+            'record' => $record->toArray(),
+            'payload' => $messagePayload->toArray(),
         ]);
     }
 

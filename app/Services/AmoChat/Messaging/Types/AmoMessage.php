@@ -5,6 +5,7 @@ namespace App\Services\AmoChat\Messaging\Types;
 use App\Base\Messaging\IMessage as BaseMessage;
 use App\Base\Messaging\Manageable;
 use App\Services\AmoChat\Messaging\Actor\Actor;
+use App\Services\AmoChat\Messaging\Source\Source;
 
 class AmoMessage implements BaseMessage
 {
@@ -13,6 +14,7 @@ class AmoMessage implements BaseMessage
     public function __construct(
         public Actor $sender,
         public Payload $payload,
+        public ?Source $source,
         public bool $silent = true,
         public ?Actor $receiver = null,
         public ?string $conversation_id = null,
@@ -38,6 +40,7 @@ class AmoMessage implements BaseMessage
                 'receiver' => $this->receiver?->toArray(),
                 'message' => $this->payload->toArray(),
                 'silent' => $this->silent,
+                'source' => $this->source?->toArray(),
             ], fn($item) => ! is_null($item)),
         ];
     }

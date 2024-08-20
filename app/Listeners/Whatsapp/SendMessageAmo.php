@@ -7,20 +7,14 @@ use App\Models\AmoInstance;
 use App\Models\Chat;
 use App\Models\Message;
 use App\Models\WhatsappInstance;
-use App\Services\AmoChat\Chat\Create\CreateAmoChatDTO;
+use App\Services\AmoChat\Chat\Create\SaveAmoChatDTO;
 use App\Services\AmoChat\Facades\AmoChat;
 use App\Services\AmoChat\Messaging\Actor\Actor;
 use App\Services\AmoChat\Messaging\Actor\Profile;
+use App\Services\AmoChat\Messaging\Source\Source;
 use App\Services\AmoChat\Messaging\Types\AmoMessage;
-use App\Services\AmoChat\Messaging\Types\Contact;
-use App\Services\AmoChat\Messaging\Types\Forwards;
-use App\Services\AmoChat\Messaging\Types\Location;
-use App\Services\AmoChat\Messaging\Types\Media;
 use App\Services\AmoChat\Messaging\Types\Payload;
 use App\Services\AmoChat\Messaging\Types\Text;
-use App\Services\AmoCRM\Core\Facades\Amo;
-use App\Services\AmoCRM\Entities\Source\SourceApi;
-use App\Services\AmoCRM\Entities\Source\SourceApiInterface;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Str;
@@ -50,14 +44,19 @@ class SendMessageAmo implements ShouldQueue
 
         $messagePayload = $this->mapMessagePayload($chat->amo_chat_id, $event->payload['messageData']);
 
-        $amoMessage = $this->mapMessage($event->payload['idMessage'], $chat, $sender, $messagePayload);
+        $amoMessage = $this->mapMessage($event->payload['idMessage'], $chat, $sender, $whatsappInstance, $messagePayload);
 
         $sentMessage = AmoChat::messaging($amoInstance->scope_id)->send($amoMessage);
 
-        Message::query()->create([
+        $record = Message::query()->create([
             'chat_id' => $chat->id,
             'whatsapp_message_id' => $sentMessage->ref_id,
             'amo_message_id' => $sentMessage->id,
+        ]);
+
+        do_log("messaging/whatsapp")->info("sent message with ID: ".$sentMessage->id, [
+            'record' => $record->toArray(),
+            'payload' => $amoMessage->toArray(),
         ]);
     }
 
@@ -81,18 +80,8 @@ class SendMessageAmo implements ShouldQueue
         /** @var Chat $chat */
         $chat = Chat::query()->firstOrCreate(['whatsapp_chat_id' => $whatsappChatId]);
 
-        if (! $chat->amo_chat_source_id) {
-            $settings = $whatsappInstance->settings;
-
-            Amo::domain($whatsappInstance->user->domain);
-
-            /** @var SourceApiInterface $sourceApi */
-            $sourceApi = app(SourceApiInterface::class);
-            //$sourceApi->create();
-        }
-
         if (! $chat->amo_chat_id) {
-            $data = new CreateAmoChatDTO($chat->id, $chat->whatsapp_chat_id, $sender);
+            $data = new SaveAmoChatDTO($chat->id, $chat->whatsapp_chat_id, $sender);
             $amoChat = AmoChat::chat($amoInstance->scope_id)->create($data);
             $chat->amo_chat_id = $amoChat->id;
             $chat->save();
@@ -106,9 +95,21 @@ class SendMessageAmo implements ShouldQueue
         return $chat;
     }
 
-    private function mapMessage(string $id, Chat $chat, Actor $sender, Payload $payload): AmoMessage
-    {
-        return new AmoMessage(sender: $sender, payload: $payload, conversation_id: $chat->whatsapp_chat_id, msgid: $id);
+    private function mapMessage(
+        string $id,
+        Chat $chat,
+        Actor $sender,
+        WhatsappInstance $whatsappInstance,
+        Payload $payload
+    ): AmoMessage {
+        $settings = $whatsappInstance->settings;
+
+        $source = null;
+        if ($settings->source_id) {
+            $source = new Source($settings->id);
+        }
+
+        return new AmoMessage(sender: $sender, payload: $payload, source: $source, conversation_id: $chat->whatsapp_chat_id, msgid: $id);
     }
 
     private function mapSender(mixed $senderData): Actor

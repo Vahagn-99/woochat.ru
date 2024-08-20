@@ -5,7 +5,7 @@ namespace App\Services\AmoChat\Chat\Create;
 use App\Contracts\Arrayable;
 use App\Services\AmoChat\Messaging\Actor\Actor;
 
-class CreateAmoChatDTO implements Arrayable
+class SaveAmoChatDTO implements Arrayable
 {
     public function __construct(
         public string $conversation_id,

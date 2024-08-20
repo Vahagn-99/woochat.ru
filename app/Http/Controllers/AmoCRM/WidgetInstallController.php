@@ -15,30 +15,24 @@ class WidgetInstallController extends Controller
     {
         $data = $request->toDTO();
 
-        $updateData = [
+        $updateData = array_filter([
             'id' => $data->user->id,
             'api_key' => $data->user->api_key,
             'amojo_id' => $data->user->amojo_id,
             'domain' => $data->user->domain,
             'email' => $data->user->email,
             'phone' => $data->user->phone,
-            'deleted_at' => null,
-        ];
+        ]);
 
         $user = User::getByDomainOrId($data->user);
 
-        $dispatchWidgetInstalledEvent = true;
-
         if ($user) {
-
             $user->update($updateData);
-
-            $dispatchWidgetInstalledEvent = false;
         } else {
             $user = User::query()->create($updateData);
         }
 
-        WidgetInstalled::dispatchIf($dispatchWidgetInstalledEvent, $user, $data->info);
+        WidgetInstalled::dispatchIf(! $user->wasInformed(), $user, $data->info);
 
         UserCreated::dispatch($user);
 

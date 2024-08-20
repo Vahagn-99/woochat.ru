@@ -15,11 +15,11 @@ class ChatService implements ChatServiceInterface
     }
 
     /**
-     * @param CreateAmoChatDTO $data
+     * @param SaveAmoChatDTO $data
      * @return AmoChat
      * @throws Exception
      */
-    public function create(CreateAmoChatDTO $data): AmoChat
+    public function create(SaveAmoChatDTO $data): AmoChat
     {
         $url = sprintf(ChatEndpoint::API_CREATE_CHAT_API, $this->scopeId);
         $response = $this->apiClient->request($url, $data->toArray());

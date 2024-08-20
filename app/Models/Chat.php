@@ -12,7 +12,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $amo_chat_id
  * @property string $whatsapp_chat_id
  * @property string $whatsapp_instance_id
- * @property string $amo_chat_source_id
  *
  * @property WhatsappInstance $whatsappInstance
  */
@@ -26,7 +25,6 @@ final class Chat extends Model
         'amo_chat_id',
         'whatsapp_chat_id',
         'whatsapp_instance_id',
-        'amo_chat_source_id',
     ];
 
     public $timestamps = false;

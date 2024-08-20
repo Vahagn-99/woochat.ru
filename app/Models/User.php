@@ -96,11 +96,17 @@ final class User extends Authenticatable implements AmoAccountInterface
 
     public static function getByDomainOrId(NewAmoUserDTO $data): ?User
     {
-        /** @var User */
-        return User::withTrashed()
+        /** @var User $user */
+        $user = User::withTrashed()
             ->where('id', $data->id)
             ->orWhere('domain', $data->domain)
             ->first();
+
+        if ($user->trashed()) {
+            $user->restore();
+        }
+
+        return $user;
     }
 
     public function getAccessToken(): ?AccessToken
@@ -116,5 +122,10 @@ final class User extends Authenticatable implements AmoAccountInterface
     public function getId(): int
     {
         return $this->id;
+    }
+
+    public function wasInformed(): bool
+    {
+        return ! ! $this->info;
     }
 }
