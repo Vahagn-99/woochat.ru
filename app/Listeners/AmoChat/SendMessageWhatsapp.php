@@ -77,7 +77,8 @@ class SendMessageWhatsapp implements ShouldQueue
         $chat = Chat::query()->firstOrCreate(['amo_chat_id' => $payload['message']['conversation']['id']]);
 
         if (! $chat->whatsapp_chat_id) {
-            $chat->whatsapp_chat_id = $payload['message']['conversation']['client_id'];
+            $whatsappId = $payload['message']['conversation']['client_id'] ?? $payload['message']['receiver']['phone'].'@c.us';
+            $chat->whatsapp_chat_id = $whatsappId;
 
             $chat->save();
         }
