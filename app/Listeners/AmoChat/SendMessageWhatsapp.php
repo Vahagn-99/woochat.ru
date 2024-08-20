@@ -50,7 +50,7 @@ class SendMessageWhatsapp implements ShouldQueue
         $sentMessage = $this->sendMessage($messagePayload, $whatsappInstance);
 
         $record = Message::query()->updateOrCreate([
-            'amo_message_id' => $amoMessageId->id,
+            'amo_message_id' => $amoMessageId,
             'whatsapp_message_id' => $sentMessage->id,
         ], [
             'chat_id' => $chat->id,
@@ -105,7 +105,7 @@ class SendMessageWhatsapp implements ShouldQueue
 
     private function mapReceiver(array $payload): string
     {
-        return $payload['message']['receiver']['phone'];
+        return $payload['message']['receiver']['client_id'];
     }
 
     private function createTextMessage(string $chatId, array $message): Text

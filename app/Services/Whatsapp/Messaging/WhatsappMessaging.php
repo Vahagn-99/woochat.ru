@@ -19,10 +19,9 @@ class WhatsappMessaging implements WhatsappMessagingInterface
         $messageToArray = $message->toArray();
 
         $method = $this->getSendingMethodByMessageType($message->getType());
-
         $resp = $this->apiClient->sending->{$method}(...$messageToArray);
 
-        return new SentMessage($resp->data->idMessage);
+        return new SentMessage(id: $resp->data->idMessage);
     }
 
     private function getSendingMethodByMessageType(string $messageType): string
