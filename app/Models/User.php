@@ -97,12 +97,8 @@ final class User extends Authenticatable implements AmoAccountInterface
     public static function getByDomainOrId(NewAmoUserDTO $data): ?User
     {
         /** @var User $user */
-        $user = User::withTrashed()
-            ->where('id', $data->id)
-            ->orWhere('domain', $data->domain)
-            ->first();
-
-        if ($user->trashed()) {
+        $user = User::withTrashed()->where('id', $data->id)->orWhere('domain', $data->domain)->first();
+        if ($user && $user->trashed()) {
             $user->restore();
         }
 
