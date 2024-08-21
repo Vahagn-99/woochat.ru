@@ -21,7 +21,7 @@ class InstanceStatusChanged implements ShouldBroadcast
      */
     public function broadcastOn(): PrivateChannel
     {
-        return new PrivateChannel('instances.'.$this->webhookPayload['instanceData']['idInstance']);
+        return new PrivateChannel('instances');
     }
 
     /**
