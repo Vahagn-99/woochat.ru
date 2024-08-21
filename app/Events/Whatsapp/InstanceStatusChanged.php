@@ -2,6 +2,7 @@
 
 namespace App\Events\Whatsapp;
 
+use App\Enums\InstanceStatus;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
@@ -22,6 +23,14 @@ class InstanceStatusChanged implements ShouldBroadcast
     public function broadcastOn(): PrivateChannel
     {
         return new PrivateChannel('instances');
+    }
+
+    /**
+     * Determine if this event should broadcast.
+     */
+    public function broadcastWhen(): bool
+    {
+        return $this->webhookPayload['stateInstance'] === InstanceStatus::AUTHORIZED->value;
     }
 
     /**
