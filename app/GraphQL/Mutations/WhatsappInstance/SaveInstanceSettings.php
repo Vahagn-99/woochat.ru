@@ -17,6 +17,7 @@ final readonly class SaveInstanceSettings
             'instance_id' => $args['input']['instance_id'],
         ], [
             'pipeline_id' => $args['input']['pipeline_id'],
+            'name' => $args['input']['name'],
         ]);
 
         InstanceSettingsSaved::dispatch($instance, $settings);

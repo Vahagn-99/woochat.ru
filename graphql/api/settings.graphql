@@ -8,6 +8,7 @@ type Settings {
     instance_id: ID!
     pipeline_id: ID!
     source_id: ID
+    name: String!
 }
 
 # inputs
@@ -15,4 +16,5 @@ type Settings {
 input SaveInstanceSettingsInput {
     instance_id:ID! @rules(apply: ["exists:whatsapp_instances,id"])
     pipeline_id:ID!
+    name:String!
 }

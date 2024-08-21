@@ -14,7 +14,6 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 /**
  * @property string $id
  * @property int $user_id
- * @property string $name
  * @property InstanceStatus $status
  * @property string $token
  * @property string $phone
@@ -30,7 +29,6 @@ final class WhatsappInstance extends Model
 
     protected $fillable = [
         'id',
-        'name',
         'user_id',
         'status',
         'token',

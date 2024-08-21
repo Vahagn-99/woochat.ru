@@ -53,7 +53,6 @@ class ConnectUserMessaging implements ShouldQueue
 
         $user->whatsappInstances()->create([
             'id' => $firstFreeInstance->id,
-            'name' => $name,
             'user_id' => $user->id,
             'status' => $status,
             'token' => $firstFreeInstance->token,

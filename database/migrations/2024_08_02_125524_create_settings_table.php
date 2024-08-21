@@ -13,6 +13,7 @@ return new class extends Migration{
             $table->foreign('instance_id')->on('whatsapp_instances')->references('id')->onUpdate('cascade')->onDelete('cascade');
             $table->unsignedBigInteger('pipeline_id');
             $table->unsignedBigInteger('source_id')->nullable();
+            $table->string('name')->nullable();
             $table->timestamp('created_at')->useCurrent();
         });
     }

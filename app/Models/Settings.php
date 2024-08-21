@@ -6,13 +6,13 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Str;
 
 /**
  * @property string $id
  * @property int $instance_id
  * @property int $pipeline_id
  * @property ?int $source_id
+ * @property ?int $name
  */
 final class Settings extends Model
 {
@@ -25,6 +25,7 @@ final class Settings extends Model
         'instance_id',
         'pipeline_id',
         'source_id',
+        'name',
     ];
 
     public $timestamps = false;

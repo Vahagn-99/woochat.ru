@@ -12,7 +12,6 @@ return new class extends Migration {
         Schema::create('whatsapp_instances', function (Blueprint $table) {
             $table->string('id')->primary();
             $table->string('token')->unique();
-            $table->string('name')->nullable();
             $table->string('phone')->nullable()->unique();
             $table->string('status')->default(InstanceStatus::STARTING);
             $table->timestamp('created_at')->useCurrent();
