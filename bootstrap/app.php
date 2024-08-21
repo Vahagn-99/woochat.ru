@@ -40,6 +40,7 @@ return Application::configure(basePath: dirname(__DIR__))->withRouting(web: [
     ]);
     //
 })->withProviders([
+    BroadcastServiceProvider::class,
     WhatsappServiceProvider::class,
     AmoChatServiceProvider::class,
     AmoCRMServiceProvider::class,
