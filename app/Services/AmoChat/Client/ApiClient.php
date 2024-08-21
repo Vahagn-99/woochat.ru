@@ -5,6 +5,8 @@ namespace App\Services\AmoChat\Client;
 use App\Exceptions\AmoChat\AmoChatConnectionException;
 use DateTimeInterface;
 use Exception;
+use GuzzleHttp\Promise\PromiseInterface;
+use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 
 class ApiClient implements ApiClientInterface
@@ -12,6 +14,8 @@ class ApiClient implements ApiClientInterface
     protected string $baseUrl;
 
     protected string $secretKey;
+
+    private Response|PromiseInterface $response;
 
     public function __construct()
     {
@@ -99,9 +103,9 @@ class ApiClient implements ApiClientInterface
         $signature = $this->createSignature($this->secretKey, $checkSum, $url, $httpMethod);
         $headers = $this->prepareHeaders($checkSum, $signature);
 
-        $response = Http::withHeaders($headers)->baseUrl($this->baseUrl)->send($httpMethod, $url, [
-                'body' => $requestBody,
-            ]);
+        $this->response = $response = Http::withHeaders($headers)->baseUrl($this->baseUrl)->send($httpMethod, $url, [
+            'body' => $requestBody,
+        ]);
 
         if ($response->failed()) {
             $message = " ".PHP_EOL;
@@ -112,5 +116,10 @@ class ApiClient implements ApiClientInterface
         }
 
         return $response->json();
+    }
+
+    public function getLastRequestInfo(): null|object
+    {
+        return $this->response->object();
     }
 }

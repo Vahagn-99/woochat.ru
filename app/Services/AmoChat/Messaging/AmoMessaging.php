@@ -34,4 +34,9 @@ class AmoMessaging implements AmoMessagingInterface
 
         return new SentMessage(id: $response[$eventType]['msgid'], ref_id: $response[$eventType]['ref_id']);
     }
+
+    public function getLastRequestInfo(): null|object
+    {
+        return $this->apiClient->getLastRequestInfo();
+    }
 }

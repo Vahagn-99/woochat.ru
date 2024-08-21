@@ -10,5 +10,7 @@ interface AmoMessagingInterface extends MessagingInterface
 {
     public function setScopeId(string $scopeId): static;
 
+    public function getLastRequestInfo(): null|object;
+
     public function send(IMessage $message): SentMessage;
 }

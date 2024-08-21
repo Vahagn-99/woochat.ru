@@ -48,14 +48,14 @@ class SendMessageAmo implements ShouldQueue
 
         $sentMessage = AmoChat::messaging($amoInstance->scope_id)->send($amoMessage);
 
-        $record = Message::query()->create([
+        Message::query()->create([
             'chat_id' => $chat->id,
             'whatsapp_message_id' => $sentMessage->ref_id,
             'amo_message_id' => $sentMessage->id,
         ]);
 
         do_log("messaging/whatsapp")->info("sent message with ID: ".$sentMessage->id, [
-            'record' => $record->toArray(),
+            'request' => AmoChat::messaging($amoInstance->scope_id)->getLastRequestInfo(),
             'payload' => $amoMessage->toArray(),
         ]);
     }
@@ -105,9 +105,10 @@ class SendMessageAmo implements ShouldQueue
         $settings = $whatsappInstance->settings;
 
         $source = null;
-        //if ($settings->source_id) {
-        //    $source = new Source($settings->id);
-        //}
+
+        if ($settings->source_id) {
+            $source = new Source($settings->id);
+        }
 
         return new AmoMessage(sender: $sender, payload: $payload, source: $source, conversation_id: $chat->whatsapp_chat_id, msgid: $id);
     }

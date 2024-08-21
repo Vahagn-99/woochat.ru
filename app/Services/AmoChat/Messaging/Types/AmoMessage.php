@@ -14,7 +14,7 @@ class AmoMessage implements BaseMessage
     public function __construct(
         public Actor $sender,
         public Payload $payload,
-        public ?Source $source,
+        public ?Source $source = null,
         public bool $silent = true,
         public ?Actor $receiver = null,
         public ?string $conversation_id = null,
