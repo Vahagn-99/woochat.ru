@@ -23,7 +23,7 @@ final readonly class CreateInstance
 
         return WhatsappInstance::query()->create([
             'id' => $instance->id,
-            'user_id' => auth()->id(),
+            'user_id' => $user->id,
             'token' => $instance->token,
         ]);
     }
