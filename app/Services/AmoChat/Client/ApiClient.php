@@ -123,7 +123,7 @@ class ApiClient implements ApiClientInterface
     public function getLastRequestInfo(): array
     {
         $request = $this->request->getOptions();
-        $request['body'] = $this->response->body();
+        $request['body'] = $this->response->json();
 
         return $request;
     }
