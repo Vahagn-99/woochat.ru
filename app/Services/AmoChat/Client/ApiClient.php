@@ -5,8 +5,7 @@ namespace App\Services\AmoChat\Client;
 use App\Exceptions\AmoChat\AmoChatConnectionException;
 use DateTimeInterface;
 use Exception;
-use GuzzleHttp\Promise\PromiseInterface;
-use Illuminate\Http\Client\Response;
+use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\Http;
 
 class ApiClient implements ApiClientInterface
@@ -15,7 +14,7 @@ class ApiClient implements ApiClientInterface
 
     protected string $secretKey;
 
-    private Response|PromiseInterface $response;
+    private PendingRequest $request;
 
     public function __construct()
     {
@@ -99,11 +98,10 @@ class ApiClient implements ApiClientInterface
         string $httpMethod = 'POST'
     ): array {
         $requestBody = json_encode($body);
-        $checkSum = $this->createBodyChecksum($requestBody);
-        $signature = $this->createSignature($this->secretKey, $checkSum, $url, $httpMethod);
-        $headers = $this->prepareHeaders($checkSum, $signature);
 
-        $this->response = $response = Http::withHeaders($headers)->baseUrl($this->baseUrl)->send($httpMethod, $url, [
+        $request = $this->buildRequest($requestBody, $url, $httpMethod);
+
+        $response = $request->send($httpMethod, $url, [
             'body' => $requestBody,
         ]);
 
@@ -118,8 +116,17 @@ class ApiClient implements ApiClientInterface
         return $response->json();
     }
 
-    public function getLastRequestInfo(): null|object
+    public function getLastRequestInfo(): array
     {
-        return $this->response->object();
+        return $this->request->getOptions();
+    }
+
+    private function buildRequest(string $body, string $url, string $httpMethod): PendingRequest
+    {
+        $checkSum = $this->createBodyChecksum($body);
+        $signature = $this->createSignature($this->secretKey, $checkSum, $url, $httpMethod);
+        $headers = $this->prepareHeaders($checkSum, $signature);
+
+        return $this->request = Http::withHeaders($headers)->baseUrl($this->baseUrl);
     }
 }

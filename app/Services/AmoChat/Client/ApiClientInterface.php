@@ -21,5 +21,5 @@ interface ApiClientInterface
         string $httpMethod = 'POST'
     ): array;
 
-    public function getLastRequestInfo(): null|object;
+    public function getLastRequestInfo(): array;
 }
