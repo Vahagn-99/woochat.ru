@@ -55,16 +55,15 @@ return Application::configure(basePath: dirname(__DIR__))->withRouting(web: [
     $exceptions->report(function (UserNotFoundException $e) {
         do_log("amocrm/auth-callback")->error($e->getMessage());
     });
+
     $exceptions->render(function (UserNotFoundException $e) {
         return response()->json([
             'message' => $e->getMessage(),
         ], $e->getCode());
     });
 
-    $exceptions->render(function (AmoCRMMissedTokenException|AmoCRMoAuthApiException|AmoCRMApiException $e) {
-        return response()->json([
-            'message' => $e->getMessage(),
-        ], 400);
+    $exceptions->report(function (AmoCRMMissedTokenException|AmoCRMoAuthApiException|AmoCRMApiException $e) {
+        do_log("widget/installation")->error($e->getMessage(), $e->getLastRequestInfo());
     });
 
     $exceptions->report(function (UnsupportedWebhookType $e) {
