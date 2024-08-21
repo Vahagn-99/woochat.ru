@@ -6,5 +6,5 @@ use Illuminate\Support\Facades\Broadcast;
 Broadcast::routes(['middleware' => ['auth:sanctum']]);
 
 Broadcast::channel('instances', function (User $user) {
-    return true;
+    return $user->domain = auth()->id();
 });
