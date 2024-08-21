@@ -125,7 +125,7 @@ class SendMessageAmo implements ShouldQueue
         $type = $messageData['typeMessage'];
 
         return match ($type) {
-            'textMessage' => $this->createTextMessage($chatId, $messageData), //'imageMessage'       => $this->createImageMessage($chatId, $messageData),
+            'textMessage', 'extendedTextMessage' => $this->createTextMessage($chatId, $messageData), //'imageMessage'       => $this->createImageMessage($chatId, $messageData),
             //'audioMessage'       => $this->createAudioMessage($chatId, $messageData),
             //'locationMessage'    => $this->createLocationMessage($chatId, $messageData),
             //'contactMessage'     => $this->createContactMessage($chatId, $messageData),
