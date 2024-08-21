@@ -22,7 +22,7 @@ final readonly class GetAccountPipelines
         /** @var \App\Models\User $user */
         $user = Auth::user();
 
-        $data = Amo::api($user->domain)->pipelines()->get(with: ['leads'])->toArray();
+        $data = Amo::domain($user->domain)->api()->pipelines()->get(with: ['leads'])->toArray();
 
         return Arr::map($data, function ($item) {
             return [
