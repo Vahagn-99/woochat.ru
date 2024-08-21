@@ -20,6 +20,8 @@ class ApiClient implements ApiClientInterface
 
     private Response|PromiseInterface $response;
 
+    private string $endpoint;
+
     public function __construct()
     {
         $this->baseUrl = "https://amojo.amocrm.ru";
@@ -123,7 +125,7 @@ class ApiClient implements ApiClientInterface
     public function getLastRequestInfo(): array
     {
         $request = $this->request->getOptions();
-        $request['url'] = $this->baseUrl;
+        $request['url'] = $this->baseUrl.$this->endpoint;
         $request['body'] = $this->response->json();
 
         return $request;
@@ -134,6 +136,8 @@ class ApiClient implements ApiClientInterface
         $checkSum = $this->createBodyChecksum($body);
         $signature = $this->createSignature($this->secretKey, $checkSum, $url, $httpMethod);
         $headers = $this->prepareHeaders($checkSum, $signature);
+
+        $this->endpoint = $url;
 
         return $this->request = Http::withHeaders($headers)->baseUrl($this->baseUrl);
     }
