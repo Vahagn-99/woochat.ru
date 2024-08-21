@@ -2,6 +2,7 @@
 
 namespace App\GraphQL\Mutations\WhatsappInstance;
 
+use App\Events\Whatsapp\InstanceSettingsSaved;
 use App\Models\WhatsappInstance;
 
 final readonly class SaveInstanceSettings
@@ -19,7 +20,7 @@ final readonly class SaveInstanceSettings
             'name' => $args['input']['name'],
         ]);
 
-        //InstanceSettingsSaved::dispatch($instance, $settings);
+        InstanceSettingsSaved::dispatch($instance, $settings);
 
         return $instance;
     }
