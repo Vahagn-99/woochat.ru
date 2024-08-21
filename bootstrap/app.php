@@ -32,6 +32,7 @@ return Application::configure(basePath: dirname(__DIR__))->withRouting(web: [
         'graphql',
         'webhooks/*',
         'amocrm/*',
+        '*broadcasting/auth*',
     ]);
 
     $middleware->alias([
