@@ -25,7 +25,7 @@ class SignatureAmoCRM
         /** @var \App\Models\User $user */
         $user = $request->user;
 
-        $api_key = $user->api_key;
+        $api_key = $user->amojo_id;
         $domain = $user->domain;
         $now = Carbon::now('UTC'); // Ensure UTC time
 
