@@ -46,7 +46,9 @@ class SendMessageAmo implements ShouldQueue
 
         $amoMessage = $this->mapMessage($event->payload['idMessage'], $chat, $sender, $whatsappInstance, $messagePayload);
 
-        $sentMessage = AmoChat::messaging($amoInstance->scope_id)->send($amoMessage);
+        $massager = AmoChat::messaging($amoInstance->scope_id);
+
+        $sentMessage = $massager->send($amoMessage);
 
         Message::query()->create([
             'chat_id' => $chat->id,
@@ -54,10 +56,7 @@ class SendMessageAmo implements ShouldQueue
             'amo_message_id' => $sentMessage->id,
         ]);
 
-        do_log("messaging/whatsapp")->info("sent message with ID: ".$sentMessage->id, [
-            'request' => AmoChat::messaging($amoInstance->scope_id)->getLastRequestInfo(),
-            'payload' => $amoMessage->toArray(),
-        ]);
+        do_log("messaging/whatsapp")->info("sent message with ID: ".$sentMessage->id, $massager->getLastRequestInfo());
     }
 
     private function getAmoInstance(WhatsappInstance $whatsappInstance): AmoInstance

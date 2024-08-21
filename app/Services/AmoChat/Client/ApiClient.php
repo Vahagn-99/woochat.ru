@@ -5,7 +5,9 @@ namespace App\Services\AmoChat\Client;
 use App\Exceptions\AmoChat\AmoChatConnectionException;
 use DateTimeInterface;
 use Exception;
+use GuzzleHttp\Promise\PromiseInterface;
 use Illuminate\Http\Client\PendingRequest;
+use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 
 class ApiClient implements ApiClientInterface
@@ -15,6 +17,8 @@ class ApiClient implements ApiClientInterface
     protected string $secretKey;
 
     private PendingRequest $request;
+
+    private Response|PromiseInterface $response;
 
     public function __construct()
     {
@@ -101,7 +105,7 @@ class ApiClient implements ApiClientInterface
 
         $request = $this->buildRequest($requestBody, $url, $httpMethod);
 
-        $response = $request->send($httpMethod, $url, [
+        $this->response = $response = $request->send($httpMethod, $url, [
             'body' => $requestBody,
         ]);
 
@@ -118,7 +122,10 @@ class ApiClient implements ApiClientInterface
 
     public function getLastRequestInfo(): array
     {
-        return $this->request->getOptions();
+        $request = $this->request->getOptions();
+        $request['body'] = $this->response->body();
+
+        return $request;
     }
 
     private function buildRequest(string $body, string $url, string $httpMethod): PendingRequest
