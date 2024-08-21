@@ -31,16 +31,16 @@ class InstanceStatusChanged implements ShouldBroadcast
         return 'instance.status-changed';
     }
 
-    ///**
-    // * Get the data to broadcast.
-    // *
-    // * @return array<string, mixed>
-    // */
-    //public function broadcastWith(): array
-    //{
-    //    return [
-    //        'id' => $this->webhookPayload['instanceData']['idInstance'],
-    //        'status' => $this->webhookPayload['stateInstance'],
-    //    ];
-    //}
+    /**
+     * Get the data to broadcast.
+     *
+     * @return array<string, mixed>
+     */
+    public function broadcastWith(): array
+    {
+        return [
+            'id' => $this->webhookPayload['instanceData']['idInstance'],
+            'status' => $this->webhookPayload['stateInstance'],
+        ];
+    }
 }

@@ -11,6 +11,7 @@ use App\Exceptions\Whatsapp\UnsupportedWebhookType;
 use App\Services\AmoChat\Providers\AmoChatServiceProvider;
 use App\Services\AmoCRM\Core\Providers\AmoCRMServiceProvider;
 use App\Services\Whatsapp\Provider\WhatsappServiceProvider;
+use Illuminate\Broadcasting\BroadcastServiceProvider;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -21,8 +22,9 @@ return Application::configure(basePath: dirname(__DIR__))->withRouting(web: [
 ], api: [
     __DIR__.'/../routes/api.php',
     __DIR__.'/../routes/amocrm.php',
-], commands: __DIR__.'/../routes/console.php',
-        channels: __DIR__.'/../routes/channels.php', health: '/up',)->withMiddleware(function (Middleware $middleware) {
+], commands: __DIR__.'/../routes/console.php', channels: __DIR__.'/../routes/channels.php', health: '/up',)->withMiddleware(function (
+    Middleware $middleware
+) {
     $middleware->api(prepend: [
         \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
     ]);
@@ -38,6 +40,7 @@ return Application::configure(basePath: dirname(__DIR__))->withRouting(web: [
     ]);
     //
 })->withProviders([
+    BroadcastServiceProvider::class,
     WhatsappServiceProvider::class,
     AmoChatServiceProvider::class,
     AmoCRMServiceProvider::class,

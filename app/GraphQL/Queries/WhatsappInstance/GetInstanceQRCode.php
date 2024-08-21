@@ -16,7 +16,7 @@ final readonly class GetInstanceQRCode
 
         if ($instance->status->isAuthorized()) {
             Whatsapp::instance()->logout();
-            sleep(30);
+            sleep(5);
         }
 
         return Whatsapp::qr()->getQRCode()->toArray();
