@@ -105,9 +105,9 @@ class SendMessageAmo implements ShouldQueue
         $settings = $whatsappInstance->settings;
 
         $source = null;
-        if ($settings->source_id) {
-            $source = new Source($settings->id);
-        }
+        //if ($settings->source_id) {
+        //    $source = new Source($settings->id);
+        //}
 
         return new AmoMessage(sender: $sender, payload: $payload, source: $source, conversation_id: $chat->whatsapp_chat_id, msgid: $id);
     }
