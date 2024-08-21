@@ -21,7 +21,8 @@ return Application::configure(basePath: dirname(__DIR__))->withRouting(web: [
 ], api: [
     __DIR__.'/../routes/api.php',
     __DIR__.'/../routes/amocrm.php',
-], commands: __DIR__.'/../routes/console.php', health: '/up',)->withMiddleware(function (Middleware $middleware) {
+], commands: __DIR__.'/../routes/console.php',
+        channels: __DIR__.'/../routes/channels.php', health: '/up',)->withMiddleware(function (Middleware $middleware) {
     $middleware->api(prepend: [
         \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
     ]);
