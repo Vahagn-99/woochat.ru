@@ -18,7 +18,7 @@ class WebhookController extends Controller
         $webhookType = $request->input('typeWebhook');
         $payload = $request->all();
 
-        do_log('webhooks/whatsapp')->info("message from Whatsapp was received", $payload);
+        do_log('webhooks/whatsapp')->info("webhook with type [$webhookType] from Whatsapp was received", $payload);
 
         $this->callWebhookEventByType($webhookType, $payload);
 
