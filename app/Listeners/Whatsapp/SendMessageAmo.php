@@ -136,7 +136,7 @@ class SendMessageAmo implements ShouldQueue
 
     private function createTextMessage(string $chatId, array $messageData): Text
     {
-        return new Text($chatId, $messageData['textMessageData']['textMessage']);
+        return new Text($chatId, $messageData['textMessageData']['textMessage'] ?? $messageData['extendedTextMessageData']['text']);
     }
     //
     //private function createImageMessage(string $chatId, array $messageData): Media
