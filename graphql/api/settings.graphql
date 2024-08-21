@@ -7,8 +7,8 @@ type Settings {
     id: ID!
     instance_id: ID!
     pipeline_id: ID!
-    source_id: ID
     name: String!
+    source_id: ID
 }
 
 # inputs

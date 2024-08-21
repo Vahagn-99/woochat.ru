@@ -13,7 +13,6 @@ extend type Mutation @guard {
 type WhatsappInstance {
     settings: Settings @hasOne
     id: ID!
-    name: String
     token: String!
     user_id: ID!
     status: InstanceStatus!
