@@ -15,7 +15,7 @@ class AmoMessage implements BaseMessage
         public Actor $sender,
         public Payload $payload,
         public ?Source $source = null,
-        public bool $silent = true,
+        public bool $silent = false,
         public ?Actor $receiver = null,
         public ?string $conversation_id = null,
         public ?string $conversation_ref_id = null,
