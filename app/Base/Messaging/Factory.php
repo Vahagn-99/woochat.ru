@@ -48,7 +48,7 @@ class Factory
             }
         }
 
-        throw new UnknownMessageTypeException($localType, $fromProvider);
+        throw  UnknownMessageTypeException::localType($localType, $fromProvider);
     }
 
     /**

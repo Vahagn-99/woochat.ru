@@ -6,9 +6,17 @@ use App\Exceptions\ReportableException;
 
 class UnknownMessageTypeException extends ReportableException
 {
-    public function __construct(private readonly string $type, private readonly string $provider = 'amochat')
+    private string $type;
+
+    private string $provider;
+
+    public static function localType(string $localType, string $fromProvider): UnknownMessageTypeException
     {
-        parent::__construct('Unknown message type: '.$this->type);
+        $instance = new self("local type '{$localType}' in provider '$fromProvider' not found", 404);
+        $instance->type = $localType;
+        $instance->provider = $fromProvider;
+
+        return $instance;
     }
 
     public function report(): void
