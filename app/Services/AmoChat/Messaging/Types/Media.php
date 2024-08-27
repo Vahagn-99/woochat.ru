@@ -13,10 +13,9 @@ class Media implements IMessage
         public string $mediaType,
         public string $media,
         public string $file_name,
-        public int    $file_size,
         public string $text = '',
-    )
-    {
+        public ?int $file_size = null,
+    ) {
     }
 
     public function getType(): string
