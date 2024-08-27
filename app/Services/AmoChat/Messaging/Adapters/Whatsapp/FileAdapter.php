@@ -16,10 +16,10 @@ class FileAdapter implements Adapter
         $payload = $data['message'];
         return new File(
             chatId: $chatId,
-            downloadUrl: $payload['media'],
+            path: $payload['media'],
             fileName: $payload['file_name'],
             caption: $payload['text'],
-            jpegThumbnail: $payload['thumbnail'],
+            //jpegThumbnail: $payload['thumbnail'],
         );
     }
 }

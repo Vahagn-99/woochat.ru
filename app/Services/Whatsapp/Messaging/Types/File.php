@@ -13,10 +13,10 @@ class File implements IMessage
 
     public function __construct(
         public readonly string $chatId,
-        public readonly string $downloadUrl,
+        public readonly string $path,
         public readonly string $fileName,
         public readonly ?string $caption = null,
-        public readonly ?string $jpegThumbnail = null,
+        //public readonly ?string $jpegThumbnail = null,
         public readonly ?string $quotedMessageId = null,
     ) {
     }
@@ -25,10 +25,10 @@ class File implements IMessage
     {
         return [
             'chatId' => $this->chatId,
-            'downloadUrl' => $this->downloadUrl,
+            'path' => $this->path,
             'fileName' => $this->fileName,
             'caption' => $this->caption,
-            'jpegThumbnail' => $this->jpegThumbnail,
+            //'jpegThumbnail' => $this->jpegThumbnail,
             'quotedMessageId' => $this->quotedMessageId,
         ];
     }
