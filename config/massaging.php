@@ -32,6 +32,10 @@ return [
                 'amochat' => [
                     'file' => App\Services\Whatsapp\Messaging\Adapters\AmoChat\FileAdapter::class,
                     'picture' => App\Services\Whatsapp\Messaging\Adapters\AmoChat\FileAdapter::class,
+                    'audio' => App\Services\Whatsapp\Messaging\Adapters\AmoChat\FileAdapter::class,
+                    'video' => App\Services\Whatsapp\Messaging\Adapters\AmoChat\FileAdapter::class,
+                    'voice' => App\Services\Whatsapp\Messaging\Adapters\AmoChat\FileAdapter::class,
+                    'text' => App\Services\Whatsapp\Messaging\Adapters\AmoChat\TextAdapter::class,
                 ],
             ],
             'settings' => [],
@@ -47,22 +51,22 @@ return [
                     'model' => App\Services\Whatsapp\Messaging\Types\Text::class,
                 ],
                 [
-                    'type' => 'picture',
+                    'type' => 'file',
                     'local_type' => 'imageMessage',
                     'model' => App\Services\Whatsapp\Messaging\Types\File::class,
                 ],
                 [
-                    'type' => 'voice',
+                    'type' => 'file',
                     'local_type' => 'audioMessage',
                     'model' => App\Services\Whatsapp\Messaging\Types\File::class,
                 ],
                 [
-                    'type' => 'voice',
-                    'local_type' => 'documentMess',
+                    'type' => 'file',
+                    'local_type' => 'documentMessage',
                     'model' => App\Services\Whatsapp\Messaging\Types\File::class,
                 ],
                 [
-                    'type' => 'voice',
+                    'type' => 'file',
                     'local_type' => 'videoMessage',
                     'model' => App\Services\Whatsapp\Messaging\Types\File::class,
                 ],
@@ -72,7 +76,8 @@ return [
         'amochat' => [
             'adapters' => [
                 'whatsapp' => [
-                    'picture' => App\Services\AmoChat\Messaging\Adapters\Whatsapp\FileAdapter::class,
+                    'file' => App\Services\AmoChat\Messaging\Adapters\Whatsapp\FileAdapter::class,
+                    'text' => App\Services\AmoChat\Messaging\Adapters\Whatsapp\TextAdapter::class,
                 ],
             ],
             'settings' => [],
