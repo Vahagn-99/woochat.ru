@@ -73,8 +73,8 @@ return [
                     'model' => App\Services\Whatsapp\Messaging\Types\File::class,
                 ],
                 [
-                    'type' => 'quotedMessage',
-                    'local_type' => 'quoted',
+                    'type' => 'quoted',
+                    'local_type' => 'quotedMessage',
                     'model' => App\Services\Whatsapp\Messaging\Types\Text::class,
                 ],
             ],
