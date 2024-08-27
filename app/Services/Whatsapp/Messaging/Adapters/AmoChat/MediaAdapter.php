@@ -16,11 +16,10 @@ class MediaAdapter implements Adapter
         $payload = $data['fileMessageData'];
         $mediaType = Str::before($payload['mimeType'], '/');
 
-        return new Media(
-            mediaType: $mediaType,
-            media: $payload['downloadUrl'],
-            file_name: $payload['fileName'],
-            text: $payload['fileName']
-        );
+        if ($mediaType === 'audio') {
+            $mediaType = 'voice';
+        }
+
+        return new Media(mediaType: $mediaType, media: $payload['downloadUrl'], file_name: $payload['fileName'], text: $payload['fileName']);
     }
 }
