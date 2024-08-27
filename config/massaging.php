@@ -17,6 +17,7 @@ return [
         "picture",
         "voice",
         "audio",
+        "quoted",
     ],
     /*
     |--------------------------------------------------------------------------
@@ -36,6 +37,7 @@ return [
                     'video' => App\Services\Whatsapp\Messaging\Adapters\AmoChat\FileAdapter::class,
                     'voice' => App\Services\Whatsapp\Messaging\Adapters\AmoChat\FileAdapter::class,
                     'text' => App\Services\Whatsapp\Messaging\Adapters\AmoChat\TextAdapter::class,
+                    'quoted' => App\Services\Whatsapp\Messaging\Adapters\AmoChat\QuotedAdapter::class,
                 ],
             ],
             'settings' => [],
@@ -69,6 +71,11 @@ return [
                     'type' => 'file',
                     'local_type' => 'videoMessage',
                     'model' => App\Services\Whatsapp\Messaging\Types\File::class,
+                ],
+                [
+                    'type' => 'quotedMessage',
+                    'local_type' => 'quoted',
+                    'model' => App\Services\Whatsapp\Messaging\Types\Text::class,
                 ],
             ],
         ],
@@ -116,6 +123,11 @@ return [
                     'type' => 'sticker',
                     'model' => App\Services\AmoChat\Messaging\Types\Sticker::class,
                     'local_type' => 'sticker',
+                ],
+                [
+                    'type' => 'quoted',
+                    'local_type' => 'quoted',
+                    'model' => App\Services\AmoChat\Messaging\Types\Text::class,
                 ],
             ],
         ],

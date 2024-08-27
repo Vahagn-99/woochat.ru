@@ -9,7 +9,7 @@ class ForwardMessages implements IMessage
 {
     use Manageable;
 
-    const TYPE = 'location';
+    const TYPE = 'forwardMessages';
 
     public function __construct(
         public string $chatId,
