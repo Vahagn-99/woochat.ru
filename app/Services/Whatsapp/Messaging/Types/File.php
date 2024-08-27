@@ -9,7 +9,7 @@ class File implements IMessage
 {
     use Manageable;
 
-    const TYPE = 'fileMessage';
+    const TYPE = 'fileByUpload';
 
     public function __construct(
         public readonly string $chatId,
