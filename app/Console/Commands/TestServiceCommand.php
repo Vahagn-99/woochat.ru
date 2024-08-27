@@ -3,6 +3,8 @@
 namespace App\Console\Commands;
 
 use App\Base\Messaging\Factory;
+use App\Services\Whatsapp\DTO\InstanceDTO;
+use App\Services\Whatsapp\Facades\Whatsapp;
 use Illuminate\Console\Command;
 
 class TestServiceCommand extends Command
@@ -59,6 +61,13 @@ class TestServiceCommand extends Command
         $factory = Factory::make();
         $factory->from('amochat', $imageMessage['message']['message']['type']);
         $model = $factory->to('whatsapp', $imageMessage['message']);
-        dd($model);
+        $instance = InstanceDTO::fromArray([
+            'id' => '5700107428',
+            'token' => '43792e7a84714397b72abb7af714dd438518e9bdcd504959bd',
+        ]);
+
+        $resp = Whatsapp::for($instance)->massaging()->send($model);
+
+        dd($resp);
     }
 }

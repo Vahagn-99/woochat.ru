@@ -14,12 +14,12 @@ class FileAdapter implements Adapter
     {
         $chatId = $data['receiver']['client_id'] ?? $data['sender']['phone']."@c.us";
         $payload = $data['message'];
+
         return new File(
             chatId: $chatId,
-            path: $payload['media'],
+            urlFile: $payload['media'],
             fileName: $payload['file_name'],
             caption: $payload['text'],
-            //jpegThumbnail: $payload['thumbnail'],
         );
     }
 }
