@@ -5,6 +5,7 @@ namespace App\Services\AmoCRM\Core\Manager;
 use AmoCRM\Client\AmoCRMApiClient;
 use AmoCRM\OAuth\OAuthServiceInterface;
 use App\Services\AmoCRM\Auth\AuthManagerInterface;
+use App\Services\AmoCRM\Core\Oauth\OauthStatusInterface;
 
 interface AmoManagerInterface
 {
@@ -15,4 +16,6 @@ interface AmoManagerInterface
     public function oauth(): OAuthServiceInterface;
 
     public function domain(string $domain): static;
+
+    public function instance(): OauthStatusInterface;
 }

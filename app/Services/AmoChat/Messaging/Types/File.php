@@ -5,23 +5,21 @@ namespace App\Services\AmoChat\Messaging\Types;
 use App\Base\Messaging\IMessage;
 use App\Base\Messaging\Manageable;
 
-class Media implements IMessage
+class File implements IMessage
 {
     use Manageable;
 
     public function __construct(
-        public string $mediaType,
         public string $media,
         public string $file_name,
-        public int    $file_size,
         public string $text = '',
-    )
-    {
+        public ?int $file_size = null,
+    ) {
     }
 
     public function getType(): string
     {
-        return $this->mediaType;
+        return "file";
     }
 
     /**

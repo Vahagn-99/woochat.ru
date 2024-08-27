@@ -2,15 +2,15 @@
 
 namespace App\Services\AmoChat\Messaging\Types;
 
+use App\Base\Messaging\IMessage;
 use App\Base\Messaging\Manageable;
 
-class ReplyTo implements Payload
+class ReplyTo implements IMessage
 {
     use Manageable;
 
     public function __construct(
-        public string  $chatId,
-        public Payload $message,
+        public IMessage $message,
         public string  $text = '',
     )
     {

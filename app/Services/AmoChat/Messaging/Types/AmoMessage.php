@@ -2,6 +2,7 @@
 
 namespace App\Services\AmoChat\Messaging\Types;
 
+use App\Base\Messaging\IMessage;
 use App\Base\Messaging\IMessage as BaseMessage;
 use App\Base\Messaging\Manageable;
 use App\Services\AmoChat\Messaging\Actor\Actor;
@@ -13,7 +14,7 @@ class AmoMessage implements BaseMessage
 
     public function __construct(
         public Actor $sender,
-        public Payload $payload,
+        public IMessage $payload,
         public ?Source $source = null,
         public bool $silent = false,
         public ?Actor $receiver = null,
@@ -48,10 +49,5 @@ class AmoMessage implements BaseMessage
     public function getType(): string
     {
         return $this->payload->getType();
-    }
-
-    public function getChatId(): string
-    {
-        return $this->conversation_id;
     }
 }

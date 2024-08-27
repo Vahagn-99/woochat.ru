@@ -2,6 +2,7 @@
 
 namespace App\Listeners\AmoChat;
 
+use App\Base\Messaging\Factory;
 use App\Base\Messaging\IMessage;
 use App\Base\Messaging\SentMessage;
 use App\Events\Messaging\MessageReceived;
@@ -11,7 +12,6 @@ use App\Models\Message;
 use App\Models\User;
 use App\Models\WhatsappInstance;
 use App\Services\Whatsapp\Facades\Whatsapp;
-use App\Services\Whatsapp\Messaging\Types\Text;
 use Exception;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
@@ -35,9 +35,7 @@ class SendMessageWhatsapp implements ShouldQueue
 
         $amoMessageId = $event->payload['message']['message']['id'];
 
-        $receiver = $this->mapReceiver($event->payload);
-
-        $messagePayload = $this->mapMessage($receiver, $event->payload['message']['message']);
+        $messagePayload = $this->mapMessage($event->payload['message']);
 
         $amoInstance = $this->getAmoInstance($event->payload['account_id']);
 
@@ -97,20 +95,16 @@ class SendMessageWhatsapp implements ShouldQueue
         return Whatsapp::for($whatsappInstance)->massaging()->send($message);
     }
 
-    private function mapMessage(string $chatId, array $message): Text
+    /**
+     * @throws \App\Exceptions\Messaging\ProviderNotConfiguredException
+     * @throws \App\Exceptions\Messaging\AdapterNotDefinedException
+     * @throws \App\Exceptions\Messaging\UnknownMessageTypeException
+     */
+    private function mapMessage(array $message): IMessage
     {
-        return match ($message['type']) {
-            'text' => $this->createTextMessage($chatId, $message),
-        };
-    }
+        $factory = Factory::make();
+        $factory->from('amochat', $message['type']);
 
-    private function mapReceiver(array $payload): string
-    {
-        return $payload['message']['receiver']['client_id'] ?? $payload['message']['receiver']['phone'].'@c.us';
-    }
-
-    private function createTextMessage(string $chatId, array $message): Text
-    {
-        return new Text($chatId, $message['text']);
+        return $factory->to('whatsapp', $message);
     }
 }

@@ -7,6 +7,7 @@ use AmoCRM\OAuth\OAuthServiceInterface;
 use App\Services\AmoCRM\Auth\AuthManagerInterface;
 use App\Services\AmoCRM\Core\Manager\AmoManager;
 use App\Services\AmoCRM\Core\Manager\AmoManagerInterface;
+use App\Services\AmoCRM\Core\Oauth\OauthStatusInterface;
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Testing\TestResponse;
@@ -17,6 +18,7 @@ use League\OAuth2\Client\Token\AccessToken;
  * @method static AuthManagerInterface authenticator()
  * @method static AmoCRMApiClient api()
  * @method static OAuthServiceInterface oauth()
+ * @method static OauthStatusInterface instance()
  *
  * @see AmoManagerInterface
  * @mixin AuthManagerInterface

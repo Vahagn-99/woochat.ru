@@ -5,7 +5,7 @@ namespace App\Services\AmoChat\Messaging\Types;
 use App\Base\Messaging\IMessage;
 use App\Base\Messaging\Manageable;
 
-class Media implements IMessage
+class Sticker implements IMessage
 {
     use Manageable;
 
@@ -21,7 +21,7 @@ class Media implements IMessage
 
     public function getType(): string
     {
-        return $this->mediaType;
+        return "sticker";
     }
 
     /**

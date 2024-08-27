@@ -2,6 +2,8 @@
 
 namespace App\Listeners\Whatsapp;
 
+use App\Base\Messaging\Factory;
+use App\Base\Messaging\IMessage;
 use App\Events\Messaging\MessageReceived;
 use App\Models\AmoInstance;
 use App\Models\Chat;
@@ -13,8 +15,6 @@ use App\Services\AmoChat\Messaging\Actor\Actor;
 use App\Services\AmoChat\Messaging\Actor\Profile;
 use App\Services\AmoChat\Messaging\Source\Source;
 use App\Services\AmoChat\Messaging\Types\AmoMessage;
-use App\Services\AmoChat\Messaging\Types\Payload;
-use App\Services\AmoChat\Messaging\Types\Text;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Str;
@@ -28,6 +28,11 @@ class SendMessageAmo implements ShouldQueue
 
     }
 
+    /**
+     * @throws \App\Exceptions\Messaging\ProviderNotConfiguredException
+     * @throws \App\Exceptions\Messaging\AdapterNotDefinedException
+     * @throws \App\Exceptions\Messaging\UnknownMessageTypeException
+     */
     public function handle(MessageReceived $event): void
     {
         if ($event->from !== 'whatsapp') {
@@ -42,7 +47,7 @@ class SendMessageAmo implements ShouldQueue
 
         $chat = $this->getChat($event->payload['senderData']['chatId'], $amoInstance, $whatsappInstance, $sender);
 
-        $messagePayload = $this->mapMessagePayload($chat->amo_chat_id, $event->payload['messageData']);
+        $messagePayload = $this->mapMessagePayload($event->payload['messageData']);
 
         $amoMessage = $this->mapMessage($event->payload['idMessage'], $chat, $sender, $whatsappInstance, $messagePayload);
 
@@ -99,7 +104,7 @@ class SendMessageAmo implements ShouldQueue
         Chat $chat,
         Actor $sender,
         WhatsappInstance $whatsappInstance,
-        Payload $payload
+        IMessage $payload
     ): AmoMessage {
         $settings = $whatsappInstance->settings;
 
@@ -120,47 +125,18 @@ class SendMessageAmo implements ShouldQueue
         ], "", $senderData['sender'])));
     }
 
-    private function mapMessagePayload(string $chatId, array $messageData): Payload
+    /**
+     * @throws \App\Exceptions\Messaging\ProviderNotConfiguredException
+     * @throws \App\Exceptions\Messaging\UnknownMessageTypeException
+     * @throws \App\Exceptions\Messaging\AdapterNotDefinedException
+     */
+    private function mapMessagePayload(array $messageData): IMessage
     {
         $type = $messageData['typeMessage'];
+        $factory = Factory::make();
 
-        return match ($type) {
-            'textMessage', 'extendedTextMessage' => $this->createTextMessage($chatId, $messageData), //'imageMessage'       => $this->createImageMessage($chatId, $messageData),
-            //'audioMessage'       => $this->createAudioMessage($chatId, $messageData),
-            //'locationMessage'    => $this->createLocationMessage($chatId, $messageData),
-            //'contactMessage'     => $this->createContactMessage($chatId, $messageData),
-            //'reactionMessage'    => $this->createReactionMessage($chatId, $messageData),
-            //'groupInviteMessage' => $this->createGroupInviteMessage($chatId, $messageData),
-        };
-    }
+        $factory->from('whatsapp', $type);
 
-    private function createTextMessage(string $chatId, array $messageData): Text
-    {
-        return new Text($chatId, $messageData['textMessageData']['textMessage'] ?? $messageData['extendedTextMessageData']['text']);
+        return $factory->to('amochat', $messageData);
     }
-    //
-    //private function createImageMessage(string $chatId, array $messageData): Media
-    //{
-    //
-    //}
-    //
-    //private function createAudioMessage(string $chatId, array $messageData): Media
-    //{
-    //}
-    //
-    //private function createLocationMessage(string $chatId, array $messageData): Location
-    //{
-    //}
-    //
-    //private function createContactMessage(string $chatId, array $messageData): Contact
-    //{
-    //}
-    //
-    //private function createReactionMessage(string $chatId, array $messageData): Text
-    //{
-    //}
-    //
-    //private function createGroupInviteMessage(string $chatId, array $messageData): Payload
-    //{
-    //}
 }

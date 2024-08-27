@@ -24,7 +24,7 @@ class WidgetStatusController extends Controller
             ]);
         }
 
-        $authStatus = Amo::domain($user->domain)->oauth()->status();
+        $authStatus = Amo::domain($user->domain)->instance()->status();
 
         return response()->json([
             'user' => $user,

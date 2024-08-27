@@ -14,11 +14,11 @@ class ConnectChatService implements ConnectChatServiceInterface
     public function __construct(private readonly ApiClientInterface $apiClient)
     {
         $this->body = [
-            'hook_api_version' => config('amochat.hook_api_version'),
-            'title' => config('amochat.name')
+            'hook_api_version' => config('amochat.channel.hook_api_version'),
+            'title' => config('amochat.channel.name')
         ];
 
-        $this->channelId = config('amochat.id');
+        $this->channelId = config('amochat.channel.id');
     }
 
     /**

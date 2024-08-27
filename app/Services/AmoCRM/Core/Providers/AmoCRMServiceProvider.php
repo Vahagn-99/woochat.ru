@@ -12,6 +12,8 @@ use App\Services\AmoCRM\Core\Manager\AmoManager;
 use App\Services\AmoCRM\Core\Manager\AmoManagerInterface;
 use App\Services\AmoCRM\Core\Oauth\OauthConfig;
 use App\Services\AmoCRM\Core\Oauth\OauthService;
+use App\Services\AmoCRM\Core\Oauth\OauthStatus;
+use App\Services\AmoCRM\Core\Oauth\OauthStatusInterface;
 use App\Services\AmoCRM\Entities\Contact\ContactApi;
 use App\Services\AmoCRM\Entities\Contact\ContactApiInterface;
 use App\Services\AmoCRM\Entities\Lead\LeadApi;
@@ -28,14 +30,16 @@ class AmoCRMServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        //$this->app->singleton(OAuthConfigInterface::class, function () {
-        //    return new OAuthConfig(config('services.amocrm.client_id'), config('services.amocrm.client_secret'), config('services.amocrm.redirect_url'));
-        //});
+        $this->app->singleton(OAuthConfigInterface::class, function () {
+            return new OauthConfig(config('services.amocrm.client_id'), config('services.amocrm.client_secret'), config('services.amocrm.redirect_url'));
+        });
         $this->app->singleton(OAuthServiceInterface::class, OauthService::class);
+        $this->app->singleton(OauthStatusInterface::class, OauthStatus::class);
         $this->app->singleton(AmoCRMApiClient::class, function () {
-           return new AmoCRMApiClient(
-               config('services.amocrm.client_id'), config('services.amocrm.client_secret'), config('services.amocrm.redirect_url')
-           );
+            /** @var AmoCRMApiClientFactory $factory */
+            $factory = app(AmoCRMApiClientFactory::class);
+
+            return $factory->make();
         });
         $this->app->singleton("dct-amo-client", function () {
             return new AmoCRMApiClient(config('amocrm-dct.widget.client_id'), config('amocrm-dct.widget.client_secret'), config('amocrm-dct.widget.redirect_url'));

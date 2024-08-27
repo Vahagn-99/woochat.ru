@@ -27,7 +27,7 @@ class ApiClient implements ApiClientInterface
     public function __construct()
     {
         $this->baseUrl = "https://amojo.amocrm.ru";
-        $this->secretKey = config('amochat.secret_key');
+        $this->secretKey = config('amochat.channel.secret_key');
     }
 
     /**

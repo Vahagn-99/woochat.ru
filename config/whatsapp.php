@@ -50,15 +50,4 @@ return [
         'incomingMessageReceived' => MessageReceived::class, // Входящее сообщение
         'stateInstanceChanged' => InstanceStatusChanged::class, // Статус инстанса
     ],
-
-    'messages' => [
-        'types' => [
-            'textMessage' => [
-                'textMessageData' => 'textMessage',
-            ],
-            'quotedMessage' => [
-                'extendedTextMessageData' => 'text',
-            ],
-        ],
-    ],
 ];
