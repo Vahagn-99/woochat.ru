@@ -140,7 +140,7 @@ return [
                     'local_type' => 'reaction',
                     'model' => App\Services\AmoChat\Messaging\Types\Text::class,
                 ],
-            ],
+            ]
         ],
     ],
 ];
