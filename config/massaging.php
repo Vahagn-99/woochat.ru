@@ -54,12 +54,17 @@ return [
                     'model' => App\Services\Whatsapp\Messaging\Types\Text::class,
                 ],
                 [
-                    'type' => 'file',
+                    'type' => 'picture',
                     'local_type' => 'imageMessage',
                     'model' => App\Services\Whatsapp\Messaging\Types\File::class,
                 ],
                 [
-                    'type' => 'file',
+                    'type' => 'voice',
+                    'local_type' => 'audioMessage',
+                    'model' => App\Services\Whatsapp\Messaging\Types\File::class,
+                ],
+                [
+                    'type' => 'audio',
                     'local_type' => 'audioMessage',
                     'model' => App\Services\Whatsapp\Messaging\Types\File::class,
                 ],
@@ -69,7 +74,7 @@ return [
                     'model' => App\Services\Whatsapp\Messaging\Types\File::class,
                 ],
                 [
-                    'type' => 'file',
+                    'type' => 'video',
                     'local_type' => 'videoMessage',
                     'model' => App\Services\Whatsapp\Messaging\Types\File::class,
                 ],
@@ -90,6 +95,10 @@ return [
             'adapters' => [
                 'whatsapp' => [
                     'file' => App\Services\AmoChat\Messaging\Adapters\Whatsapp\FileAdapter::class,
+                    'picture' => App\Services\AmoChat\Messaging\Adapters\Whatsapp\FileAdapter::class,
+                    'audio' => App\Services\AmoChat\Messaging\Adapters\Whatsapp\FileAdapter::class,
+                    'video' => App\Services\AmoChat\Messaging\Adapters\Whatsapp\FileAdapter::class,
+                    'voice' => App\Services\AmoChat\Messaging\Adapters\Whatsapp\FileAdapter::class,
                     'text' => App\Services\AmoChat\Messaging\Adapters\Whatsapp\TextAdapter::class,
                 ],
             ],
@@ -140,7 +149,7 @@ return [
                     'local_type' => 'reaction',
                     'model' => App\Services\AmoChat\Messaging\Types\Text::class,
                 ],
-            ]
+            ],
         ],
     ],
 ];
