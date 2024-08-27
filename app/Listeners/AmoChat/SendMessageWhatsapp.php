@@ -103,7 +103,7 @@ class SendMessageWhatsapp implements ShouldQueue
     private function mapMessage(array $message): IMessage
     {
         $factory = Factory::make();
-        $factory->from('amochat', $message['type']);
+        $factory->from('amochat', $message['message']['type']);
 
         return $factory->to('whatsapp', $message);
     }
