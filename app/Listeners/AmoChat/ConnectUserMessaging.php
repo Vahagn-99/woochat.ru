@@ -51,6 +51,13 @@ class ConnectUserMessaging implements ShouldQueue
             $status = InstanceStatus::STARTING;
         }
 
+        if ($status !== InstanceStatus::STARTING) {
+            Whatsapp::for([
+                'id' => $firstFreeInstance->id,
+                'token' => $firstFreeInstance->token,
+            ])->api()->clearQueue();
+        }
+
         $user->whatsappInstances()->create([
             'id' => $firstFreeInstance->id,
             'user_id' => $user->id,
