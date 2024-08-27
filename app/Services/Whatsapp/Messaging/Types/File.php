@@ -14,7 +14,7 @@ class File implements IMessage
     public function __construct(
         public readonly string $chatId,
         public readonly string $urlFile,
-        public readonly string $fileName,
+        public readonly ?string $fileName = null,
         public readonly ?string $caption = null,
         public readonly ?string $quotedMessageId = null,
     ) {

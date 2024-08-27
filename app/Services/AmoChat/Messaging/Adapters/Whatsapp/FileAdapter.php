@@ -18,7 +18,7 @@ class FileAdapter implements Adapter
         return new File(
             chatId: $chatId,
             urlFile: $payload['media'],
-            fileName: $payload['file_name'],
+            fileName: $payload['file_name'] ,
             caption: $payload['text'],
         );
     }
