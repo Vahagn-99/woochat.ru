@@ -14,7 +14,7 @@ class MediaAdapter implements Adapter
     public function adapt(array $data): IMessage
     {
         $payload = $data['fileMessageData'];
-        $mediaType = Str::before($payload->getMediaType(), '/');
+        $mediaType = Str::before($payload['mimeType'], '/');
 
         return new Media(
             mediaType: $mediaType,
