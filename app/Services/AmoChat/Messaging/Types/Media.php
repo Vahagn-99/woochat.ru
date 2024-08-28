@@ -12,8 +12,8 @@ class Media implements IMessage
     public function __construct(
         public string $mediaType,
         public string $media,
-        public string $file_name,
         public string $text = '',
+        public ?string $file_name = null,
         public ?int $file_size = null,
     ) {
     }
