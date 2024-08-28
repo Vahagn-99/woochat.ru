@@ -10,8 +10,9 @@ use App\Services\AmoCRM\Auth\AmoCrmAuthManager;
 use App\Services\AmoCRM\Auth\AuthManagerInterface;
 use App\Services\AmoCRM\Core\Manager\AmoManager;
 use App\Services\AmoCRM\Core\Manager\AmoManagerInterface;
+use App\Services\AmoCRM\Core\Oauth\DatabaseOauthService;
+use App\Services\AmoCRM\Core\Oauth\FileOauthService;
 use App\Services\AmoCRM\Core\Oauth\OauthConfig;
-use App\Services\AmoCRM\Core\Oauth\OauthService;
 use App\Services\AmoCRM\Core\Oauth\OauthStatus;
 use App\Services\AmoCRM\Core\Oauth\OauthStatusInterface;
 use App\Services\AmoCRM\Entities\Contact\ContactApi;
@@ -33,7 +34,7 @@ class AmoCRMServiceProvider extends ServiceProvider
         $this->app->singleton(OAuthConfigInterface::class, function () {
             return new OauthConfig(config('services.amocrm.client_id'), config('services.amocrm.client_secret'), config('services.amocrm.redirect_url'));
         });
-        $this->app->singleton(OAuthServiceInterface::class, OauthService::class);
+        $this->app->singleton(OAuthServiceInterface::class, DatabaseOauthService::class);
         $this->app->singleton(OauthStatusInterface::class, OauthStatus::class);
         $this->app->singleton(AmoCRMApiClient::class, function () {
             /** @var AmoCRMApiClientFactory $factory */
@@ -42,7 +43,12 @@ class AmoCRMServiceProvider extends ServiceProvider
             return $factory->make();
         });
         $this->app->singleton("dct-amo-client", function () {
-            return new AmoCRMApiClient(config('amocrm-dct.widget.client_id'), config('amocrm-dct.widget.client_secret'), config('amocrm-dct.widget.redirect_url'));
+            $config = new OauthConfig(config('amocrm-dct.widget.client_id'), config('amocrm-dct.widget.client_secret'), config('amocrm-dct.widget.redirect_url'));
+            $oauth = new FileOauthService();
+
+            $factory = new AmoCRMApiClientFactory($config, $oauth);
+
+            return $factory->make();
         });
         $this->app->singleton(AmoManagerInterface::class, AmoManager::class);
         $this->app->singleton(AuthManagerInterface::class, AmoCrmAuthManager::class);

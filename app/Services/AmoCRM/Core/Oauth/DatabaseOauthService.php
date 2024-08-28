@@ -8,7 +8,7 @@ use AmoCRM\OAuth\OAuthServiceInterface;
 use App\Models\AmoAccessToken;
 use League\OAuth2\Client\Token\AccessTokenInterface;
 
-class OauthService implements OAuthServiceInterface
+class DatabaseOauthService implements OAuthServiceInterface
 {
     public function saveOAuthToken(AccessTokenInterface $accessToken, string $baseDomain): void
     {

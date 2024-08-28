@@ -69,6 +69,8 @@ return Application::configure(basePath: dirname(__DIR__))->withRouting(web: [
 
     $exceptions->report(function (AmoCRMMissedTokenException|AmoCRMoAuthApiException|AmoCRMApiException $e) {
         do_log("widget/installation")->error($e->getMessage(), $e->getLastRequestInfo());
+
+        return false;
     });
 
     $exceptions->report(function (UnsupportedWebhookType $e) {
