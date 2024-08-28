@@ -115,9 +115,10 @@ class ApiClient implements ApiClientInterface
 
         if ($response->failed()) {
             $message = " ".PHP_EOL;
-            $message .= "error_code: ".json_decode($response->body(), true)['error_code'].PHP_EOL;
-            $message .= "error_type: ".json_decode($response->body(), true)['error_type'].PHP_EOL;
-            $message .= "error_description: ".json_decode($response->body(), true)['error_description'];
+            $message .= "error code: ".json_decode($response->body(), true)['error_code'].PHP_EOL;
+            $message .= "error type: ".json_decode($response->body(), true)['error_type'].PHP_EOL;
+            $message .= "error description: ".json_decode($response->body(), true)['error_description'];
+            $message .= "request body: ".$requestBody;
             throw new AmoChatConnectionException($message, $response->status());
         }
 
