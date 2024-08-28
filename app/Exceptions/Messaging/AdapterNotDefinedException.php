@@ -14,8 +14,10 @@ class AdapterNotDefinedException extends ReportableException
         parent::__construct("There is no adapter '{$this->type}' in provider '{$this->from}' for '{$this->to}'");
     }
 
-    public function report(): void
+    public function report(): bool
     {
         do_log("massaging/adapters".now()->toDateTimeString())->error("There is no adapter '{$this->type}' in provider '{$this->from}' for '{$this->to}'");
+
+        return false;
     }
 }

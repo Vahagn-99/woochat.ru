@@ -2,7 +2,7 @@
 
 namespace App\Services\AmoChat\Client;
 
-use App\Exceptions\AmoChat\AmoChatConnectionException;
+use App\Exceptions\AmoChat\AmoChatRequestException;
 use DateTimeInterface;
 use Exception;
 use GuzzleHttp\Promise\PromiseInterface;
@@ -117,9 +117,10 @@ class ApiClient implements ApiClientInterface
             $message = " ".PHP_EOL;
             $message .= "error code: ".json_decode($response->body(), true)['error_code'].PHP_EOL;
             $message .= "error type: ".json_decode($response->body(), true)['error_type'].PHP_EOL;
-            $message .= "error description: ".json_decode($response->body(), true)['error_description'];
+            $message .= "error description: ".json_decode($response->body(), true)['error_description'].PHP_EOL;
             $message .= "request body: ".$requestBody;
-            throw new AmoChatConnectionException($message, $response->status());
+
+            throw new AmoChatRequestException($message, $response->status());
         }
 
         return $response->json();

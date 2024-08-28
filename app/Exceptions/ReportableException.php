@@ -15,9 +15,9 @@ class ReportableException extends Exception
     /**
      * Report the exception.
      */
-    public function report(): void
+    public function report(): bool
     {
-        // ...
+        return true;
     }
 
     /**
