@@ -15,7 +15,7 @@ abstract class MediaAdapter implements Adapter
         $payload = $data['fileMessageData'];
         $mediaType = $this->mediaType();
 
-        return new Media(mediaType: $mediaType, media: $payload['downloadUrl'], text: $payload['text']);
+        return new Media(mediaType: $mediaType, media: $payload['downloadUrl'], text: $payload['caption'] ?? $payload['text'] ?? '');
     }
 
     abstract protected function mediaType(): string;
