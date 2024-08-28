@@ -13,7 +13,11 @@ return new class extends Migration{
             $table->string('whatsapp_chat_id')->nullable();
 
             $table->string('whatsapp_instance_id')->nullable();
-            $table->foreign('whatsapp_instance_id')->on('whatsapp_instances')->references('id');
+            $table->foreign('whatsapp_instance_id')
+                ->on('whatsapp_instances')
+                ->onDelete('cascade')
+                ->onUpdate('cascade')
+                ->references('id');
 
             $table->timestamp('created_at')->useCurrent();
             $table->unique(['amo_chat_id', 'whatsapp_chat_id']);
