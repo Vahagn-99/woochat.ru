@@ -31,11 +31,11 @@ return [
         'whatsapp' => [
             'adapters' => [
                 'amochat' => [
-                    'file' => App\Services\Whatsapp\Messaging\Adapters\AmoChat\MediaAdapter::class,
-                    'picture' => App\Services\Whatsapp\Messaging\Adapters\AmoChat\MediaAdapter::class,
-                    'audio' => App\Services\Whatsapp\Messaging\Adapters\AmoChat\MediaAdapter::class,
-                    'video' => App\Services\Whatsapp\Messaging\Adapters\AmoChat\MediaAdapter::class,
-                    'voice' => App\Services\Whatsapp\Messaging\Adapters\AmoChat\MediaAdapter::class,
+                    'file' => App\Services\Whatsapp\Messaging\Adapters\AmoChat\FileAdapter::class,
+                    'picture' => App\Services\Whatsapp\Messaging\Adapters\AmoChat\PictureAdapter::class,
+                    'audio' => App\Services\Whatsapp\Messaging\Adapters\AmoChat\VoiceAdapter::class,
+                    'video' => App\Services\Whatsapp\Messaging\Adapters\AmoChat\VideoAdapter::class,
+                    'voice' => App\Services\Whatsapp\Messaging\Adapters\AmoChat\VoiceAdapter::class,
                     'text' => App\Services\Whatsapp\Messaging\Adapters\AmoChat\TextAdapter::class,
                     'quoted' => App\Services\Whatsapp\Messaging\Adapters\AmoChat\QuotedAdapter::class,
                     'reaction' => App\Services\Whatsapp\Messaging\Adapters\AmoChat\ReactionAdapter::class,
