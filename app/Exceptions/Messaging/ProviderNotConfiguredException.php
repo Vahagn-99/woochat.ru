@@ -3,8 +3,9 @@
 namespace App\Exceptions\Messaging;
 
 use App\Exceptions\ReportableException;
+use Exception;
 
-class ProviderNotConfiguredException extends ReportableException
+class ProviderNotConfiguredException extends Exception implements ReportableException
 {
     public function __construct(private readonly string $provider)
     {

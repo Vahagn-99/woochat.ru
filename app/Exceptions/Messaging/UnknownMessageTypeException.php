@@ -3,8 +3,9 @@
 namespace App\Exceptions\Messaging;
 
 use App\Exceptions\ReportableException;
+use Exception;
 
-class UnknownMessageTypeException extends ReportableException
+class UnknownMessageTypeException extends Exception implements ReportableException
 {
     private string $type;
 
