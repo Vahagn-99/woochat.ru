@@ -14,6 +14,7 @@ use App\Models\WhatsappInstance;
 use App\Services\Whatsapp\Facades\Whatsapp;
 use Exception;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Queue\InteractsWithQueue;
 
 class SendMessageWhatsapp implements ShouldQueue
@@ -60,7 +61,7 @@ class SendMessageWhatsapp implements ShouldQueue
                 'record' => $record->toArray(),
                 'payload' => $messagePayload->toArray(),
             ]);
-        } catch (Exception $e) {
+        } catch (Exception|ModelNotFoundException $e) {
             do_log("messaging/sent/amochat")->error($e->getMessage());
 
             return;

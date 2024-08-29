@@ -55,6 +55,6 @@ class AmoInstance extends Model
 
     public static function findByAccountId(string $scopeId): AmoInstance
     {
-        return self::query()->where('account_id', $scopeId)->first();
+        return self::query()->where('account_id', $scopeId)->firstOrFail();
     }
 }
