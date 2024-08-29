@@ -19,6 +19,7 @@ use App\Services\AmoChat\Messaging\Actor\Profile;
 use App\Services\AmoChat\Messaging\Source\Source;
 use App\Services\AmoChat\Messaging\Types\AmoMessage;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Str;
 
@@ -61,7 +62,7 @@ class SendMessageAmo implements ShouldQueue
             ]);
 
             do_log("messaging/whatsapp")->info("sent message with ID: ".$sentMessage->id, $massager->getLastRequestInfo());
-        } catch (ProviderNotConfiguredException|AdapterNotDefinedException|UnknownMessageTypeException $e) {
+        } catch (ProviderNotConfiguredException|AdapterNotDefinedException|UnknownMessageTypeException|ModelNotFoundException $e) {
             $this->release($e);
         }
     }
@@ -74,7 +75,7 @@ class SendMessageAmo implements ShouldQueue
     private function getWhatsappInstance(string $id): WhatsappInstance
     {
         /** @var WhatsappInstance */
-        return WhatsappInstance::query()->find($id);
+        return WhatsappInstance::query()->findOrFail($id);
     }
 
     private function getChat(
