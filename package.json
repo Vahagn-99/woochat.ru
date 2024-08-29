@@ -2,5 +2,9 @@
   "devDependencies": {
     "laravel-echo": "^1.16.1",
     "pusher-js": "^8.4.0-rc2"
+  },
+  "scripts": {
+    "horizon:start": "npm run horizon:remove && pm2 start process.yaml",
+    "horizon:remove": "pm2 delete process.yaml"
   }
 }
