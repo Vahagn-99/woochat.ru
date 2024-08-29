@@ -45,7 +45,12 @@ class Whatsapp extends Facade
 
         app()->instance(GreenApiClient::class, $client);
 
-        return app(WhatsappManagerInterface::class);
+        /** @var WhatsappManagerInterface $manager */
+        $manager = app(WhatsappManagerInterface::class);
+
+        $manager->instance()->setInstance($instance);
+
+        return $manager;
     }
 
     public static function fake(

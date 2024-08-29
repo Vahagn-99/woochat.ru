@@ -2,6 +2,7 @@
 
 namespace App\Services\Whatsapp\Instance;
 
+use App\Services\Whatsapp\DTO\InstanceDTO;
 use Illuminate\Support\Arr;
 
 class InstanceService implements InstanceServiceInterface
@@ -44,9 +45,20 @@ class InstanceService implements InstanceServiceInterface
     public function getLastFree(array $usedIds = []): CreatedInstanceDTO|false
     {
         $allInstances = $this->api->allInstances();
-        $freeInstances = Arr::where($allInstances, fn(CreatedInstanceDTO $item
-        ) => ! in_array($item->id, $usedIds));
+        $freeInstances = Arr::where($allInstances, fn(CreatedInstanceDTO $item) => ! in_array($item->id, $usedIds));
 
         return current($freeInstances);
+    }
+
+    public function delete(): bool
+    {
+        return $this->api->deleteInstance();
+    }
+
+    public function setInstance(InstanceDTO $instance): static
+    {
+        $this->api->setInstance($instance);
+
+        return $this;
     }
 }

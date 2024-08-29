@@ -2,6 +2,8 @@
 
 namespace App\Services\Whatsapp\Instance;
 
+use App\Services\Whatsapp\DTO\InstanceDTO;
+
 interface InstanceServiceInterface
 {
     /**
@@ -24,10 +26,17 @@ interface InstanceServiceInterface
     /**
      * @return bool
      */
+    public function delete(): bool;
+
+    /**
+     * @return bool
+     */
     public function reboot(): bool;
 
     /**
      * @return bool
      */
     public function logout(): bool;
+
+    public function setInstance(InstanceDTO $instance): static;
 }

@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\Whatsapp;
 
+use App\Enums\InstanceStatus;
 use App\Models\WhatsappInstance;
 use App\Services\Whatsapp\Facades\Whatsapp;
 use Illuminate\Console\Command;
@@ -33,6 +34,7 @@ class SyncWhatsappInstances extends Command
             WhatsappInstance::query()->updateOrCreate([
                 'id' => $instance->id,
                 'token' => $instance->token,
+                'status' => InstanceStatus::NOT_AUTHORIZED,
             ]);
         }
     }

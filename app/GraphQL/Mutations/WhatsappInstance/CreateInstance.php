@@ -39,7 +39,7 @@ final readonly class CreateInstance
             ])->api()->clearQueue();
         }
 
-        event(new NewInstanceOrdered($name));
+        NewInstanceOrdered::dispatchIf(WhatsappInstance::whereFree()->count() <= 1, $name);
 
         $model->user_id = $user->id;
         $model->save();

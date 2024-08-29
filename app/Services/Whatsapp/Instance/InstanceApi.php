@@ -3,6 +3,7 @@
 namespace App\Services\Whatsapp\Instance;
 
 use App\Exceptions\Whatsapp\InstanceCreationException;
+use App\Services\Whatsapp\DTO\InstanceDTO;
 use App\Services\Whatsapp\Facades\Whatsapp;
 use GuzzleHttp\Client;
 use Illuminate\Http\Client\ConnectionException;
@@ -13,6 +14,11 @@ use Illuminate\Support\Facades\Http;
 class InstanceApi implements InstanceApiInterface
 {
     protected static string $host = 'https://api.green-api.com';
+
+    /**
+     * @var \App\Services\Whatsapp\DTO\InstanceDTO
+     */
+    private InstanceDTO $instance;
 
     public function __construct(
         private readonly string $partnerApiUrl,
@@ -26,12 +32,7 @@ class InstanceApi implements InstanceApiInterface
             'base_uri' => self::$host,
         ]);
 
-        return Http::acceptJson()
-            ->setClient($client)
-            ->timeout(60)
-            ->retry(5)
-            ->timeout(5)
-            ->connectTimeout(5);
+        return Http::acceptJson()->setClient($client)->timeout(60)->retry(5)->timeout(5)->connectTimeout(5);
     }
 
     /**
@@ -39,7 +40,7 @@ class InstanceApi implements InstanceApiInterface
      */
     public function newInstance(array $params): CreatedInstanceDTO
     {
-        $endpoint = $this->setParams("/partner/createInstance");
+        $endpoint = $this->setEndpoint("/partner/createInstance");
 
         try {
 
@@ -54,9 +55,30 @@ class InstanceApi implements InstanceApiInterface
     /**
      * @throws \App\Exceptions\Whatsapp\InstanceCreationException
      */
+    public function deleteInstance(): bool
+    {
+        $endpoint = $this->setEndpoint("/partner/deleteInstanceAccount");
+
+        $params = [
+            'idInstance' => $this->instance->id,
+        ];
+
+        try {
+
+            $response = $this->buildRequest()->post($endpoint, $params)->json();
+
+            return $response['deleteInstanceAccount'];
+        } catch (ConnectionException $e) {
+            throw new  InstanceCreationException($e->getMessage());
+        }
+    }
+
+    /**
+     * @throws \App\Exceptions\Whatsapp\InstanceCreationException
+     */
     public function allInstances(): array
     {
-        $endpoint = $this->setParams("/partner/getInstances");
+        $endpoint = $this->setEndpoint("/partner/getInstances");
 
         try {
 
@@ -85,8 +107,15 @@ class InstanceApi implements InstanceApiInterface
         return true;
     }
 
-    private function setParams(string $url): string
+    private function setEndpoint(string $url): string
     {
         return $this->partnerApiUrl."/".trim($url, '/')."/".$this->partnerToken;
+    }
+
+    public function setInstance(InstanceDTO $instance): static
+    {
+        $this->instance = $instance;
+
+        return $this;
     }
 }
