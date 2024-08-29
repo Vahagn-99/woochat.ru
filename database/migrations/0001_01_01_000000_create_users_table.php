@@ -14,7 +14,7 @@ return new class extends Migration{
             $table->string('domain')->primary();
             $table->unsignedBigInteger("id")->nullable()->unique();
             $table->uuid('amojo_id')->nullable()->unique();
-            $table->string('email')->nullable()->unique();
+            $table->string('email')->nullable();
             $table->string('phone')->nullable()->unique();
             $table->string('country')->nullable();
             $table->timestamp('created_at')->useCurrent();
