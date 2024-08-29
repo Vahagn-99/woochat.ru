@@ -9,6 +9,7 @@ use App\Models\WhatsappInstance as InstanceModel;
 use App\Services\AmoChat\Facades\AmoChat;
 use App\Services\Whatsapp\Facades\Whatsapp;
 use App\Services\Whatsapp\Instance\CreatedInstanceDTO;
+use Exception;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Arr;
@@ -19,8 +20,15 @@ class ConnectUserMessaging implements ShouldQueue
 
     public function handle(UserCreated $event): void
     {
-        $this->connectAmoInstance($event->user);
-        $this->connectWhatsappInstance($event->user);
+        try {
+            $this->connectAmoInstance($event->user);
+
+            $this->connectWhatsappInstance($event->user);
+        } catch (Exception $e) {
+            do_log('widget/error/connect')->error($e->getMessage());
+
+            return;
+        }
     }
 
     private function connectAmoInstance(User $user): void
