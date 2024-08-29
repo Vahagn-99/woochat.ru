@@ -14,6 +14,7 @@ final readonly class DeleteInstance
         Whatsapp::for($instance)->api()->getClient()->account->logout();
 
         $instance->user_id = null;
+        $instance->save();
 
         return true;
     }
