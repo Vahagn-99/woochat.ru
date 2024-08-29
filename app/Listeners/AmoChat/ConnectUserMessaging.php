@@ -8,11 +8,9 @@ use App\Models\User;
 use App\Models\WhatsappInstance as InstanceModel;
 use App\Services\AmoChat\Facades\AmoChat;
 use App\Services\Whatsapp\Facades\Whatsapp;
-use App\Services\Whatsapp\Instance\CreatedInstanceDTO;
 use Exception;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Support\Arr;
 
 class ConnectUserMessaging implements ShouldQueue
 {
@@ -43,12 +41,9 @@ class ConnectUserMessaging implements ShouldQueue
 
     private function connectWhatsappInstance(User $user): void
     {
-        $allInstances = Whatsapp::instance()->all();
         $usedInstances = InstanceModel::query()->select('id')->pluck('id')->toArray();
-        $freeInstances = Arr::where($allInstances, fn(CreatedInstanceDTO $item
-        ) => ! in_array($item->id, $usedInstances));
 
-        $firstFreeInstance = current($freeInstances);
+        $firstFreeInstance = Whatsapp::instance()->getLastFree($usedInstances);
 
         $status = InstanceStatus::NOT_AUTHORIZED;
         $name = "Мой Первый инстанс";

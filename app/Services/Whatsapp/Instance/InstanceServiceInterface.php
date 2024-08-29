@@ -2,8 +2,6 @@
 
 namespace App\Services\Whatsapp\Instance;
 
-use App\Services\Whatsapp\DTO\InstanceDTO;
-
 interface InstanceServiceInterface
 {
     /**
@@ -16,6 +14,12 @@ interface InstanceServiceInterface
      * @return array<\App\Services\Whatsapp\Instance\CreatedInstanceDTO>
      */
     public function all(): array;
+
+    /**
+     * @param array $usedIds
+     * @return \App\Services\Whatsapp\Instance\CreatedInstanceDTO|false
+     */
+    public function getLastFree(array $usedIds = []): CreatedInstanceDTO|false;
 
     /**
      * @return bool

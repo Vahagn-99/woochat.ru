@@ -2,6 +2,8 @@
 
 namespace App\Services\Whatsapp\Instance;
 
+use Illuminate\Support\Arr;
+
 class InstanceService implements InstanceServiceInterface
 {
     public function __construct(private readonly InstanceApiInterface $api, private array $config = [])
@@ -37,5 +39,14 @@ class InstanceService implements InstanceServiceInterface
         $this->api->logoutInstance();
 
         return true;
+    }
+
+    public function getLastFree(array $usedIds = []): CreatedInstanceDTO|false
+    {
+        $allInstances = $this->api->allInstances();
+        $freeInstances = Arr::where($allInstances, fn(CreatedInstanceDTO $item
+        ) => ! in_array($item->id, $usedIds));
+
+        return current($freeInstances);
     }
 }
