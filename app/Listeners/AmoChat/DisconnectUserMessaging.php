@@ -6,6 +6,7 @@ use App\Events\AmoCRM\UserDeleted;
 use App\Services\Whatsapp\Facades\Whatsapp;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
+use Throwable;
 
 class DisconnectUserMessaging implements ShouldQueue
 {
@@ -18,13 +19,19 @@ class DisconnectUserMessaging implements ShouldQueue
             Whatsapp::for($instance)->instance()->logout();
         }
 
-        // delete user instances
-        $event->user->whatsappInstances()->delete();
+        try {
+            // delete user instances
+            $event->user->whatsappInstances()->delete();
 
-        // delete amochat connections
-        $event->user->amoInstances()->delete();
+            // delete amochat instance
+            $event->user->amoInstance()->delete();
 
-        // delete user access tokens
-        $event->user->amoAccessToken()->delete();
+            // delete user access tokens
+            $event->user->amoAccessToken()->delete();
+        } catch (Throwable $e) {
+            do_log('widget/error/disconnect')->error($e->getMessage());
+
+            return;
+        }
     }
 }
