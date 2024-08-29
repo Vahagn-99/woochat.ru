@@ -58,6 +58,7 @@ class InstanceApi implements InstanceApiInterface
             $response = $this->buildRequest()->post($endpoint)->json();
 
             $data = Arr::where($response, fn(array $item) => ! $item['deleted'] && ! $item['isExpired']);
+
             return Arr::map($data, fn(array $item
             ) => new CreatedInstanceDTO($item['idInstance'], $item['apiTokenInstance'], $item['name']));
         } catch (ConnectionException $e) {
