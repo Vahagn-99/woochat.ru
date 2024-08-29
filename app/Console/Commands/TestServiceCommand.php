@@ -6,9 +6,9 @@ use Illuminate\Console\Command;
 
 class TestServiceCommand extends Command
 {
-    protected $signature = 'scheduler:works';
+    protected $signature = 'test:service';
 
-    protected $description = 'The command to test scheduler';
+    protected $description = 'The command to test any service';
 
     public function handle(): void
     {
