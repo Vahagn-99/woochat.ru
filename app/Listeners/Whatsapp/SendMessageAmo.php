@@ -18,7 +18,6 @@ use App\Services\AmoChat\Messaging\Actor\Actor;
 use App\Services\AmoChat\Messaging\Actor\Profile;
 use App\Services\AmoChat\Messaging\Source\Source;
 use App\Services\AmoChat\Messaging\Types\AmoMessage;
-use App\Services\Whatsapp\Facades\Whatsapp;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Str;
@@ -38,9 +37,9 @@ class SendMessageAmo implements ShouldQueue
             return;
         }
 
-        $whatsappInstance = $this->getWhatsappInstance($event->payload['instanceData']['idInstance']);
-
         try {
+            $whatsappInstance = $this->getWhatsappInstance($event->payload['instanceData']['idInstance']);
+
             $amoInstance = $this->getAmoInstance($whatsappInstance);
 
             $sender = $this->mapSender($event->payload['senderData']);
@@ -63,7 +62,6 @@ class SendMessageAmo implements ShouldQueue
 
             do_log("messaging/whatsapp")->info("sent message with ID: ".$sentMessage->id, $massager->getLastRequestInfo());
         } catch (ProviderNotConfiguredException|AdapterNotDefinedException|UnknownMessageTypeException $e) {
-            Whatsapp::for($whatsappInstance)->api()->clearQueue();
             $this->release($e);
         }
     }
