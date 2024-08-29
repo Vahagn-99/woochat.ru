@@ -26,7 +26,12 @@ class InstanceApi implements InstanceApiInterface
             'base_uri' => self::$host,
         ]);
 
-        return Http::acceptJson()->setClient($client);
+        return Http::acceptJson()
+            ->setClient($client)
+            ->timeout(60)
+            ->retry(5)
+            ->timeout(5)
+            ->connectTimeout(5);
     }
 
     /**
