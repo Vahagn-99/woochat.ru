@@ -1,5 +1,5 @@
 extend type Query @guard {
-    instances: [WhatsappInstance!]! @all
+    instances: [WhatsappInstance!]! @field(resolver: "\\App\\GraphQL\\Queries\\WhatsappInstance\\GetInstances")
     instance(id:ID @eq): WhatsappInstance @find
     getInstanceQRCode(id:ID!):QRCode! @field(resolver: "\\App\\GraphQL\\Queries\\WhatsappInstance\\GetInstanceQRCode")
 }
