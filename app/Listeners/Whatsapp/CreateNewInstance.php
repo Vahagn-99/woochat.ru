@@ -17,6 +17,6 @@ class CreateNewInstance implements ShouldQueue
 
     public function handle(NewInstanceOrdered $event): void
     {
-        Whatsapp::instance()->create(" ".now()->toDateTimeString()." ");
+        Whatsapp::instance()->create($event->name);
     }
 }

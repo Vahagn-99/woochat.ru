@@ -36,7 +36,7 @@ final readonly class CreateInstance
             ])->api()->clearQueue();
         }
 
-        event(NewInstanceOrdered::class);
+        event(new NewInstanceOrdered("Инстанс No".WhatsappInstance::query()->count()));
 
         return WhatsappInstance::query()->create([
             'id' => $instance->id,
