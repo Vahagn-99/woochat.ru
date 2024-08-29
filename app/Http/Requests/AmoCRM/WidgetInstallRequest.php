@@ -15,7 +15,6 @@ class WidgetInstallRequest extends FormRequest implements DTOable
     {
         return [
             'id' => ['required', 'numeric'],
-            'api_key' => ['required', 'string'],
             'name' => ['required', 'string'],
             'domain' => ['required', 'string'],
             'amojo_id' => ['required', 'string'],
@@ -34,7 +33,7 @@ class WidgetInstallRequest extends FormRequest implements DTOable
     {
         $data = $this->validated();
 
-        $userDTO = new NewAmoUserDTO(id: Arr::get($data, "id"), api_key: Arr::get($data, "api_key"), amojo_id: Arr::get($data, "amojo_id"), domain: Arr::get($data, "domain"), email: Arr::get($data, "email"), phone: Arr::get($data, "phone"),);
+        $userDTO = new NewAmoUserDTO(id: Arr::get($data, "id"), amojo_id: Arr::get($data, "amojo_id"), domain: Arr::get($data, "domain"), email: Arr::get($data, "email"), phone: Arr::get($data, "phone"),);
 
         $infoDTO = new AmoAccountInfoDTO(id: Arr::get($data, 'id'), domain: Arr::get($data, 'domain'), name: Arr::get($data, 'name'), users_count: Arr::get($data, 'users_count'), paid_from: Arr::get($data, 'paid_from'), paid_till: Arr::get($data, 'paid_till', now()->format('Y-m-d')), pay_type: Arr::get($data, 'pay_type'), timezone: Arr::get($data, 'timezone', 'UTC'), tariff: Arr::get($data, 'tariff'));
 

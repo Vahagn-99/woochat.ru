@@ -34,6 +34,8 @@ class UpdateInstanceStatus implements ShouldQueue
             $instance->save();
         } catch (Exception $e) {
             do_log("instances/error/whatsapp")->error($e->getMessage());
+
+            return;
         }
     }
 }

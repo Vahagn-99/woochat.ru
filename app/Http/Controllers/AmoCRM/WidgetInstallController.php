@@ -17,7 +17,6 @@ class WidgetInstallController extends Controller
 
         $updateData = array_filter([
             'id' => $data->user->id,
-            'api_key' => $data->user->api_key,
             'amojo_id' => $data->user->amojo_id,
             'domain' => $data->user->domain,
             'email' => $data->user->email,

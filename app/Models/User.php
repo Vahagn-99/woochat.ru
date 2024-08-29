@@ -18,7 +18,6 @@ use League\OAuth2\Client\Token\AccessToken;
  * @property int $id
  * @property string $domain
  * @property string $amojo_id
- * @property string $api_key
  * @property string $deleted_at
  * @property string $email
  * @property string $phone
@@ -41,7 +40,6 @@ final class User extends Authenticatable implements AmoAccountInterface
 
     protected $fillable = [
         'id',
-        'api_key',
         'domain',
         'email',
         'phone',
