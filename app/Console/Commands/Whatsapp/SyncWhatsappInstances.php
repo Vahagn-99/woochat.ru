@@ -31,11 +31,20 @@ class SyncWhatsappInstances extends Command
         $instances = Whatsapp::instance()->all();
 
         foreach ($instances as $instance) {
-            WhatsappInstance::query()->updateOrCreate([
+            $exists = WhatsappInstance::query()->where([
                 'id' => $instance->id,
                 'token' => $instance->token,
-                'status' => InstanceStatus::NOT_AUTHORIZED,
-            ]);
+            ])->exists();
+
+            if (! $exists) {
+                WhatsappInstance::query()->create([
+                    'id' => $instance->id,
+                    'token' => $instance->token,
+                    'status' => InstanceStatus::NOT_AUTHORIZED,
+                ]);
+            }
         }
+
+        do_log('crones/sync_instances'.now()->toDateTimeString())->info("The instances was synced.");
     }
 }

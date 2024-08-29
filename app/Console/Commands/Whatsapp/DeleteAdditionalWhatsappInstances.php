@@ -32,6 +32,8 @@ class DeleteAdditionalWhatsappInstances extends Command
         foreach ($instances as $instance) {
             Whatsapp::for($instance)->instance()->delete();
             $instance->delete();
+
+            do_log('crones/delete_instances'.now()->toDateTimeString())->info("The instance with ID: {$instance->id}  was deleted");
         }
     }
 }
