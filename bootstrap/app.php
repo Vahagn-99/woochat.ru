@@ -8,6 +8,7 @@ use App\Exceptions\AmoChat\GivenScopeNotFoundException;
 use App\Exceptions\AmoChat\UserNotFoundException;
 use App\Exceptions\Whatsapp\InstanceCreationException;
 use App\Exceptions\Whatsapp\UnsupportedWebhookType;
+use App\Http\Middleware\BasicAuthMiddleware;
 use App\Services\AmoChat\Providers\AmoChatServiceProvider;
 use App\Services\AmoCRM\Core\Providers\AmoCRMServiceProvider;
 use App\Services\Whatsapp\Provider\WhatsappServiceProvider;
@@ -41,55 +42,53 @@ return Application::configure(basePath: dirname(__DIR__))->withRouting(web: [
     ]);
     //
 })->withProviders([
-    BroadcastServiceProvider::class,
-    WhatsappServiceProvider::class,
-    AmoChatServiceProvider::class,
-    AmoCRMServiceProvider::class,
-])->withExceptions(function (Exceptions $exceptions) {
-    $exceptions->render(function (InstanceCreationException $e) {
-        return response()->json([
-            'message' => $e->getMessage(),
-        ], $e->getCode());
-    });
-    $exceptions->render(function (AmoChatRequestException $e) {
-        return response()->json([
-            'message' => $e->getMessage(),
-        ], $e->getCode());
-    });
+        BroadcastServiceProvider::class,
+        WhatsappServiceProvider::class,
+        AmoChatServiceProvider::class,
+        AmoCRMServiceProvider::class,
+    ])->withMiddleware(function (Middleware $middleware) {
+        $middleware->alias([
+            'auth.basic' => BasicAuthMiddleware::class,
+        ]);
+    })->withExceptions(function (Exceptions $exceptions) {
+        $exceptions->render(function (InstanceCreationException $e) {
+            return response()->json([
+                'message' => $e->getMessage(),
+            ], $e->getCode());
+        });
+        $exceptions->render(function (AmoChatRequestException $e) {
+            return response()->json([
+                'message' => $e->getMessage(),
+            ], $e->getCode());
+        });
+        $exceptions->report(function (UserNotFoundException $e) {
+            do_log("amocrm/auth-callback")->error($e->getMessage());
+        });
+        $exceptions->render(function (UserNotFoundException $e) {
+            return response()->json([
+                'message' => $e->getMessage(),
+            ], $e->getCode());
+        });
+        $exceptions->report(function (AmoCRMMissedTokenException|AmoCRMoAuthApiException|AmoCRMApiException $e) {
+            do_log("widget/installation")->error($e->getMessage(), $e->getLastRequestInfo());
 
-    $exceptions->report(function (UserNotFoundException $e) {
-        do_log("amocrm/auth-callback")->error($e->getMessage());
-    });
+            return false;
+        });
+        $exceptions->report(function (UnsupportedWebhookType $e) {
 
-    $exceptions->render(function (UserNotFoundException $e) {
-        return response()->json([
-            'message' => $e->getMessage(),
-        ], $e->getCode());
-    });
+            do_log("whatsapp/webhooks")->warning($e->getMessage());
 
-    $exceptions->report(function (AmoCRMMissedTokenException|AmoCRMoAuthApiException|AmoCRMApiException $e) {
-        do_log("widget/installation")->error($e->getMessage(), $e->getLastRequestInfo());
+            return false;
+        });
+        $exceptions->report(function (GivenScopeNotFoundException $e) {
 
-        return false;
-    });
+            do_log("amocrm/scopes")->warning($e->getMessage());
 
-    $exceptions->report(function (UnsupportedWebhookType $e) {
-
-        do_log("whatsapp/webhooks")->warning($e->getMessage());
-
-        return false;
-    });
-
-    $exceptions->report(function (GivenScopeNotFoundException $e) {
-
-        do_log("amocrm/scopes")->warning($e->getMessage());
-
-        return false;
-    });
-
-    $exceptions->render(function (GivenScopeNotFoundException $e) {
-        return response()->json([
-            'message' => $e->getMessage(),
-        ], $e->getCode());
-    });
-})->create();
+            return false;
+        });
+        $exceptions->render(function (GivenScopeNotFoundException $e) {
+            return response()->json([
+                'message' => $e->getMessage(),
+            ], $e->getCode());
+        });
+    })->create();
