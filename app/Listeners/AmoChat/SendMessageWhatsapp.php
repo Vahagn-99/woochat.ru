@@ -33,31 +33,38 @@ class SendMessageWhatsapp implements ShouldQueue
             return;
         }
 
-        $amoMessageId = $event->payload['message']['message']['id'];
+        try {
 
-        $messagePayload = $this->mapMessage($event->payload['message']);
+            $amoMessageId = $event->payload['message']['message']['id'];
 
-        $amoInstance = $this->getAmoInstance($event->payload['account_id']);
+            $messagePayload = $this->mapMessage($event->payload['message']);
 
-        $user = $amoInstance->user;
+            $amoInstance = $this->getAmoInstance($event->payload['account_id']);
 
-        $chat = $this->mapChat($event->payload);
+            $user = $amoInstance->user;
 
-        $whatsappInstance = $this->getWhatsappInstance($chat, $user);
+            $chat = $this->mapChat($event->payload);
 
-        $sentMessage = $this->sendMessage($messagePayload, $whatsappInstance);
+            $whatsappInstance = $this->getWhatsappInstance($chat, $user);
 
-        $record = Message::query()->updateOrCreate([
-            'amo_message_id' => $amoMessageId,
-            'whatsapp_message_id' => $sentMessage->id,
-        ], [
-            'chat_id' => $chat->id,
-        ]);
+            $sentMessage = $this->sendMessage($messagePayload, $whatsappInstance);
 
-        do_log("messaging/amochat")->info("sent message with ID: ".$sentMessage->id, [
-            'record' => $record->toArray(),
-            'payload' => $messagePayload->toArray(),
-        ]);
+            $record = Message::query()->updateOrCreate([
+                'amo_message_id' => $amoMessageId,
+                'whatsapp_message_id' => $sentMessage->id,
+            ], [
+                'chat_id' => $chat->id,
+            ]);
+
+            do_log("messaging/sent/amochat")->info("sent message with ID: ".$sentMessage->id, [
+                'record' => $record->toArray(),
+                'payload' => $messagePayload->toArray(),
+            ]);
+        } catch (Exception $e) {
+            do_log("messaging/sent/amochat")->error($e->getMessage());
+
+            return;
+        }
     }
 
     /**

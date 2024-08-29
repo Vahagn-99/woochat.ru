@@ -61,9 +61,11 @@ class SendMessageAmo implements ShouldQueue
                 'amo_message_id' => $sentMessage->id,
             ]);
 
-            do_log("messaging/whatsapp")->info("sent message with ID: ".$sentMessage->id, $massager->getLastRequestInfo());
+            do_log("messaging/sent/whatsapp")->info("sent message with ID: ".$sentMessage->id, $massager->getLastRequestInfo());
         } catch (ProviderNotConfiguredException|AdapterNotDefinedException|UnknownMessageTypeException|ModelNotFoundException $e) {
-            $this->release($e);
+            do_log("messaging/error/whatsapp")->error($e->getMessage());
+
+            return;
         }
     }
 
