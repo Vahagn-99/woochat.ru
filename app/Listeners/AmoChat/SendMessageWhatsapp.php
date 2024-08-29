@@ -26,14 +26,26 @@ class SendMessageWhatsapp implements ShouldQueue
     }
 
     /**
+     * Determine whether the listener should be queued.
+     */
+    public function shouldQueue(MessageReceived $event): bool
+    {
+        return $event->from === 'amochat';
+    }
+
+    /**
+     * Get the name of the listener's queue.
+     */
+    public function viaQueue(): string
+    {
+        return 'massaging';
+    }
+
+    /**
      * @throws Exception
      */
     public function handle(MessageReceived $event): void
     {
-        if ($event->from !== 'amochat') {
-            return;
-        }
-
         try {
 
             $amoMessageId = $event->payload['message']['message']['id'];

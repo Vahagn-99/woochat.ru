@@ -47,6 +47,14 @@ class NotifyAboutInstalling implements ShouldQueue
     }
 
     /**
+     * Get the name of the listener's queue.
+     */
+    public function viaQueue(): string
+    {
+        return 'installation';
+    }
+
+    /**
      * @throws \AmoCRM\Exceptions\AmoCRMoAuthApiException
      * @throws \AmoCRM\Exceptions\AmoCRMApiException
      * @throws \AmoCRM\Exceptions\AmoCRMMissedTokenException

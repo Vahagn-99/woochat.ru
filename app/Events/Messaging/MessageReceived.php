@@ -11,5 +11,6 @@ class MessageReceived
 
     public function __construct(public array $payload, public string $from)
     {
+
     }
 }
