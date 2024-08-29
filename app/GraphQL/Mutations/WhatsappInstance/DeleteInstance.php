@@ -13,6 +13,8 @@ final readonly class DeleteInstance
         $instance = WhatsappInstance::query()->find($args['id']);
         Whatsapp::for($instance)->api()->getClient()->account->logout();
 
-        return $instance->delete();
+        $instance->user_id = null;
+
+        return true;
     }
 }

@@ -14,7 +14,7 @@ return new class extends Migration{
             $table->string('phone')->nullable();
             $table->string('status')->default(InstanceStatus::STARTING);
             $table->timestamp('created_at')->useCurrent();
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
         });
     }

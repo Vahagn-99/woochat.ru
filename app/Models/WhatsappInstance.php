@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\InstanceStatus;
 use App\Events\Whatsapp\InstanceCreated;
 use App\Services\Whatsapp\DTO\InstanceDTO;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -20,6 +21,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  *
  * @property-read User $user
  * @property-read \App\Models\Settings $settings
+ *
+ * @method static Builder whereFree()
  */
 final class WhatsappInstance extends Model
 {
@@ -32,11 +35,13 @@ final class WhatsappInstance extends Model
         'user_id',
         'status',
         'token',
-        'phone'
+        'phone',
     ];
 
     public $incrementing = false;
+
     public $timestamps = false;
+
     protected $casts = [
         'status' => InstanceStatus::class,
     ];
@@ -67,10 +72,16 @@ final class WhatsappInstance extends Model
         return $this->hasMany(Chat::class, 'whatsapp_instance_id', 'id');
     }
 
+    public function scopeWhereFree(Builder $query): Builder
+    {
+        return $query->whereNull('user_id');
+    }
+
     public static function dto(string $instanceId): InstanceDTO
     {
         /** @var WhatsappInstance $instance */
         $instance = self::query()->findOrFail($instanceId);
+
         return new InstanceDTO($instance->id, $instance->token);
     }
 

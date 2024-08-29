@@ -2,12 +2,9 @@
 
 namespace App\Listeners\AmoChat;
 
-use App\Enums\InstanceStatus;
 use App\Events\AmoCRM\UserCreated;
 use App\Models\User;
-use App\Models\WhatsappInstance as InstanceModel;
 use App\Services\AmoChat\Facades\AmoChat;
-use App\Services\Whatsapp\Facades\Whatsapp;
 use Exception;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
@@ -20,8 +17,6 @@ class ConnectUserMessaging implements ShouldQueue
     {
         try {
             $this->connectAmoInstance($event->user);
-
-            $this->connectWhatsappInstance($event->user);
         } catch (Exception $e) {
             do_log('widget/error/connect')->error($e->getMessage());
 
@@ -36,36 +31,6 @@ class ConnectUserMessaging implements ShouldQueue
         $user->amoInstance()->updateOrCreate(['account_id' => $instance->account_id], [
             'scope_id' => $instance->scope_id,
             'title' => $instance->title,
-        ]);
-    }
-
-    private function connectWhatsappInstance(User $user): void
-    {
-        $usedInstances = InstanceModel::query()->select('id')->pluck('id')->toArray();
-
-        $firstFreeInstance = Whatsapp::instance()->getLastFree($usedInstances);
-
-        $status = InstanceStatus::NOT_AUTHORIZED;
-        $name = "Мой Первый инстанс";
-
-        // if there is no free instance then create one
-        if (! $firstFreeInstance) {
-            $firstFreeInstance = Whatsapp::instance()->create($name);
-            $status = InstanceStatus::STARTING;
-        }
-
-        if ($status !== InstanceStatus::STARTING) {
-            Whatsapp::for([
-                'id' => $firstFreeInstance->id,
-                'token' => $firstFreeInstance->token,
-            ])->api()->clearQueue();
-        }
-
-        $user->whatsappInstances()->create([
-            'id' => $firstFreeInstance->id,
-            'user_id' => $user->id,
-            'status' => $status,
-            'token' => $firstFreeInstance->token,
         ]);
     }
 }

@@ -5,7 +5,6 @@ namespace App\GraphQL\Mutations\WhatsappInstance;
 use App\Enums\InstanceStatus;
 use App\Events\Whatsapp\NewInstanceOrdered;
 use App\Models\WhatsappInstance;
-use App\Models\WhatsappInstance as InstanceModel;
 use App\Services\Whatsapp\Facades\Whatsapp;
 
 final readonly class CreateInstance
@@ -16,33 +15,35 @@ final readonly class CreateInstance
         /** @var \App\Models\User $user */
         $user = auth()->user();
 
-        $usedInstances = InstanceModel::query()->select('id')->pluck('id')->toArray();
-
-        $instance = Whatsapp::instance()->getLastFree($usedInstances);
+        $model = WhatsappInstance::whereFree()->first();
 
         $status = InstanceStatus::NOT_AUTHORIZED;
-        $name = "Инстанс No".count($usedInstances);
+        $name = "Инстанс No".WhatsappInstance::query()->count();
 
         // if there is no free instance then create one
-        if (! $instance) {
+        if (! $model) {
             $instance = Whatsapp::instance()->create($name);
             $status = InstanceStatus::STARTING;
+            WhatsappInstance::query()->create([
+                'id' => $instance->id,
+                'user_id' => $user->id,
+                'token' => $instance->token,
+                'status' => $status,
+            ]);
         }
 
         if ($status !== InstanceStatus::STARTING) {
             Whatsapp::for([
-                'id' => $instance->id,
-                'token' => $instance->token,
+                'id' => $model->id,
+                'token' => $model->token,
             ])->api()->clearQueue();
         }
 
-        event(new NewInstanceOrdered("Инстанс No".WhatsappInstance::query()->count()))  ;
+        event(new NewInstanceOrdered($name));
 
-        return WhatsappInstance::query()->create([
-            'id' => $instance->id,
-            'user_id' => $user->id,
-            'token' => $instance->token,
-            'status' => $status,
-        ]);
+        $model->user_id = $user->id;
+        $model->save();
+
+        return $model;
     }
 }
