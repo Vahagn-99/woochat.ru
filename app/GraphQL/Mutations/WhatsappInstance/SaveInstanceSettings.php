@@ -26,7 +26,7 @@ final readonly class SaveInstanceSettings
 
         SettingsSaved::dispatch($instance, $settings);
 
-        AmoChatChannelRequested::dispatchIf(! $user->amoInstance, $instance, $settings);
+        AmoChatChannelRequested::dispatchIf(! $user->amoInstance, $user);
 
         return $instance;
     }
