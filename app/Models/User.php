@@ -23,7 +23,7 @@ use League\OAuth2\Client\Token\AccessToken;
  * @property string $phone
  * @property string $country
  *
- * @property-read \Illuminate\Database\Eloquent\Collection<\App\Models\WhatsappInstance> $instances
+ * @property-read \Illuminate\Database\Eloquent\Collection<\App\Models\WhatsappInstance> whatsappInstances
  * @property-read \App\Models\AmoInstance $amoInstance
  * @property-read \App\Models\AmoAccessToken $amoAccessToken
  * @property-read \App\Models\Info $info

@@ -3,8 +3,8 @@
 namespace Tests\Unit\GreenApiManagement;
 
 use App\Enums\InstanceStatus;
-use App\Events\Whatsapp\InstanceStatusChanged;
-use App\Listeners\Whatsapp\UpdateInstanceStatus;
+use App\Events\Messengers\Whatsapp\InstanceStatusChanged;
+use App\Listeners\Messengers\Whatsapp\UpdateInstanceStatus;
 use App\Models\User;
 use App\Models\WhatsappInstance;
 use Illuminate\Foundation\Testing\RefreshDatabase;

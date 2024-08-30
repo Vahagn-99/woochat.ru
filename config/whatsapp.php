@@ -1,7 +1,7 @@
 <?php
 
 use App\Events\Messaging\MessageReceived;
-use App\Events\Whatsapp\InstanceStatusChanged;
+use App\Events\Messengers\Whatsapp\InstanceStatusChanged;
 
 return [
     'partner' => [
@@ -17,7 +17,7 @@ return [
         // URL для получения входящих уведомлений
         "webhookRouteName" => ENV('WHATSAPP_WEBHOOK_API_ROUTE_NAME', 'webhooks.whatsapp'),
         // URL для получения входящих уведомлений
-        "webhookUrl" => ENV('WHATSAPP_WEBHOOK_API_URL', null),
+        "webhookUrl" => ENV('WHATSAPP_WEBHOOK_API_URL'),
         // токен для доступа к вашему серверу уведомлений
         "webhookUrlToken" => ENV("WEBHOOK_URL_TOKEN", ""),
         // время отправки сообщений из очереди

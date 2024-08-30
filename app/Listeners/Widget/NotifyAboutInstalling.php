@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Listeners\AmoAccount;
+namespace App\Listeners\Widget;
 
 use AmoCRM\Collections\Leads\LeadsCollection;
 use AmoCRM\Collections\LinksCollection;
@@ -30,7 +30,7 @@ use App\DTO\AmoAccountInfoDTO;
 use App\DTO\dct\AmoDctDTO;
 use App\DTO\dct\TariffDTO;
 use App\Enums\InfoType;
-use App\Events\AmoCRM\WidgetInstalled;
+use App\Events\Widget\WidgetInstalled;
 use App\Models\User;
 use App\Services\AmoCRM\Core\Facades\Amo;
 use App\Services\AmoCRM\CustomFieldAdapter;

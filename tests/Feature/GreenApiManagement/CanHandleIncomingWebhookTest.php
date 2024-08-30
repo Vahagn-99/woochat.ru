@@ -3,7 +3,7 @@
 namespace Tests\Feature\GreenApiManagement;
 
 use App\Events\Messaging\MessageReceived;
-use App\Events\Whatsapp\InstanceStatusChanged;
+use App\Events\Messengers\Whatsapp\InstanceStatusChanged;
 use App\Events\Whatsapp\Webhooks\IncomingCall;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;

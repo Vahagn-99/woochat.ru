@@ -2,7 +2,8 @@
 
 namespace App\GraphQL\Mutations\WhatsappInstance;
 
-use App\Events\Whatsapp\InstanceSettingsSaved;
+use App\Events\Messengers\AmoChat\ChannelRequested as AmoChatChannelRequested;
+use App\Events\Messengers\Whatsapp\SettingsSaved;
 use App\Models\WhatsappInstance;
 
 final readonly class SaveInstanceSettings
@@ -10,6 +11,9 @@ final readonly class SaveInstanceSettings
     /** @param array{} $args */
     public function __invoke(null $_, array $args): WhatsappInstance
     {
+        /** @var \App\Models\User $user */
+        $user = auth()->user();
+
         /** @var WhatsappInstance $instance */
         $instance = WhatsappInstance::query()->find($args['input']['instance_id']);
 
@@ -20,7 +24,9 @@ final readonly class SaveInstanceSettings
             'name' => $args['input']['name'],
         ]);
 
-        InstanceSettingsSaved::dispatch($instance, $settings);
+        SettingsSaved::dispatch($instance, $settings);
+
+        AmoChatChannelRequested::dispatchIf(! $user->amoInstance, $instance, $settings);
 
         return $instance;
     }

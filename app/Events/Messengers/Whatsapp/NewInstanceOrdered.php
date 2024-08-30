@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Events\Whatsapp;
+namespace App\Events\Messengers\Whatsapp;
 
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;

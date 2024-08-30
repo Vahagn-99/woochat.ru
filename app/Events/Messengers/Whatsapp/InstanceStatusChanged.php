@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Events\Whatsapp;
+namespace App\Events\Messengers\Whatsapp;
 
 use App\Enums\InstanceStatus;
 use Illuminate\Broadcasting\InteractsWithSockets;

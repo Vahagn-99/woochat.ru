@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Listeners\AmoAccount;
+namespace App\Listeners\Widget;
 
 use AmoCRM\Exceptions\AmoCRMApiException;
 use AmoCRM\Exceptions\AmoCRMMissedTokenException;
@@ -9,7 +9,7 @@ use AmoCRM\Models\ContactModel;
 use AmoCRM\Models\CustomFieldsValues\MultitextCustomFieldValuesModel;
 use AmoCRM\Models\CustomFieldsValues\ValueCollections\MultitextCustomFieldValueCollection;
 use AmoCRM\Models\CustomFieldsValues\ValueModels\MultitextCustomFieldValueModel;
-use App\Events\AmoCRM\PhoneNumberReceived;
+use App\Events\Widget\PhoneNumberReceived;
 use App\Services\AmoCRM\Core\Facades\Amo;
 use App\Services\AmoCRM\CustomFieldAdapter;
 use Exception;

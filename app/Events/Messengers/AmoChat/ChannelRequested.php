@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Events\AmoCRM;
+namespace App\Events\Messengers\AmoChat;
 
 use App\Models\User;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class UserCreated
+class ChannelRequested
 {
     use Dispatchable, SerializesModels;
 

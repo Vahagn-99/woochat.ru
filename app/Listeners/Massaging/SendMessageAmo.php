@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Listeners\Whatsapp;
+namespace App\Listeners\Massaging;
 
 use App\Base\Messaging\Factory;
 use App\Base\Messaging\IMessage;

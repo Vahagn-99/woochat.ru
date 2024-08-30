@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Listeners\Whatsapp;
+namespace App\Listeners\Messengers\Whatsapp;
 
-use App\Events\Whatsapp\InstanceCreated;
+use App\Events\Messengers\Whatsapp\InstanceCreated;
 use Illuminate\Support\Facades\Artisan;
 
 class SyncInstanceStatus

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Listeners\AmoAccount;
+namespace App\Listeners\Widget;
 
-use App\Events\AmoCRM\WidgetInstalled;
+use App\Events\Widget\WidgetInstalled;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 

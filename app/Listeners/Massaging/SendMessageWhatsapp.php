@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Listeners\AmoChat;
+namespace App\Listeners\Massaging;
 
 use App\Base\Messaging\Factory;
 use App\Base\Messaging\IMessage;
@@ -47,7 +47,7 @@ class SendMessageWhatsapp implements ShouldQueue
      */
     public function handle(MessageReceived $event): void
     {
-        //try {
+        try {
 
             $amoMessageId = $event->payload['message']['message']['id'];
 
@@ -74,12 +74,12 @@ class SendMessageWhatsapp implements ShouldQueue
                 'record' => $record->toArray(),
                 'payload' => $messagePayload->toArray(),
             ]);
-        //} catch (Exception|ModelNotFoundException $e) {
-        //    do_log("messaging/sent/amochat")->error($e->getMessage(), $event->payload);
-        //    $this->release();
-        //
-        //    return;
-        //}
+        } catch (Exception|ModelNotFoundException $e) {
+            do_log("messaging/sent/amochat")->error($e->getMessage(), $event->payload);
+            $this->release();
+
+            return;
+        }
     }
 
     /**

@@ -1,25 +1,25 @@
 <?php
 
-namespace App\Listeners\AmoChat;
+namespace App\Listeners\Messengers\AmoChat;
 
 use AmoCRM\Exceptions\AmoCRMApiException;
 use AmoCRM\Exceptions\AmoCRMoAuthApiException;
 use AmoCRM\Models\SourceModel;
-use App\Events\Whatsapp\InstanceSettingsSaved;
+use App\Events\Messengers\Whatsapp\SettingsSaved;
 use App\Models\Settings;
 use App\Models\User;
 use App\Services\AmoCRM\Core\Facades\Amo;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
-class SyncMessagingSource implements ShouldQueue
+class ConnectSource implements ShouldQueue
 {
     use InteractsWithQueue;
 
     /**
-     * @param \App\Events\Whatsapp\InstanceSettingsSaved $event
+     * @param \App\Events\Messengers\Whatsapp\SettingsSaved $event
      */
-    public function handle(InstanceSettingsSaved $event): void
+    public function handle(SettingsSaved $event): void
     {
         $whatsappInstance = $event->instance;
         $settings = $whatsappInstance->settings;

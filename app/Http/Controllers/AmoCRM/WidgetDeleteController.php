@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\AmoCRM;
 
-use App\Events\AmoCRM\UserDeleted;
-use App\Events\AmoCRM\WidgetDeleted;
+use App\Events\Widget\WidgetDeleted;
+use App\Events\Messaging\UserDeleted;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
@@ -17,6 +17,7 @@ class WidgetDeleteController extends Controller
         /** @var User $user */
         $user = User::query()->where('id', $request->get('account_id'))->firstOrFail();
         $user->delete();
+        $user->amoAccessToken()->delete();
 
         WidgetDeleted::dispatch($user);
 
@@ -24,6 +25,6 @@ class WidgetDeleteController extends Controller
 
         do_log('amocrm/widget-delete')->info("The widget was deleted");
 
-        return response()->json(["widget deleted"], Response::HTTP_NO_CONTENT);
+        return response()->json(["widget" => "deleted"]);
     }
 }

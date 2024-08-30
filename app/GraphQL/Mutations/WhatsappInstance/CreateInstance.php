@@ -3,7 +3,7 @@
 namespace App\GraphQL\Mutations\WhatsappInstance;
 
 use App\Enums\InstanceStatus;
-use App\Events\Whatsapp\NewInstanceOrdered;
+use App\Events\Messengers\Whatsapp\NewInstanceOrdered;
 use App\Models\WhatsappInstance;
 use App\Services\Whatsapp\Facades\Whatsapp;
 

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Listeners\Whatsapp;
+namespace App\Listeners\Messengers\Whatsapp;
 
-use App\Events\Whatsapp\InstanceStatusChanged;
+use App\Events\Messengers\Whatsapp\InstanceStatusChanged;
 use App\Models\WhatsappInstance;
 use Exception;
 use Illuminate\Contracts\Queue\ShouldQueue;

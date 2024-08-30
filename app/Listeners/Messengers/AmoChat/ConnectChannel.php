@@ -1,19 +1,19 @@
 <?php
 
-namespace App\Listeners\AmoChat;
+namespace App\Listeners\Messengers\AmoChat;
 
-use App\Events\AmoCRM\UserCreated;
+use App\Events\Messengers\AmoChat\ChannelRequested;
 use App\Models\User;
 use App\Services\AmoChat\Facades\AmoChat;
 use Exception;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
-class ConnectUserMessaging implements ShouldQueue
+class ConnectChannel implements ShouldQueue
 {
     use InteractsWithQueue;
 
-    public function handle(UserCreated $event): void
+    public function handle(ChannelRequested $event): void
     {
         try {
             $this->connectAmoInstance($event->user);

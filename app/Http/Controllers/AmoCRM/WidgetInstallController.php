@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers\AmoCRM;
 
-use App\Events\AmoCRM\UserCreated;
-use App\Events\AmoCRM\WidgetInstalled;
+use App\Events\Widget\WidgetInstalled;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AmoCRM\WidgetInstallRequest;
 use App\Models\User;
@@ -32,8 +31,6 @@ class WidgetInstallController extends Controller
         }
 
         WidgetInstalled::dispatchIf(! $user->wasInformed(), $user, $data->info);
-
-        UserCreated::dispatch($user);
 
         return response()->json([
             'user_id' => $user->id,

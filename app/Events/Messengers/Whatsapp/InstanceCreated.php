@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Events\Whatsapp;
+namespace App\Events\Messengers\Whatsapp;
 
 use App\Models\WhatsappInstance;
 use Illuminate\Foundation\Events\Dispatchable;

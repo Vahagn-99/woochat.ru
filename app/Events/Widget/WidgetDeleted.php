@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Events\AmoCRM;
+namespace App\Events\Widget;
 
 use App\Models\User;
 use Illuminate\Foundation\Events\Dispatchable;

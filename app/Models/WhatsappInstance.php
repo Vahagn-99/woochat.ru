@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Enums\InstanceStatus;
-use App\Events\Whatsapp\InstanceCreated;
+use App\Events\Messengers\Whatsapp\InstanceCreated;
 use App\Services\Whatsapp\DTO\InstanceDTO;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

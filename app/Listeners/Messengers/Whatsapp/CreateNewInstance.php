@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Listeners\Whatsapp;
+namespace App\Listeners\Messengers\Whatsapp;
 
-use App\Events\Whatsapp\NewInstanceOrdered;
+use App\Events\Messengers\Whatsapp\NewInstanceOrdered;
 use App\Services\Whatsapp\Facades\Whatsapp;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
