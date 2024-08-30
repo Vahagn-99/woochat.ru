@@ -7,17 +7,16 @@ namespace App\Services\AmoChat\Messaging\Adapters\Whatsapp;
 use App\Base\Messaging\Adapter;
 use App\Base\Messaging\IMessage;
 use App\Services\Whatsapp\Messaging\Types\Text;
+use Illuminate\Support\Arr;
 
 class TextAdapter implements Adapter
 {
     public function adapt(array $data): IMessage
     {
-        $chatId = $data['receiver']['client_id'] ?? $data['sender']['phone']."@c.us";
+        $chatId = Arr::get(Arr::get($data, 'conversation'), 'client_id') ?? Arr::get(Arr::get($data, 'receiver'), 'phone').'@c.us';
+
         $payload = $data['message'];
 
-        return new Text(
-            chatId: $chatId,
-            message: $payload['text'],
-        );
+        return new Text(chatId: $chatId, message: $payload['text'],);
     }
 }
