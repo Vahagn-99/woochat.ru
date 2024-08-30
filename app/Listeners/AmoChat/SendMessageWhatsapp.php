@@ -56,7 +56,7 @@ class SendMessageWhatsapp implements ShouldQueue
 
             $user = $amoInstance->user;
 
-            $chat = $this->mapChat($event->payload);
+            $chat = $this->mapChat($event->payload['message']);
 
             $whatsappInstance = $this->getWhatsappInstance($chat, $user);
 
@@ -74,7 +74,7 @@ class SendMessageWhatsapp implements ShouldQueue
                 'payload' => $messagePayload->toArray(),
             ]);
         } catch (Exception|ModelNotFoundException $e) {
-            do_log("messaging/sent/amochat")->error($e->getMessage());
+            do_log("messaging/sent/amochat")->error($e->getMessage(), $event->payload['message']);
 
             return;
         }
@@ -89,13 +89,13 @@ class SendMessageWhatsapp implements ShouldQueue
         return $chat->whatsappInstance ?? WhatsappInstance::firstInAccount($user) ?? throw new Exception('Instance not found');
     }
 
-    private function mapChat(array $payload): Chat
+    private function mapChat(array $chatPayload): Chat
     {
         /** @var Chat $chat */
-        $chat = Chat::query()->firstOrCreate(['amo_chat_id' => $payload['message']['conversation']['id']]);
+        $chat = Chat::query()->firstOrCreate(['amo_chat_id' => $chatPayload['conversation']['id']]);
 
         if (! $chat->whatsapp_chat_id) {
-            $whatsappId = $payload['message']['conversation']['client_id'] ?? $payload['message']['receiver']['phone'].'@c.us';
+            $whatsappId = $chatPayload['conversation']['client_id'] ?? $chatPayload['receiver']['phone'].'@c.us';
             $chat->whatsapp_chat_id = $whatsappId;
 
             $chat->save();
