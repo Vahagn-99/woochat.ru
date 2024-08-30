@@ -75,6 +75,7 @@ class SendMessageWhatsapp implements ShouldQueue
             ]);
         } catch (Exception|ModelNotFoundException $e) {
             do_log("messaging/sent/amochat")->error($e->getMessage(), $event->payload['message']);
+            $this->release();
 
             return;
         }

@@ -60,7 +60,7 @@ class SyncMessagingSource implements ShouldQueue
                 'data' => $e->getLastRequestInfo(),
             ]);
 
-            $this->release($e);
+            $this->release();
         }
 
         return $source;
