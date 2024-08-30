@@ -30,7 +30,9 @@ class SignatureAmoCRM
         $now = Carbon::now('UTC'); // Ensure UTC time
 
         // Generate possible hashes
-        $hashes = [];
+        $hashes = [
+            $now->copy()->timestamp
+        ];
 
         for ($second = 0; $second <= self::HASH_MAX_TIME_EXPIRE_IN_SECONDS; $second++) {
             $timestamp = $now->copy()->subSeconds($second)->timestamp;
@@ -44,7 +46,7 @@ class SignatureAmoCRM
             return $next($request);
         } else {
             // Return an unauthorized response if hashes do not match
-            return response()->json(['error' => 'signature not match'], 401);
+            return response()->json(['error' => 'signature not match'], 400);
         }
     }
 }
