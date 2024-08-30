@@ -16,6 +16,7 @@ use Exception;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Support\Arr;
 
 class SendMessageWhatsapp implements ShouldQueue
 {
@@ -74,7 +75,7 @@ class SendMessageWhatsapp implements ShouldQueue
                 'payload' => $messagePayload->toArray(),
             ]);
         } catch (Exception|ModelNotFoundException $e) {
-            do_log("messaging/sent/amochat")->error($e->getMessage(), [$event->payload['message']['receiver']['phone'].'@c.us']);
+            do_log("messaging/sent/amochat")->error($e->getMessage(), $event->payload);
             $this->release();
 
             return;
@@ -92,11 +93,14 @@ class SendMessageWhatsapp implements ShouldQueue
 
     private function mapChat(array $chatPayload): Chat
     {
+        $clientId = Arr::get(Arr::get($chatPayload, 'conversation'), 'client_id');
+        $clientIdFromPhone = Arr::get(Arr::get($chatPayload, 'receiver'), 'phone').'@c.us';
+
         /** @var Chat $chat */
         $chat = Chat::query()->firstOrCreate(['amo_chat_id' => $chatPayload['conversation']['id']]);
 
         if (! $chat->whatsapp_chat_id) {
-            $whatsappId = $chatPayload['conversation']['client_id'] ?? $chatPayload['receiver']['phone'].'@c.us';
+            $whatsappId = $clientId ?? $clientIdFromPhone;
             $chat->whatsapp_chat_id = $whatsappId;
 
             $chat->save();
