@@ -74,7 +74,7 @@ final class WhatsappInstance extends Model
 
     public function scopeWhereFree(Builder $query): Builder
     {
-        return $query->whereNull('user_id');
+        return $query->where('status', InstanceStatus::NOT_AUTHORIZED)->whereNull('user_id');
     }
 
     public static function dto(string $instanceId): InstanceDTO
