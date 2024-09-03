@@ -66,7 +66,11 @@ class InstanceApi implements InstanceApiInterface
         try {
 
             $response = $this->buildRequest()->post($endpoint, $params)->json();
-            dd($response);
+
+            if ($response['code'] === 404) {
+                return false;
+            }
+
             return $response['deleteInstanceAccount'];
         } catch (ConnectionException $e) {
             throw new  InstanceCreationException($e->getMessage());
