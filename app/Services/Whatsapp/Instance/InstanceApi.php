@@ -32,7 +32,12 @@ class InstanceApi implements InstanceApiInterface
             'base_uri' => self::$host,
         ]);
 
-        return Http::acceptJson()->setClient($client)->timeout(60)->retry(5)->timeout(5)->connectTimeout(5);
+        return Http::acceptJson()
+            ->setClient($client)
+            ->timeout(60)
+            ->retry(5)
+            ->timeout(5)
+            ->connectTimeout(5);
     }
 
     /**
@@ -65,13 +70,15 @@ class InstanceApi implements InstanceApiInterface
 
         try {
 
-            $response = $this->buildRequest()->post($endpoint, $params)->json();
+            $response = $this->buildRequest()->post($endpoint, $params);
+            dd($response);
+            $json = $response->json();
 
-            if ($response['code'] === 404) {
+            if ($response->failed()) {
                 return false;
             }
 
-            return $response['deleteInstanceAccount'];
+            return $json['deleteInstanceAccount'];
         } catch (ConnectionException $e) {
             throw new  InstanceCreationException($e->getMessage());
         }
