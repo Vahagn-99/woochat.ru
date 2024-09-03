@@ -8,7 +8,6 @@ use AmoCRM\Models\SourceModel;
 use App\Events\Messengers\Whatsapp\SettingsSaved;
 use App\Models\Settings;
 use App\Models\User;
-use App\Services\AmoChat\Facades\AmoChat;
 use App\Services\AmoCRM\Core\Facades\Amo;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
@@ -26,13 +25,9 @@ class ConnectSource implements ShouldQueue
         $settings = $whatsappInstance->settings;
         $user = $whatsappInstance->user;
 
-        if ($user->whatsappInstances()->count() === 1) {
-            $this->connectAmoInstance($user, $settings->name);
-        } else {
-            $source = $this->updateOrCreateSource($user, $settings);
-            $settings->source_id = $source->getId();
-            $settings->save();
-        }
+        $source = $this->updateOrCreateSource($user, $settings);
+        $settings->source_id = $source->getId();
+        $settings->save();
     }
 
     /**
@@ -69,15 +64,5 @@ class ConnectSource implements ShouldQueue
         }
 
         return $source;
-    }
-
-    private function connectAmoInstance(User $user, string $title): void
-    {
-        $instance = AmoChat::connector()->connect($user->amojo_id, $title);
-
-        $user->amoInstance()->updateOrCreate(['account_id' => $instance->account_id], [
-            'scope_id' => $instance->scope_id,
-            'title' => $instance->title,
-        ]);
     }
 }

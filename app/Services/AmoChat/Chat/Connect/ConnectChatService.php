@@ -29,7 +29,7 @@ class ConnectChatService implements ConnectChatServiceInterface
     {
         $this->body['account_id'] = $accountId;
 
-        if($title){
+        if ($title) {
             $this->body['title'] = "{$this->body['title']} ($title)";
         }
 
