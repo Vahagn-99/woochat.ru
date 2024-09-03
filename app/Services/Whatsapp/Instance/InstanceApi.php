@@ -71,7 +71,7 @@ class InstanceApi implements InstanceApiInterface
         try {
 
             $response = $this->buildRequest()->post($endpoint, $params);
-            dd($response);
+            dd($response->body());
             $json = $response->json();
 
             if ($response->failed()) {
