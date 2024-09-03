@@ -8,7 +8,6 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 class WidgetDeleteController extends Controller
 {
@@ -17,7 +16,6 @@ class WidgetDeleteController extends Controller
         /** @var User $user */
         $user = User::query()->where('id', $request->get('account_id'))->firstOrFail();
         $user->delete();
-        $user->amoAccessToken()->delete();
 
         WidgetDeleted::dispatch($user);
 

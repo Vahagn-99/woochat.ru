@@ -24,7 +24,7 @@ final readonly class CreateInstance
         if (! $model) {
             $instance = Whatsapp::instance()->create($name);
             $status = InstanceStatus::STARTING;
-            WhatsappInstance::query()->create([
+            $model = WhatsappInstance::query()->create([
                 'id' => $instance->id,
                 'user_id' => $user->id,
                 'token' => $instance->token,
