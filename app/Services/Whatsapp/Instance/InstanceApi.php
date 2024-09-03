@@ -32,12 +32,7 @@ class InstanceApi implements InstanceApiInterface
             'base_uri' => self::$host,
         ]);
 
-        return Http::acceptJson()
-            ->setClient($client)
-            ->timeout(60)
-            ->retry(5)
-            ->timeout(5)
-            ->connectTimeout(5);
+        return Http::acceptJson()->setClient($client)->timeout(60)->retry(5)->timeout(5)->connectTimeout(5);
     }
 
     /**
@@ -71,7 +66,6 @@ class InstanceApi implements InstanceApiInterface
         try {
 
             $response = $this->buildRequest()->post($endpoint, $params);
-            dd($response->body());
             $json = $response->json();
 
             if ($response->failed()) {
