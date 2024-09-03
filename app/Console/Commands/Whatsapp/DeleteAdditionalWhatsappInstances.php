@@ -34,7 +34,14 @@ class DeleteAdditionalWhatsappInstances extends Command
         $instances->shift(); // Removes the first item in the collection
 
         foreach ($instances as $instance) {
-            Whatsapp::for($instance)->instance()->delete();
+            $deleted = Whatsapp::for($instance)->instance()->delete();
+
+            if (! $deleted) {
+                $this->warn("Не удалось удалить экземпляр WhatsApp. {$instance->id}");
+
+                continue;
+            }
+
             $instance->delete();
 
             do_log('crones/delete_instances'.now()->toDateTimeString())->info("The instance with ID: {$instance->id}  was deleted");

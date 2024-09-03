@@ -58,11 +58,11 @@ class InstanceApi implements InstanceApiInterface
     public function deleteInstance(): bool
     {
         $endpoint = $this->setEndpoint("/partner/deleteInstanceAccount");
+
         $params = [
             'idInstance' => $this->instance->id,
         ];
 
-        dd($endpoint, $params);
         try {
 
             $response = $this->buildRequest()->post($endpoint, $params)->json();
