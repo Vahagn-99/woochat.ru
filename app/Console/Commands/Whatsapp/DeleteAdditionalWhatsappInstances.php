@@ -29,7 +29,7 @@ class DeleteAdditionalWhatsappInstances extends Command
     {
         // Get all free instances
         $instances = WhatsappInstance::whereFree()->get()->slice(1);
-
+        dd($instances);
 
         foreach ($instances as $instance) {
             $deleted = Whatsapp::for($instance)->instance()->delete();
