@@ -102,7 +102,6 @@ class SendMessageWhatsapp implements ShouldQueue
         if (! $chat->whatsapp_chat_id) {
             $whatsappId = $clientId ?? $clientIdFromPhone;
             $chat->whatsapp_chat_id = $whatsappId;
-
             $chat->save();
         }
 

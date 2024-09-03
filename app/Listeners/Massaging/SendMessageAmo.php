@@ -103,8 +103,7 @@ class SendMessageAmo implements ShouldQueue
         $chat = Chat::query()->firstOrCreate(['whatsapp_chat_id' => $whatsappChatId]);
 
         if (! $chat->amo_chat_id) {
-            $data = new SaveAmoChatDTO($chat->id, $chat->whatsapp_chat_id, $sender);
-            $amoChat = AmoChat::chat($amoInstance->scope_id)->create($data);
+            $amoChat = AmoChat::chat($amoInstance->scope_id)->create(new SaveAmoChatDTO($chat->id, $chat->whatsapp_chat_id, $sender));
             $chat->amo_chat_id = $amoChat->id;
             $chat->save();
         }
@@ -132,7 +131,13 @@ class SendMessageAmo implements ShouldQueue
             $source = new Source($settings->id);
         }
 
-        return new AmoMessage(sender: $sender, payload: $payload, source: $source, conversation_id: $chat->whatsapp_chat_id, msgid: $id);
+        $amoMessage =  new AmoMessage(sender: $sender, payload: $payload, source: $source, conversation_id: $chat->whatsapp_chat_id, msgid: $id);
+
+        if($chat->amo_chat_id) {
+            $amoMessage->conversation_ref_id = $chat->amo_chat_id;
+        }
+
+        return $amoMessage;
     }
 
     private function mapSender(mixed $senderData): Actor
