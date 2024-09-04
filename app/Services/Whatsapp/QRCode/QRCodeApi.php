@@ -2,6 +2,7 @@
 
 namespace App\Services\Whatsapp\QRCode;
 
+use App\Exceptions\Whatsapp\GetQrCodeException;
 use GreenApi\RestApi\GreenApiClient;
 
 class QRCodeApi implements QRCodeApiInterface
@@ -11,12 +12,17 @@ class QRCodeApi implements QRCodeApiInterface
 
     }
 
+    /**
+     * @throws \App\Exceptions\Whatsapp\GetQrCodeException
+     */
     public function getQR(): QRCodeResponseDTO
     {
         $response = $this->apiClient->account->qr();
-        return new QRCodeResponseDTO(
-            $response->data->type,
-            $response->data->message
-        );
+
+        if (isset($response->error)) {
+            throw new GetQrCodeException("Не удалесь получить qr код, попробуйте еще раз!", $response->error);
+        }
+
+        return new QRCodeResponseDTO($response->data->type, $response->data->message);
     }
 }

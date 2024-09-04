@@ -8,6 +8,9 @@ class QRCodeService implements QRCodeServiceInterface
     {
     }
 
+    /**
+     * @throws \App\Exceptions\Whatsapp\GetQrCodeException
+     */
     public function getQRCode(): QRCodeResponseDTO
     {
         return $this->api->getQR();

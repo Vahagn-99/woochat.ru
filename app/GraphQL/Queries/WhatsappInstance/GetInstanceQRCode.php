@@ -7,7 +7,11 @@ use App\Services\Whatsapp\Facades\Whatsapp;
 
 final readonly class GetInstanceQRCode
 {
-    /** @param array{} $args */
+    /**
+     * @param array{} $args
+     *
+     * @throws \App\Exceptions\Whatsapp\GetQrCodeException
+     */
     public function __invoke(null $_, array $args): array
     {
         $instance = WhatsappInstance::query()->findOrFail($args['id']);
