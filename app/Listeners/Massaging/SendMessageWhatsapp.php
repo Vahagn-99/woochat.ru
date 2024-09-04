@@ -9,6 +9,7 @@ use App\Events\Messaging\MessageReceived;
 use App\Models\AmoInstance;
 use App\Models\Chat;
 use App\Models\Message;
+use App\Models\Settings;
 use App\Models\User;
 use App\Models\WhatsappInstance;
 use App\Services\Whatsapp\Facades\Whatsapp;
@@ -53,13 +54,9 @@ class SendMessageWhatsapp implements ShouldQueue
 
             $messagePayload = $this->mapMessage($event->payload['message']);
 
-            $amoInstance = $this->getAmoInstance($event->payload['account_id']);
-
-            $user = $amoInstance->user;
-
             $chat = $this->mapChat($event->payload['message']);
 
-            $whatsappInstance = $this->getWhatsappInstance($chat, $user);
+            $whatsappInstance = $chat->whatsappInstance;
 
             $sentMessage = $this->sendMessage($messagePayload, $whatsappInstance);
 
@@ -82,36 +79,21 @@ class SendMessageWhatsapp implements ShouldQueue
         }
     }
 
-    /**
-     * @throws Exception
-     */
-    private function getWhatsappInstance(Chat $chat, User $user): WhatsappInstance
-    {
-        /** @var WhatsappInstance */
-        return $chat->whatsappInstance ?? WhatsappInstance::firstInAccount($user) ?? throw new Exception('Instance not found');
-    }
-
     private function mapChat(array $chatPayload): Chat
     {
-        $clientId = Arr::get(Arr::get($chatPayload, 'conversation'), 'client_id');
-        $clientIdFromPhone = Arr::get(Arr::get($chatPayload, 'receiver'), 'phone').'@c.us';
+        $clientId = Arr::get(Arr::get($chatPayload, 'conversation'), 'client_id') && Arr::get(Arr::get($chatPayload, 'receiver'), 'phone').'@c.us';
+
+        /** @var Settings $settings */
+        $settings = Settings::query()->find(Arr::get(Arr::get($chatPayload, 'source'), 'external_id'));
 
         /** @var Chat $chat */
         $chat = Chat::query()->firstOrCreate(['amo_chat_id' => $chatPayload['conversation']['id']]);
 
-        if (! $chat->whatsapp_chat_id) {
-            $whatsappId = $clientId ?? $clientIdFromPhone;
-            $chat->whatsapp_chat_id = $whatsappId;
-            $chat->save();
-        }
+        $chat->whatsapp_chat_id = $clientId;
+        $chat->whatsapp_instance_id = $settings->instance_id;
+        $chat->save();
 
         return $chat;
-    }
-
-    private function getAmoInstance(string $accountId): AmoInstance
-    {
-        /** @var AmoInstance */
-        return AmoInstance::findByAccountId($accountId);
     }
 
     private function sendMessage(IMessage $message, WhatsappInstance $whatsappInstance): SentMessage

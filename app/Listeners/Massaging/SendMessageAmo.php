@@ -125,15 +125,11 @@ class SendMessageAmo implements ShouldQueue
     ): AmoMessage {
         $settings = $whatsappInstance->settings;
 
-        $source = null;
+        $source = new Source($settings->id);
 
-        if ($settings->source_id) {
-            $source = new Source($settings->id);
-        }
+        $amoMessage = new AmoMessage(sender: $sender, payload: $payload, source: $source, conversation_id: $chat->whatsapp_chat_id, msgid: $id);
 
-        $amoMessage =  new AmoMessage(sender: $sender, payload: $payload, source: $source, conversation_id: $chat->whatsapp_chat_id, msgid: $id);
-
-        if($chat->amo_chat_id) {
+        if ($chat->amo_chat_id) {
             $amoMessage->conversation_ref_id = $chat->amo_chat_id;
         }
 
