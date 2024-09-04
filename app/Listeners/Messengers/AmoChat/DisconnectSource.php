@@ -36,7 +36,7 @@ class DisconnectSource implements ShouldQueue
     private function deleteSource(User $user, Settings $settings): bool
     {
         $source = new SourceModel();
-        $source->setId($settings->name);
+        $source->setId($settings->source_id);
 
         try {
             $api = Amo::domain($user->domain)->api()->sources();
