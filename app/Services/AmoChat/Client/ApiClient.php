@@ -121,7 +121,7 @@ class ApiClient implements ApiClientInterface
 
             return [
                 'error' => [
-                    'message' => "Собшение не отпралено!",
+                    'message' => "Собшение не отпралено! ".$response->body(),
                     'code' => $response->status(),
                 ],
             ];
