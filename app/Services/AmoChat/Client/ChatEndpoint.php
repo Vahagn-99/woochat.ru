@@ -30,5 +30,5 @@ class ChatEndpoint
      *
      * @note Обновление статуса доставки сообщения
      */
-    const API_SEND_MESSAGE_STATUS_API = "/v2/origin/custom/%s/delivery_status";
+    const API_SEND_MESSAGE_STATUS_API = "/v2/origin/custom/%s/%s/delivery_status";
 }

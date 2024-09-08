@@ -111,7 +111,7 @@ class ApiClient implements ApiClientInterface
         $this->response = $response = $request->send($httpMethod, $url, [
             'body' => $requestBody,
         ]);
-        dd($response);
+
         if ($response->failed()) {
             return [
                 'error' => [
@@ -122,7 +122,7 @@ class ApiClient implements ApiClientInterface
             ];
         }
 
-        return $response->json();
+        return $response->json() ?? [];
     }
 
     public function getLastRequestInfo(): array

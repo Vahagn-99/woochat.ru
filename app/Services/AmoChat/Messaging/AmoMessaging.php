@@ -56,10 +56,13 @@ class AmoMessaging implements AmoMessagingInterface
     public function sendStatus(IMessageStatus $message): SentMessageStatus
     {
         try {
-            $response = $this->request(ChatEndpoint::API_SEND_MESSAGE_STATUS_API, $message->toArray());
 
-            if (isset($response['errors'])) {
-                throw new UpdateMessageDeliveryStatusException('amochat', $response['errors']);
+            $url = sprintf(ChatEndpoint::API_SEND_MESSAGE_STATUS_API, $this->scopeId, $message->getId());
+
+            $response = $this->apiClient->request($url, $message->toArray());
+
+            if (isset($response['error'])) {
+                throw new UpdateMessageDeliveryStatusException('amochat', $response['error']);
             }
 
             return new SentMessageStatus(id: $message->getId(), status: $message->getStatus());
