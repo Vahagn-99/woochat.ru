@@ -121,7 +121,7 @@ class ApiClient implements ApiClientInterface
 
             return [
                 'error' => [
-                    'message' => "unknown error",
+                    'message' => $response['error'],
                     'code' => $response->status(),
                 ],
             ];
