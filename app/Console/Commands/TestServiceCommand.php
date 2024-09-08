@@ -2,7 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\Base\Messaging\Factory;
+use App\Events\Messaging\MessageReceived;
+use App\Listeners\Massaging\SendMessageAmo;
 use Illuminate\Console\Command;
 
 class TestServiceCommand extends Command
@@ -13,12 +14,32 @@ class TestServiceCommand extends Command
 
     public function handle(): void
     {
+        $event = new MessageReceived([
+            "typeWebhook" => "incomingMessageReceived",
+            "instanceData" => [
+                "idInstance" => 5700110738,
+                "wid" => "37493270709@c.us",
+                "typeInstance" => "whatsapp",
+            ],
+            "timestamp" => 1725821326,
+            "idMessage" => "3AB0AC8554CD7AD8F592",
+            "senderData" => [
+                "chatId" => "37493972413@c.us",
+                "chatName" => "Lusine Hakobyan",
+                "sender" => "37493972413@c.us",
+                "senderName" => "Lusine Hakobyan",
+                "senderContactName" => "Մամաս",
+            ],
+            "messageData" => [
+                "typeMessage" => "textMessage",
+                "textMessageData" => [
+                    "textMessage" => "Hdbdbdjdjd",
+                ],
+            ],
+        ], 'whatsapp');
 
-      $status  =   Factory::make()
-            ->from('amochat')
-            ->to('whatsapp')
-            ->getAdaptedStatus("read");
+        $listener = new SendMessageAmo();
 
-      dd($status);
+        $listener->handle($event);
     }
 }

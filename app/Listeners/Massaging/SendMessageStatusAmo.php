@@ -3,7 +3,6 @@
 namespace App\Listeners\Massaging;
 
 use App\Base\Messaging\Factory;
-use App\Events\Messaging\MessageReceived;
 use App\Events\Messaging\MessageStatusReceived;
 use App\Exceptions\Messaging\ProviderNotConfiguredException;
 use App\Exceptions\Messaging\UnknownMessageStatusException;
@@ -27,7 +26,7 @@ class SendMessageStatusAmo implements ShouldQueue
     /**
      * Determine whether the listener should be queued.
      */
-    public function shouldQueue(MessageReceived $event): bool
+    public function shouldQueue(MessageStatusReceived $event): bool
     {
         return $event->from === 'whatsapp';
     }

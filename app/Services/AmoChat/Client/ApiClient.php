@@ -113,15 +113,9 @@ class ApiClient implements ApiClientInterface
         ]);
 
         if ($response->failed()) {
-            //$message = " ".PHP_EOL;
-            //$message .= "error code: ".json_decode($response->body(), true)['error_code'] ?? ' '.PHP_EOL;
-            //$message .= "error type: ".json_decode($response->body(), true)['error_type'] ?? ' '.PHP_EOL;
-            //$message .= "error description: ".json_decode($response->body(), true)['error_description'] ?? ' '.PHP_EOL;
-            //$message .= "request body: ".$requestBody;
-
             return [
                 'error' => [
-                    'message' => "Собшение не отпралено! ",
+                    'message' => "Собшение не отпралено! причина: ".$response->reason(),
                     'code' => $response->status(),
                     'errors' => $response->json() ?? [],
                 ],
