@@ -6,6 +6,7 @@ namespace App\Base\Messaging;
 
 use App\Exceptions\Messaging\AdapterNotDefinedException;
 use App\Exceptions\Messaging\ProviderNotConfiguredException;
+use App\Exceptions\Messaging\UnknownMessageStatusException;
 use App\Exceptions\Messaging\UnknownMessageTypeException;
 
 class Factory
@@ -15,9 +16,6 @@ class Factory
      */
     private array $config;
 
-    /**
-     * @var mixed|string
-     */
     private string $type;
 
     private string $from;
@@ -30,16 +28,44 @@ class Factory
     }
 
     /**
-     * @throws \App\Exceptions\Messaging\UnknownMessageTypeException
+     * @param array $config
+     * @return \App\Base\Messaging\Factory
+     */
+    public static function make(array $config = []): static
+    {
+        return new static($config);
+    }
+
+    /**
      * @throws \App\Exceptions\Messaging\ProviderNotConfiguredException
      */
-    public function from(string $fromProvider, string $localType): Factory
+    public function from(string $fromProvider): Factory
     {
         $this->ensureProviderConfigured($fromProvider);
 
         $this->from = $fromProvider;
 
-        $schema = $this->config['providers'][$fromProvider]['schema'];
+        return $this;
+    }
+
+    /**
+     * @throws \App\Exceptions\Messaging\ProviderNotConfiguredException
+     */
+    public function to(string $toProvider): Factory
+    {
+        $this->ensureProviderConfigured($toProvider);
+
+        $this->to = $toProvider;
+
+        return $this;
+    }
+
+    /**
+     * @throws \App\Exceptions\Messaging\UnknownMessageTypeException
+     */
+    public function type(string $localType): Factory
+    {
+        $schema = $this->config['providers'][$this->from]['schema'];
         foreach ($schema as $item) {
             if ($localType === $item['local_type']) {
                 $this->type = $item['type'];
@@ -48,31 +74,44 @@ class Factory
             }
         }
 
-        throw  UnknownMessageTypeException::localType($localType, $fromProvider);
+        throw  UnknownMessageTypeException::localType($localType, $this->from);
     }
 
     /**
-     * @throws \App\Exceptions\Messaging\ProviderNotConfiguredException
      * @throws \App\Exceptions\Messaging\AdapterNotDefinedException
      */
-    public function to(string $toProvider, array $params): IMessage
+    public function getAdaptedMessage(array $params = []): IMessage
     {
-        $this->ensureProviderConfigured($toProvider);
-
-        $this->to = $toProvider;
-
         $adapter = $this->makeAdapter();
 
         return $adapter->adapt($params);
     }
 
     /**
-     * @param array $config
-     * @return \App\Base\Messaging\Factory
+     * @throws \App\Exceptions\Messaging\UnknownMessageStatusException
      */
-    public static function make(array $config = []): static
+    public function getAdaptedStatus(string $status): mixed
     {
-        return new static($config);
+        $statuses = $this->config['providers'][$this->from]['delivery_status'];
+        $adaptedStatuses = $this->config['providers'][$this->to]['delivery_status'];
+
+        $name = null;
+
+        foreach ($statuses as $key => $localName) {
+            if ($status == $localName) {
+                $name = $key;
+            }
+        }
+
+        if (! isset($name)) {
+            throw UnknownMessageStatusException::status($status, $this->from);
+        }
+
+        if (! isset($adaptedStatuses[$name])) {
+            throw UnknownMessageStatusException::status($status, $this->to);
+        }
+
+        return $adaptedStatuses[$name];
     }
 
     /**

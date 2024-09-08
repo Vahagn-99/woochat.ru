@@ -1,6 +1,7 @@
 <?php
 
 use App\Events\Messaging\MessageReceived;
+use App\Events\Messaging\MessageStatusReceived;
 use App\Events\Messengers\Whatsapp\InstanceStatusChanged;
 
 return [
@@ -29,7 +30,7 @@ return [
         // получать уведомления о статусах отправленных сообщений
         "outgoingWebhook" => ENV("OUTGOING_WEBHOOK", "no"),
         // получать уведомления при отправке с устройства
-        "outgoingMessageWebhook" => ENV("OUTGOING_MESSAGE_WEBHOOK", "no"),
+        "outgoingMessageWebhook" => ENV("OUTGOING_MESSAGE_WEBHOOK", "yes"),
         // получать уведомления при отправке с API
         "outgoingAPIMessageWebhook" => ENV("OUTGOING_API_MESSAGE_WEBHOOK", "no"),
         // получать уведомления о входящих сообщениях
@@ -49,5 +50,6 @@ return [
     'webhooks' => [
         'incomingMessageReceived' => MessageReceived::class, // Входящее сообщение
         'stateInstanceChanged' => InstanceStatusChanged::class, // Статус инстанса
+        'outgoingMessageStatus' => MessageStatusReceived::class // статус сообщение
     ],
 ];

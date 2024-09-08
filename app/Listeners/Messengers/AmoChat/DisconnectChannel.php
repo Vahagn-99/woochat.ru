@@ -17,6 +17,7 @@ class DisconnectChannel implements ShouldQueue
         $instance = $event->user->amoInstance;
         try {
             $instance->delete();
+
             do_log('widget/success_delete')->info("Канал {$instance->id} успешно удалень.");
         } catch (Throwable $e) {
             do_log('widget/error_delete/amochat'.now()->toDateTimeString())->error("Не удалось отключить канал {$instance} .", [

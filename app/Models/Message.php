@@ -10,6 +10,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $amo_message_id
  * @property string $whatsapp_message_id
  * @property string $chat_id
+ *
+ * @property-read \App\Models\AmoInstance $amoInstance
+ *
  */
 final class Message extends Model
 {

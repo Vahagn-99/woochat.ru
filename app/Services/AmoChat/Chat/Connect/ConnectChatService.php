@@ -2,6 +2,8 @@
 
 namespace App\Services\AmoChat\Chat\Connect;
 
+use App\Exceptions\AmoChat\CreateAmoChatConnectionException;
+use App\Exceptions\Messaging\UpdateMessageDeliveryStatusException;
 use App\Services\AmoChat\Client\ApiClientInterface;
 use App\Services\AmoChat\Client\ChatEndpoint;
 use Exception;
@@ -35,6 +37,10 @@ class ConnectChatService implements ConnectChatServiceInterface
 
         $url = sprintf(ChatEndpoint::API_CONNECT_CHAT_API, $this->channelId);
         $response = $this->apiClient->request($url, $this->body);
+
+        if (isset($response['errors'])) {
+            throw new CreateAmoChatConnectionException('amochat', $response['errors'], $response['code']);
+        }
 
         return Connetion::fromArray($response);
     }

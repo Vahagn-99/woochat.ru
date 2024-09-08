@@ -154,8 +154,8 @@ class SendMessageAmo implements ShouldQueue
         $type = $messageData['typeMessage'];
         $factory = Factory::make();
 
-        $factory->from('whatsapp', $type);
+        $factory->from('whatsapp')->type($type);
 
-        return $factory->to('amochat', $messageData);
+        return $factory->to('amochat')->getAdaptedMessage($messageData);
     }
 }

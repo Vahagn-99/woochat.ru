@@ -4,13 +4,31 @@ namespace App\Services\AmoChat\Client;
 
 class ChatEndpoint
 {
-    const API_CONNECT_CHAT_API = "/v2/origin/custom/%s/connect";
-    const API_CREATE_CHAT_API = "/v2/origin/custom/%s/chats";
     /**
-     * @const  API_SEND_MESSAGE_API
-     * @note  Метод позволяет передавать входящие и исходящие сообщения (историю переписки или сообщения,
-     * которые были отправлены в стороннем приложении), а так же позволяет редактировать сообщения.
-     * Метод создаст сообщение и при необходимости сам чат для указанного msgid и conversation_id соответственно.
+     * Отключение канала чата в аккаунте
+     *
+     * @const string
+     */
+    const API_CONNECT_CHAT_API = "/v2/origin/custom/%s/connect";
+
+    /**
+     * Создание нового чата
+     *
+     * @const string
+     */
+    const API_CREATE_CHAT_API = "/v2/origin/custom/%s/chats";
+
+    /**
+     * @const string
+     *
+     * @note Отправка, редактирование или импорт сообщения.
      */
     const API_SEND_MESSAGE_API = "/v2/origin/custom/%s";
+
+    /**
+     * @const string
+     *
+     * @note Обновление статуса доставки сообщения
+     */
+    const API_SEND_MESSAGE_STATUS_API = "/v2/origin/custom/%s/delivery_status";
 }

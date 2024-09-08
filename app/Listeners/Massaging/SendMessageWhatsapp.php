@@ -6,11 +6,9 @@ use App\Base\Messaging\Factory;
 use App\Base\Messaging\IMessage;
 use App\Base\Messaging\SentMessage;
 use App\Events\Messaging\MessageReceived;
-use App\Models\AmoInstance;
 use App\Models\Chat;
 use App\Models\Message;
 use App\Models\Settings;
-use App\Models\User;
 use App\Models\WhatsappInstance;
 use App\Services\Whatsapp\Facades\Whatsapp;
 use Exception;
@@ -109,8 +107,9 @@ class SendMessageWhatsapp implements ShouldQueue
     private function mapMessage(array $message): IMessage
     {
         $factory = Factory::make();
-        $factory->from('amochat', $message['message']['type']);
 
-        return $factory->to('whatsapp', $message);
+        $factory->from('amochat')->type($message['message']['type']);
+
+        return $factory->to('whatsapp')->getAdaptedMessage($message);
     }
 }

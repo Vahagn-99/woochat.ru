@@ -19,6 +19,20 @@ return [
         "quoted",
         "reaction",
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Статусы доставки собшения
+    |--------------------------------------------------------------------------
+    */
+    'delivery_statuses' => [
+        'sent',
+        'delivered',
+        'read',
+        'failed',
+        'cancelled',
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Провайдеры собшения
@@ -89,6 +103,12 @@ return [
                     'model' => App\Services\Whatsapp\Messaging\Types\Text::class,
                 ],
             ],
+            'delivery_status' => [
+                'sent' => 'sent',
+                'delivered' => 'delivered',
+                'read' => 'read',
+                'failed' => 'failed',
+            ],
         ],
 
         'amochat' => [
@@ -149,6 +169,12 @@ return [
                     'local_type' => 'reaction',
                     'model' => App\Services\AmoChat\Messaging\Types\Text::class,
                 ],
+            ],
+            'delivery_status' => [
+                'sent' => 0,
+                'delivered' => 1,
+                'read' => 2,
+                'failed' => -1,
             ],
         ],
     ],

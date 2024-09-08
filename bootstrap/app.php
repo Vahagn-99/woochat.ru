@@ -4,7 +4,7 @@ use AmoCRM\Exceptions\AmoCRMApiException;
 use AmoCRM\Exceptions\AmoCRMMissedTokenException;
 use AmoCRM\Exceptions\AmoCRMoAuthApiException;
 use App\Console\Scheduler;
-use App\Exceptions\AmoChat\AmoChatRequestException;
+use App\Exceptions\AmoChat\CreateAmoChatException;
 use App\Exceptions\AmoChat\GivenScopeNotFoundException;
 use App\Exceptions\AmoChat\UserNotFoundException;
 use App\Exceptions\Whatsapp\InstanceCreationException;
@@ -58,7 +58,7 @@ return Application::configure(basePath: dirname(__DIR__))->withRouting(web: [
             'message' => $e->getMessage(),
         ], $e->getCode());
     });
-    $exceptions->render(function (AmoChatRequestException $e) {
+    $exceptions->render(function (CreateAmoChatException $e) {
         return response()->json([
             'message' => $e->getMessage(),
         ], $e->getCode());
