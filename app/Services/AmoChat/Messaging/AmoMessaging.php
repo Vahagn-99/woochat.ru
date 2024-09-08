@@ -39,20 +39,16 @@ class AmoMessaging implements AmoMessagingInterface
      */
     public function send(IMessage $message): SentMessage
     {
-        try {
 
-            $response = $this->apiClient->request(ChatEndpoint::API_SEND_MESSAGE_API, $message->toArray());
+        $response = $this->apiClient->request(ChatEndpoint::API_SEND_MESSAGE_API, $message->toArray());
 
-            if (isset($response['errors'])) {
-                throw new SendMessageException('amochat', $response['errors']);
-            }
-
-            $eventType = array_key_first($response);
-
-            return new SentMessage(id: $response[$eventType]['msgid'], ref_id: $response[$eventType]['ref_id']);
-        } catch (Exception $exception) {
-            throw new SendMessageException('amochat', $exception->getMessage());
+        if (isset($response['errors'])) {
+            throw new SendMessageException('amochat', $response['errors']);
         }
+
+        $eventType = array_key_first($response);
+
+        return new SentMessage(id: $response[$eventType]['msgid'], ref_id: $response[$eventType]['ref_id']);
     }
 
     /**
