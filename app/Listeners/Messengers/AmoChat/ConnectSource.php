@@ -48,7 +48,7 @@ class ConnectSource implements ShouldQueue
         try {
             $api = Amo::domain($user->domain)->api()->sources();
 
-            if ($settings->source_id) {
+            if ($settings->source_id && $api->getOne($settings->source_id)) {
                 $source->setId($settings->source_id);
 
                 $source = $api->updateOne($source);
