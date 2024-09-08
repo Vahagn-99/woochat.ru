@@ -104,15 +104,19 @@ class SendMessageAmo implements ShouldQueue
     ): Chat {
         /** @var Chat $chat */
         $chat = Chat::query()->firstOrCreate(['whatsapp_chat_id' => $whatsappChatId]);
-
         if (! $chat->amo_chat_id) {
-            $amoChat = AmoChat::chat($amoInstance->scope_id)->create(new SaveAmoChatDTO($chat->id, $chat->whatsapp_chat_id, $sender));
+            $amoChat = AmoChat::chat($amoInstance->scope_id)->create(new SaveAmoChatDTO($chat->whatsapp_chat_id, $sender));
             $chat->amo_chat_id = $amoChat->id;
             $chat->save();
         }
 
         if (! $chat->whatsapp_instance_id) {
             $chat->whatsapp_instance_id = $whatsappInstance->id;
+            $chat->save();
+        }
+
+        if (! $chat->amo_chat_instance_id) {
+            $chat->amo_chat_instance_id = $amoInstance->id;
             $chat->save();
         }
 
@@ -128,7 +132,7 @@ class SendMessageAmo implements ShouldQueue
     ): AmoMessage {
         $settings = $whatsappInstance->settings;
 
-        $source = new Source($settings->id);
+        $source = new Source($settings->source_id);
 
         $amoMessage = new AmoMessage(sender: $sender, payload: $payload, source: $source, conversation_id: $chat->whatsapp_chat_id, msgid: $id);
 

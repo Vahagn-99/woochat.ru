@@ -19,23 +19,23 @@ class TestServiceCommand extends Command
             "instanceData" => [
                 "idInstance" => 5700110738,
                 "wid" => "37493270709@c.us",
-                "typeInstance" => "whatsapp",
+                "typeInstance" => "whatsapp"
             ],
-            "timestamp" => 1725821326,
-            "idMessage" => "3AB0AC8554CD7AD8F592",
+            "timestamp" => 1725823671,
+            "idMessage" => "3ADD6BA77949CAD5104E",
             "senderData" => [
                 "chatId" => "37493972413@c.us",
                 "chatName" => "Lusine Hakobyan",
                 "sender" => "37493972413@c.us",
                 "senderName" => "Lusine Hakobyan",
-                "senderContactName" => "Մամաս",
+                "senderContactName" => "Մամաս"
             ],
             "messageData" => [
                 "typeMessage" => "textMessage",
                 "textMessageData" => [
-                    "textMessage" => "Hdbdbdjdjd",
-                ],
-            ],
+                    "textMessage" => "Bdbsbsbsbs"
+                ]
+            ]
         ], 'whatsapp');
 
         $listener = new SendMessageAmo();

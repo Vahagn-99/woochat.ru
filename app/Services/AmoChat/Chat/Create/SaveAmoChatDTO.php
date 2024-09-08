@@ -9,7 +9,6 @@ class SaveAmoChatDTO implements Arrayable
 {
     public function __construct(
         public string $conversation_id,
-        public string $external_id,
         public Actor $sender,
         public ?Source $source = null,
     ) {
@@ -19,9 +18,6 @@ class SaveAmoChatDTO implements Arrayable
     {
         return array_filter([
             "conversation_id" => $this->conversation_id,
-            "source" => [
-                "external_id" => $this->external_id,
-            ],
             "user" => $this->sender->toArray(),
         ]);
     }

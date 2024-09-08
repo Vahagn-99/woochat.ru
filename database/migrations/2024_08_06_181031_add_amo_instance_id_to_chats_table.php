@@ -8,7 +8,12 @@ return new class extends Migration{
     public function up(): void
     {
         Schema::table('chats', function (Blueprint $table) {
-            $table->foreignId('amo_chat_instance_id')->nullable()->references('id')->on('amo_instances')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignId('amo_chat_instance_id')
+                ->nullable()
+                ->references('id')
+                ->on('amo_instances')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
         });
     }
 
