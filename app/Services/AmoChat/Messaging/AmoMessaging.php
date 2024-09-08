@@ -48,6 +48,10 @@ class AmoMessaging implements AmoMessagingInterface
 
         $eventType = array_key_first($response);
 
+        do_log("debug_message")->info('data', [
+            'response' => $response,
+        ]);
+
         return new SentMessage(id: $response[$eventType]['msgid'], ref_id: $response[$eventType]['ref_id']);
     }
 
