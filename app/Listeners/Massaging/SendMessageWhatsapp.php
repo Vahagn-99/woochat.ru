@@ -61,8 +61,8 @@ class SendMessageWhatsapp implements ShouldQueue
             $record = Message::query()->updateOrCreate([
                 'amo_message_id' => $amoMessageId,
                 'whatsapp_message_id' => $sentMessage->id,
-                'from' => 'whatsapp',
-                'to' => 'amochat',
+                'from' => 'amochat',
+                'to' => 'whatsapp',
             ], [
                 'chat_id' => $chat->id,
             ]);

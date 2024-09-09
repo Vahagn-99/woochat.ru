@@ -10,6 +10,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $amo_message_id
  * @property string $whatsapp_message_id
  * @property string $chat_id
+ * @property string $from
+ * @property string $to
  *
  * @property-read \App\Models\AmoInstance $amoInstance
  *
@@ -22,7 +24,9 @@ final class Message extends Model
     protected $fillable = [
         'amo_message_id',
         'whatsapp_message_id',
-        'chat_id'
+        'chat_id',
+        'from',
+        'to'
     ];
 
     public function chat(): BelongsTo
