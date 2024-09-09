@@ -59,20 +59,20 @@ class SendMessageAmo implements ShouldQueue
 
             $chat = $this->getChat($event->payload['senderData']['chatId'], $amoInstance, $whatsappInstance, $sender);
 
-            $messagePayload = $this->mapMessagePayload($event->payload['messageData']);
-
-            $amoMessage = $this->mapMessage($event->payload['idMessage'], $chat, $sender, $whatsappInstance, $messagePayload);
+            $message = $this->mapMessage($event->payload, $chat, $sender, $whatsappInstance);
 
             $massager = AmoChat::messaging($amoInstance->scope_id);
 
-            $sentMessage = $massager->send($amoMessage);
+            $sentMessage = $massager->send($message);
 
-            Message::query()->create([
-                'chat_id' => $chat->id,
+            Message::query()->updateorCreate([
                 'whatsapp_message_id' => $sentMessage->ref_id,
                 'amo_message_id' => $sentMessage->id,
+                'from' => 'whatsapp',
+                'to' => 'amochat',
+            ], [
+                'chat_id' => $chat->id,
             ]);
-
 
             do_log("messaging/sent/amochat")->info("sent message with ID: ".$sentMessage->id, $massager->getLastRequestInfo());
         } catch (ProviderNotConfiguredException|AdapterNotDefinedException|UnknownMessageTypeException|ModelNotFoundException $e) {
@@ -105,6 +105,7 @@ class SendMessageAmo implements ShouldQueue
     ): Chat {
         /** @var Chat $chat */
         $chat = Chat::query()->firstOrCreate(['whatsapp_chat_id' => $whatsappChatId]);
+
         if (! $chat->amo_chat_id) {
             $amoChat = AmoChat::chat($amoInstance->scope_id)->create(new SaveAmoChatDTO($chat->whatsapp_chat_id, $sender));
             $chat->amo_chat_id = $amoChat->id;
@@ -124,24 +125,22 @@ class SendMessageAmo implements ShouldQueue
         return $chat;
     }
 
+    /**
+     * @throws \App\Exceptions\Messaging\ProviderNotConfiguredException
+     * @throws \App\Exceptions\Messaging\AdapterNotDefinedException
+     * @throws \App\Exceptions\Messaging\UnknownMessageTypeException
+     */
     private function mapMessage(
-        string $id,
+        array $payload,
         Chat $chat,
         Actor $sender,
         WhatsappInstance $whatsappInstance,
-        IMessage $payload
     ): AmoMessage {
         $settings = $whatsappInstance->settings;
 
         $source = new Source($settings->source_id);
 
-        $amoMessage = new AmoMessage(sender: $sender, payload: $payload, source: $source, conversation_id: $chat->whatsapp_chat_id, msgid: $id);
-
-        if ($chat->amo_chat_id) {
-            $amoMessage->conversation_ref_id = $chat->amo_chat_id;
-        }
-
-        return $amoMessage;
+        return new AmoMessage(sender: $sender, payload: $this->mapMessagePayload($payload['messageData']), source: $source, conversation_id: $chat->whatsapp_chat_id, conversation_ref_id: $chat->amo_chat_id, msgid: $payload['idMessage']);
     }
 
     private function mapSender(mixed $senderData): Actor
