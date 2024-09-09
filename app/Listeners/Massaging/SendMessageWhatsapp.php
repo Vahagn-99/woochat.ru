@@ -52,7 +52,7 @@ class SendMessageWhatsapp implements ShouldQueue
 
             $messagePayload = $this->mapMessage($event->payload['message']);
 
-            $chat = $this->mapChat($event->payload['message']);
+            $chat = $this->getChat($event->payload['message']);
 
             $whatsappInstance = $chat->whatsappInstance;
 
@@ -79,9 +79,9 @@ class SendMessageWhatsapp implements ShouldQueue
         }
     }
 
-    private function mapChat(array $chatPayload): Chat
+    private function getChat(array $chatPayload): Chat
     {
-        $clientId = Arr::get(Arr::get($chatPayload, 'conversation'), 'client_id') && Arr::get(Arr::get($chatPayload, 'receiver'), 'phone').'@c.us';
+        $clientId = Arr::get(Arr::get($chatPayload, 'conversation'), 'client_id') ?? Arr::get(Arr::get($chatPayload, 'receiver'), 'phone').'@c.us';
 
         /** @var Settings $settings */
         $settings = Settings::query()->where('id', Arr::get(Arr::get($chatPayload, 'source'), 'external_id'))->orWhere('source_id', Arr::get(Arr::get($chatPayload, 'source'), 'external_id'))->first();

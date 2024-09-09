@@ -28,9 +28,9 @@ return [
         // отмечать входящие сообщения прочитанными при ответе собеседнику
         "markIncomingMessagesReadedOnReply" => ENV("MARK_INCOMING_MESSAGES_READED_ON_REPLY", "no"),
         // получать уведомления о статусах отправленных сообщений
-        "outgoingWebhook" => ENV("OUTGOING_WEBHOOK", "no"),
+        "outgoingWebhook" => ENV("OUTGOING_WEBHOOK", "yes"),
         // получать уведомления при отправке с устройства
-        "outgoingMessageWebhook" => ENV("OUTGOING_MESSAGE_WEBHOOK", "yes"),
+        "outgoingMessageWebhook" => ENV("OUTGOING_MESSAGE_WEBHOOK", "no"),
         // получать уведомления при отправке с API
         "outgoingAPIMessageWebhook" => ENV("OUTGOING_API_MESSAGE_WEBHOOK", "no"),
         // получать уведомления о входящих сообщениях
