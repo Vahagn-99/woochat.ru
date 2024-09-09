@@ -82,7 +82,9 @@ class SendMessageWhatsapp implements ShouldQueue
         $clientId = Arr::get(Arr::get($chatPayload, 'conversation'), 'client_id') && Arr::get(Arr::get($chatPayload, 'receiver'), 'phone').'@c.us';
 
         /** @var Settings $settings */
-        $settings = Settings::query()->where('source_id', Arr::get(Arr::get($chatPayload, 'source'), 'external_id'))->first();
+        $settings = Settings::query()
+            ->where('id', Arr::get(Arr::get($chatPayload, 'source'), 'external_id'))
+            ->where('source_id', Arr::get(Arr::get($chatPayload, 'source'), 'external_id'))->first();
 
         /** @var Chat $chat */
         $chat = Chat::query()->firstOrCreate(['amo_chat_id' => $chatPayload['conversation']['id']]);
