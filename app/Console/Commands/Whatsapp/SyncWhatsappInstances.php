@@ -45,6 +45,6 @@ class SyncWhatsappInstances extends Command
             }
         }
 
-        do_log('crones/sync_instances'.now()->toDateTimeString())->info("The instances was synced.");
+        do_log('crones/sync_instances')->info("The instances was synced. date: ".now()->toDateTimeString());
     }
 }
