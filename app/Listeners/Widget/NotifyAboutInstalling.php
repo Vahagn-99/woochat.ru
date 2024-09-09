@@ -37,6 +37,7 @@ use App\Services\AmoCRM\CustomFieldAdapter;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 class NotifyAboutInstalling implements ShouldQueue
 {
@@ -103,7 +104,7 @@ class NotifyAboutInstalling implements ShouldQueue
         $customFields = [];
 
         $userTariff = current(Arr::where($config->tariffs, function (TariffDTO $item) use ($data) {
-            return in_array($item->name, explode(' ', $data->tariff));
+            return Str::contains($item->name, $data->tariff, true);
         }));
 
         if ($user->phone) {
@@ -154,21 +155,25 @@ class NotifyAboutInstalling implements ShouldQueue
             'custom_field_value_collection' => new NumericCustomFieldValueCollection(),
         ];
 
-        $customFields['contacts'][] = [
-            'id' => $config->paid_till_cf_id,
-            'value' => $data->paid_till,
-            'custom_field_value_model' => new DateCustomFieldValueModel(),
-            'custom_field_values_model' => new DateCustomFieldValuesModel(),
-            'custom_field_value_collection' => new DateCustomFieldValueCollection(),
-        ];
+        if ($data->paid_from) {
+            $customFields['contacts'][] = [
+                'id' => $config->paid_from_cf_id,
+                'value' => $data->paid_from,
+                'custom_field_value_model' => new DateCustomFieldValueModel(),
+                'custom_field_values_model' => new DateCustomFieldValuesModel(),
+                'custom_field_value_collection' => new DateCustomFieldValueCollection(),
+            ];
+        }
 
-        $customFields['leads'][] = [
-            'id' => $config->leads_cf_id,
-            'value' => $data->paid_till,
-            'custom_field_value_model' => new DateCustomFieldValueModel(),
-            'custom_field_values_model' => new DateCustomFieldValuesModel(),
-            'custom_field_value_collection' => new DateCustomFieldValueCollection(),
-        ];
+        if ($data->paid_till) {
+            $customFields['leads'][] = [
+                'id' => $config->leads_cf_id,
+                'value' => $data->paid_till,
+                'custom_field_value_model' => new DateCustomFieldValueModel(),
+                'custom_field_values_model' => new DateCustomFieldValuesModel(),
+                'custom_field_value_collection' => new DateCustomFieldValueCollection(),
+            ];
+        }
 
         return $customFields;
     }

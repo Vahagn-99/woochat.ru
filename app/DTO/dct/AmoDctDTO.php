@@ -20,6 +20,7 @@ class AmoDctDTO extends Dto
         public int $amocrm_id_cf_id,
         public int $user_count_cf_id,
         public int $paid_till_cf_id,
+        public int $paid_from_cf_id,
     ) {
     }
 
@@ -42,6 +43,7 @@ class AmoDctDTO extends Dto
             $config['amocrm_id_cf_id'],
             $config['user_count_cf_id'],
             $config['paid_till_cf_id'],
+            $config['paid_from_cf_id'],
         );
     }
 }

@@ -9,7 +9,7 @@ class Scheduler extends ServiceProvider
 {
     public function boot(): void
     {
-        Schedule::command('sync:instances')->everyFifteenMinutes();
+        Schedule::command('sync:instances')->everyMinute()->withoutOverlapping();
         Schedule::command('delete:instances')->dailyAt('19:55');
     }
 }
