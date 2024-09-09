@@ -58,7 +58,7 @@ class NotifyAboutPhoneNumber implements ShouldQueue
             $api->updateOne($contact);
         } catch (AmoCRMoAuthApiException|AmoCRMApiException|AmoCRMMissedTokenException|Exception $e) {
             $this->release($e);
-            do_log('amocrm/oauth'.now()->toDateTimeString())->error($e->getMessage());
+            do_log('admin/installing')->error($e->getMessage());
         }
     }
 }

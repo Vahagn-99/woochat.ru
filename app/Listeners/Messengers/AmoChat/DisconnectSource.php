@@ -41,9 +41,9 @@ class DisconnectSource implements ShouldQueue
         try {
             $api = Amo::domain($user->domain)->api()->sources();
             $api->deleteOne($source);
-            do_log('amocrm/sources')->info("Источник {$source->getId()} от польз. {$user->id} успешно удалень!");
+            do_log('amochat/sources')->info("Источник {$source->getId()} от польз. {$user->id} успешно удалень!");
         } catch (AmoCRMApiException|AmoCRMoAuthApiException $e) {
-            do_log('amocrm/sources')->error("Не удалось удалить источник {$source->getId()} от польз. {$user->id}", [
+            do_log('amochat/sources')->error("Не удалось удалить источник {$source->getId()} от польз. {$user->id}", [
                 'причина' => $e->getMessage(),
                 'data' => $e->getLastRequestInfo(),
             ]);

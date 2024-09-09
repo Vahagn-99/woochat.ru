@@ -23,7 +23,7 @@ class DctAuthController extends Controller
 
         $this->saveAccessTokenService->saveOAuthToken($accessToken, $domain);
 
-        do_log("amocrm/auth-callback")->info("$domain was authenticated successfully");
+        do_log("amocrm/admin/auth")->info("$domain was authenticated successfully");
 
         return response()->json(['success' => true]);
     }

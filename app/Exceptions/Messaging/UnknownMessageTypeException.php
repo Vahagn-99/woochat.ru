@@ -22,7 +22,7 @@ class UnknownMessageTypeException extends Exception implements ReportableExcepti
 
     public function report(): bool
     {
-        do_log("messaging/types-".now()->toDateString())->error("local type '{$this->type}' in provider '$this->provider' not found");
+        do_log("messaging/types")->error("Given type '{$this->type}' in provider '$this->provider' not found");
 
         return false;
     }

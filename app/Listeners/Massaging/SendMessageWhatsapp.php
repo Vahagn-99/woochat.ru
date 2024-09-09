@@ -67,12 +67,12 @@ class SendMessageWhatsapp implements ShouldQueue
                 'chat_id' => $chat->id,
             ]);
 
-            do_log("messaging/sent/whatsapp")->info("sent message with ID: ".$sentMessage->id, [
+            do_log("messaging/whatsapp")->info("sent message with ID: ".$sentMessage->id, [
                 'record' => $record->toArray(),
                 'payload' => $messagePayload->toArray(),
             ]);
         } catch (Exception|ModelNotFoundException $e) {
-            do_log("messaging/sent/errors/whatsapp")->error($e->getMessage(), $event->payload);
+            do_log("messaging/whatsapp")->error($e->getMessage(), $event->payload);
             $this->release();
 
             return;

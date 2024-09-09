@@ -56,7 +56,7 @@ class ConnectSource implements ShouldQueue
                 $source = $api->addOne($source);
             }
         } catch (AmoCRMApiException|AmoCRMoAuthApiException $e) {
-            do_log('amocrm/sources')->error($e->getMessage(), [
+            do_log('amochat/sources')->error($e->getMessage(), [
                 'data' => $e->getLastRequestInfo(),
             ]);
 

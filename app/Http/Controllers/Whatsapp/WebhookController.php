@@ -14,7 +14,7 @@ class WebhookController extends Controller
         $webhookType = $request->input('typeWebhook');
         $payload = $request->all();
 
-        do_log('webhooks/whatsapp-'.now()->toDateTimeString())->info("webhook with type [$webhookType] from Whatsapp was received", $payload);
+        do_log('webhooks/whatsapp')->info("webhook with type [$webhookType] from Whatsapp was received", $payload);
 
         $this->callWebhookEventByType($webhookType, $payload);
 
@@ -26,7 +26,7 @@ class WebhookController extends Controller
         $webhookEvent = Arr::get(config('whatsapp.webhooks'), $webhookType);
 
         if (! $webhookEvent) {
-            do_log('webhooks/whatsapp-'.now()->toDateTimeString())->warning("webhook with type [$webhookType] not supported");
+            do_log('webhooks/whatsapp')->warning("webhook with type [$webhookType] not supported");
 
             return;
         }

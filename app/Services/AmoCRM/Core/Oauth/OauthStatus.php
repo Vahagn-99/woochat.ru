@@ -20,7 +20,7 @@ readonly class OauthStatus implements OauthStatusInterface
 
             return true;
         } catch (AmoCRMMissedTokenException|AmoCRMApiException|AmoCRMoAuthApiException  $exception) {
-            do_log('amocrm/oauth')->warning("У аккаунта нет валидний токен овтризации: ошибка из апи ".$exception->getMessage());
+            do_log('amocrm/oauth')->warning("Требуется ручная авторизация! Токен доступа протух.".$exception->getMessage());
 
             return false;
         }

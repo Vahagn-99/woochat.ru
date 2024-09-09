@@ -14,7 +14,7 @@ class ProviderNotConfiguredException extends Exception implements ReportableExce
 
     public function report(): bool
     {
-        do_log("massaging/providers".now()->toDateTimeString())->error("The provider {$this->provider} is not configured.");
+        do_log("massaging/providers")->error("The provider {$this->provider} is not configured.");
 
         return false;
     }

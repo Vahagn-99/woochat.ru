@@ -195,7 +195,7 @@ class NotifyAboutInstalling implements ShouldQueue
         try {
             $model = Amo::main()->api()->leads()->addOne($model);
         } catch (AmoCRMMissedTokenException|AmoCRMoAuthApiException|AmoCRMApiException $e) {
-            do_log('amo_notifications/installing')->error("Can't notify {$user->id}", [
+            do_log('admin/installing')->error("Can't notify {$user->id}", [
                 'description' => $e->getDescription(),
                 'code' => $e->getCode(),
             ]);
@@ -220,7 +220,7 @@ class NotifyAboutInstalling implements ShouldQueue
         try {
             $tag = $api->addOne($tag);
         } catch (AmoCRMMissedTokenException|AmoCRMApiException $e) {
-            do_log('amo_notifications/installing/tags')->error($e->getMessage(), [
+            do_log('admin/installing')->error($e->getMessage(), [
                 'description' => $e->getDescription(),
                 'info' => $e->getLastRequestInfo(),
             ]);
@@ -273,7 +273,7 @@ class NotifyAboutInstalling implements ShouldQueue
         try {
             $api->link($contact, $collectionOfLink);
         } catch (AmoCRMoAuthApiException|InvalidArgumentException|AmoCRMApiException $e) {
-            do_log('amo_notifications/installing/link-contact-lead')->error($e->getMessage(), [
+            do_log('admin/installing')->error($e->getMessage(), [
                 'description' => $e->getDescription(),
                 'info' => $e->getLastRequestInfo(),
             ]);

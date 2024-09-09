@@ -57,7 +57,7 @@ class SendMessageStatusAmo implements ShouldQueue
 
             do_log("messaging/status/amochat")->info("update amo message status with ID: ".$message->amo_message_id, $massager->getLastRequestInfo());
         } catch (ProviderNotConfiguredException|ModelNotFoundException|UnknownMessageStatusException $e) {
-            do_log("messaging/status/error/amochat")->error($e->getMessage());
+            do_log("messaging/status/amochat")->error($e->getMessage());
 
             $this->release();
         }
