@@ -61,13 +61,13 @@ class NotifyAboutInstalling implements ShouldQueue
      */
     public function handle(WidgetInstalled $event): void
     {
-        $domain = $event->user;
+        $user = $event->user;
         $data = $event->amoAccountInfoDTO;
         $config = AmoDctDTO::make();
 
         Amo::main();
 
-        $this->notify($domain, $data, $config);
+        $this->notify($user, $data, $config);
     }
 
     /**
