@@ -43,7 +43,7 @@ class ConnectSource implements ShouldQueue
         $source = new SourceModel();
         $source->setName($settings->name);
         $source->setPipelineId($settings->pipeline_id);
-        $source->setExternalId($settings->id);
+        $source->setExternalId($settings->instance_id);
 
         try {
             $api = Amo::domain($user->domain)->api()->sources();

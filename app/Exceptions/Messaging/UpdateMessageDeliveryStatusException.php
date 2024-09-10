@@ -21,7 +21,7 @@ class UpdateMessageDeliveryStatusException extends Exception implements Reportab
 
     public function report(): bool
     {
-        do_log("massaging/delivery-statuses")->error($this->getMessage(), [
+        do_log("messaging/delivery-statuses")->error($this->getMessage(), [
             'ошибки' => $this->errors,
         ]);
 

@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\Events\Messaging\MessageStatusReceived;
-use App\Listeners\Massaging\SendMessageStatusAmo;
+use App\Events\Messaging\MessageReceived;
+use App\Listeners\messaging\SendMessageAmo;
 use Illuminate\Console\Command;
 
 class TestServiceCommand extends Command
@@ -17,21 +17,31 @@ class TestServiceCommand extends Command
      */
     public function handle(): void
     {
-        $event = new MessageStatusReceived([
-            "typeWebhook" => "outgoingMessageStatus",
-            "chatId" => "37493972413@c.us",
+        $event = new MessageReceived([
+            "typeWebhook" => "incomingMessageReceived",
             "instanceData" => [
-                "idInstance" => 5700110738,
-                "wid" => "37493270709@c.us",
+                "idInstance" => 5700113017,
+                "wid" => "79093119379@c.us",
                 "typeInstance" => "whatsapp",
             ],
-            "timestamp" => 1725825504,
-            "idMessage" => "BAE5BD38923E6C94",
-            "status" => "read",
-            "sendByApi" => true,
+            "timestamp" => 1725967943,
+            "idMessage" => "D5E2DE4FA2F1FC1C296A00FAD091661F",
+            "senderData" => [
+                "chatId" => "79172407972@c.us",
+                "chatName" => "Алексей",
+                "sender" => "79172407972@c.us",
+                "senderName" => "Алексей",
+                "senderContactName" => "Timly Class",
+            ],
+            "messageData" => [
+                "typeMessage" => "textMessage",
+                "textMessageData" => [
+                    "textMessage" => "Ответ",
+                ],
+            ],
         ], 'whatsapp');
 
-        $listener = new SendMessageStatusAmo();
+        $listener = new SendMessageAmo();
 
         $listener->handle($event);
     }

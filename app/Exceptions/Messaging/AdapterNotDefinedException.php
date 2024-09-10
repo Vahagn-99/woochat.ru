@@ -17,7 +17,7 @@ class AdapterNotDefinedException extends Exception implements ReportableExceptio
 
     public function report(): bool
     {
-        do_log("massaging/adapters")->error("There is no adapter '{$this->type}' in provider '{$this->from}' for '{$this->to}'");
+        do_log("messaging/adapters")->error("There is no adapter '{$this->type}' in provider '{$this->from}' for '{$this->to}'");
 
         return false;
     }

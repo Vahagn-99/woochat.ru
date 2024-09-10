@@ -21,8 +21,7 @@ class DisconnectSource implements ShouldQueue
      */
     public function handle(InstanceDetached $event): void
     {
-        $whatsappInstance = $event->instance;
-        $settings = $whatsappInstance->settings;
+        $settings = $event->settings;
         $user = $event->user;
 
         $this->deleteSource($user, $settings);
@@ -41,6 +40,9 @@ class DisconnectSource implements ShouldQueue
         try {
             $api = Amo::domain($user->domain)->api()->sources();
             $api->deleteOne($source);
+
+            $settings->delete();
+
             do_log('amochat/sources')->info("Источник {$source->getId()} от польз. {$user->id} успешно удалень!");
         } catch (AmoCRMApiException|AmoCRMoAuthApiException $e) {
             do_log('amochat/sources')->error("Не удалось удалить источник {$source->getId()} от польз. {$user->id}", [

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Listeners\Massaging;
+namespace App\Listeners\messaging;
 
 use App\Base\Messaging\Factory;
 use App\Events\Messaging\MessageStatusReceived;
@@ -36,7 +36,7 @@ class SendMessageStatusAmo implements ShouldQueue
      */
     public function viaQueue(): string
     {
-        return 'massaging';
+        return 'messaging';
     }
 
     public function handle(MessageStatusReceived $event): void

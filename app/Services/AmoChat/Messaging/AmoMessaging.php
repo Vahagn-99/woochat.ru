@@ -42,7 +42,12 @@ class AmoMessaging implements AmoMessagingInterface
         $response = $this->request(ChatEndpoint::API_SEND_MESSAGE_API, $message->toArray());
 
         if (isset($response['error'])) {
-            throw new SendMessageException('amochat', $response['error']['message'], $response['error']['errors']);
+            throw new SendMessageException(
+                'amochat',
+                $response['error']['message'],
+                $response['error']['errors'],
+                $response['error']['body'],
+            );
         }
 
         $eventType = array_key_first($response);

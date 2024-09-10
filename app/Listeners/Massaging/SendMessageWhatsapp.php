@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Listeners\Massaging;
+namespace App\Listeners\messaging;
 
 use App\Base\Messaging\Factory;
 use App\Base\Messaging\IMessage;
@@ -8,7 +8,6 @@ use App\Base\Messaging\SentMessage;
 use App\Events\Messaging\MessageReceived;
 use App\Models\Chat;
 use App\Models\Message;
-use App\Models\Settings;
 use App\Models\WhatsappInstance;
 use App\Services\Whatsapp\Facades\Whatsapp;
 use Exception;
@@ -38,7 +37,7 @@ class SendMessageWhatsapp implements ShouldQueue
      */
     public function viaQueue(): string
     {
-        return 'massaging';
+        return 'messaging';
     }
 
     /**
@@ -52,9 +51,10 @@ class SendMessageWhatsapp implements ShouldQueue
 
             $messagePayload = $this->mapMessage($event->payload['message']);
 
-            $chat = $this->getChat($event->payload['message']);
+            /** @var WhatsappInstance $whatsappInstance */
+            $whatsappInstance = WhatsappInstance::query()->find($event->payload['message']['source']['external_id']);
 
-            $whatsappInstance = $chat->whatsappInstance;
+            $chat = $this->getChat($event->payload['message'], $whatsappInstance);
 
             $sentMessage = $this->sendMessage($messagePayload, $whatsappInstance);
 
@@ -79,22 +79,15 @@ class SendMessageWhatsapp implements ShouldQueue
         }
     }
 
-    private function getChat(array $chatPayload): Chat
+    private function getChat(array $chatPayload, WhatsappInstance $whatsappInstance): Chat
     {
-        $clientId = Arr::get(Arr::get($chatPayload, 'conversation'), 'client_id') ?? Arr::get(Arr::get($chatPayload, 'receiver'), 'phone').'@c.us';
-
-        /** @var Settings $settings */
-        $settings = Settings::query()->where('id', Arr::get(Arr::get($chatPayload, 'source'), 'external_id'))->orWhere('source_id', Arr::get(Arr::get($chatPayload, 'source'), 'external_id'))->first();
+        $whatsappChatId = Arr::get(Arr::get($chatPayload, 'conversation'), 'client_id') ?? Arr::get(Arr::get($chatPayload, 'receiver'), 'phone').'@c.us';
 
         /** @var Chat $chat */
         $chat = Chat::query()->firstOrCreate(['amo_chat_id' => $chatPayload['conversation']['id']]);
 
-        $chat->whatsapp_chat_id = $clientId;
-
-        if ($settings) {
-            $chat->whatsapp_instance_id = $settings->instance_id;
-        }
-
+        $chat->whatsapp_chat_id = $whatsappChatId;
+        $chat->whatsapp_instance_id = $whatsappInstance->id;
         $chat->save();
 
         return $chat;
@@ -102,7 +95,7 @@ class SendMessageWhatsapp implements ShouldQueue
 
     private function sendMessage(IMessage $message, WhatsappInstance $whatsappInstance): SentMessage
     {
-        return Whatsapp::for($whatsappInstance)->massaging()->send($message);
+        return Whatsapp::for($whatsappInstance)->messaging()->send($message);
     }
 
     /**

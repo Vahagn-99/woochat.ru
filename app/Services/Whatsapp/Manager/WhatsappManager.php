@@ -41,7 +41,7 @@ class WhatsappManager implements WhatsappManagerInterface
         return $this->statusService->get();
     }
 
-    public function massaging(): WhatsappMessagingInterface
+    public function messaging(): WhatsappMessagingInterface
     {
         return $this->messagingService;
     }

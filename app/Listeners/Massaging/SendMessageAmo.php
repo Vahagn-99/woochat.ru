@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Listeners\Massaging;
+namespace App\Listeners\messaging;
 
 use App\Base\Messaging\Factory;
 use App\Base\Messaging\IMessage;
@@ -45,7 +45,7 @@ class SendMessageAmo implements ShouldQueue
      */
     public function viaQueue(): string
     {
-        return 'massaging';
+        return 'messaging';
     }
 
     public function handle(MessageReceived $event): void
@@ -136,9 +136,8 @@ class SendMessageAmo implements ShouldQueue
         Actor $sender,
         WhatsappInstance $whatsappInstance,
     ): AmoMessage {
-        $settings = $whatsappInstance->settings;
 
-        $source = new Source($settings->source_id);
+        $source = new Source($whatsappInstance->id);
 
         return new AmoMessage(sender: $sender, payload: $this->mapMessagePayload($payload['messageData']), source: $source, conversation_id: $chat->whatsapp_chat_id, conversation_ref_id: $chat->amo_chat_id, msgid: $payload['idMessage']);
     }

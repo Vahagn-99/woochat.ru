@@ -25,7 +25,7 @@ use Mockery;
  * @method static QRCodeServiceInterface qr()
  * @method static InstanceServiceInterface instance()
  * @method static InstanceStatus status()
- * @method static MessagingInterface massaging()
+ * @method static MessagingInterface messaging()
  *
  * @see WhatsappManagerInterface
  */

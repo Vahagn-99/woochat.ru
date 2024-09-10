@@ -24,7 +24,7 @@ class Factory
 
     public function __construct(array $config = [])
     {
-        $this->config = array_merge(config('massaging'), $config);
+        $this->config = array_merge(config('messaging'), $config);
     }
 
     /**

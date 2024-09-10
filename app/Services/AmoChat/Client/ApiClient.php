@@ -115,9 +115,10 @@ class ApiClient implements ApiClientInterface
         if ($response->failed()) {
             return [
                 'error' => [
-                    'message' => "Собшение не отпралено! причина: ".$response->reason(),
+                    'message' => "Собшение не отпралено! причина: " . $response->reason(),
                     'code' => $response->status(),
                     'errors' => $response->json() ?? [],
+                    'request' => $body,
                 ],
             ];
         }

@@ -180,7 +180,7 @@ return [
             'connection' => 'redis',
             'queue' => [
                 'default',
-                'massaging',
+                'messaging',
             ],
             'balance' => 'auto',
             'autoScalingStrategy' => 'time',

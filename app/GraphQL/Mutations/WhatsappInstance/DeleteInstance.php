@@ -17,7 +17,7 @@ final readonly class DeleteInstance
         $instance->user_id = null;
         $instance->save();
 
-        InstanceDetached::dispatchIf((bool) $instance->settings, $instance, auth()->user());
+        InstanceDetached::dispatchIf($instance->settings, $instance->settings, auth()->user());
 
         return true;
     }

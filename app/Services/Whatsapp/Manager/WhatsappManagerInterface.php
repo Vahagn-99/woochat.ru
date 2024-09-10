@@ -19,5 +19,5 @@ interface WhatsappManagerInterface
 
     public function status(): InstanceStatus;
 
-    public function massaging(): WhatsappMessagingInterface;
+    public function messaging(): WhatsappMessagingInterface;
 }
