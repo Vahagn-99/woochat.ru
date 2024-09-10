@@ -111,14 +111,14 @@ class ApiClient implements ApiClientInterface
         $this->response = $response = $request->send($httpMethod, $url, [
             'body' => $requestBody,
         ]);
-
+        dd($body);
         if ($response->failed()) {
             return [
                 'error' => [
                     'message' => "Собшение не отпралено! причина: " . $response->reason(),
                     'code' => $response->status(),
                     'errors' => $response->json() ?? [],
-                    'request' => $body,
+                    'body' => $body,
                 ],
             ];
         }
