@@ -38,7 +38,6 @@ class DisconnectChannel implements ShouldQueue
                 do_log('whatsapp/instance')->error("Не удалось отключить инстнанс {$instances->id} .", [
                     'причина' => $e->getMessage(),
                 ]);
-
                 continue;
             }
         }

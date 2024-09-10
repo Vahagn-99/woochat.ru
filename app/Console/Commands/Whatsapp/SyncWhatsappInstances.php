@@ -34,6 +34,7 @@ class SyncWhatsappInstances extends Command
         $syncedInstances = WhatsappInstance::query()->get();
 
         foreach ($instances as $instance) {
+            /** @var WhatsappInstance $exists */
             $exists = WhatsappInstance::query()->where([
                 'id' => $instance->id,
                 'token' => $instance->token,
@@ -45,6 +46,15 @@ class SyncWhatsappInstances extends Command
                     'token' => $instance->token,
                     'status' => InstanceStatus::NOT_AUTHORIZED,
                 ]);
+            } elseif (! $exists->status->isAuthorized()) {
+                $exists->phone = null;
+                $exists->settings()->delete();
+
+                if ($exists->created_at->lessThan(now()->subHours(12))) {
+                    $exists->user_id = null;
+                }
+
+                $exists->save();
             }
         }
 

@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property InstanceStatus $status
  * @property string $token
  * @property string $phone
+ * @property \Illuminate\Support\Carbon $created_at
  *
  * @property-read User $user
  * @property-read \App\Models\Settings $settings
@@ -44,6 +45,7 @@ final class WhatsappInstance extends Model
 
     protected $casts = [
         'status' => InstanceStatus::class,
+        'created_at' => 'date',
     ];
 
     public static function firstInAccount(User $user): ?WhatsappInstance
