@@ -30,9 +30,9 @@ return [
         // получать уведомления о статусах отправленных сообщений
         "outgoingWebhook" => ENV("OUTGOING_WEBHOOK", "yes"),
         // получать уведомления при отправке с устройства
-        "outgoingMessageWebhook" => ENV("OUTGOING_MESSAGE_WEBHOOK", "no"),
+        "outgoingMessageWebhook" => ENV("OUTGOING_MESSAGE_WEBHOOK", "yes"),
         // получать уведомления при отправке с API
-        "outgoingAPIMessageWebhook" => ENV("OUTGOING_API_MESSAGE_WEBHOOK", "no"),
+        "outgoingAPIMessageWebhook" => ENV("OUTGOING_API_MESSAGE_WEBHOOK", "yes"),
         // получать уведомления о входящих сообщениях
         "incomingWebhook" => ENV("INCOMING_WEBHOOK", "yes"),
         // получать уведомления об устройстве. Уведомление временно не работает.
