@@ -19,6 +19,7 @@ class ConnectChannel implements ShouldQueue
             $this->connectAmoInstance($event->user);
         } catch (Exception $e) {
             do_log('amochat/instance')->error($e->getMessage());
+            $this->release();
 
             return;
         }

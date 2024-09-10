@@ -51,6 +51,7 @@ class SyncWhatsappInstances extends Command
                 $exists->settings()->delete();
 
                 if ($exists->created_at->lessThan(now()->subHours(12))) {
+                    do_log('')->warning("Инстанс {$exists->id} откреплень от клиента {$exists->user_id}");
                     $exists->user_id = null;
                 }
 

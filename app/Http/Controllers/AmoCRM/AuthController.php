@@ -35,9 +35,9 @@ class AuthController extends Controller
 
         do_log("amocrm/auth")->info("{$user->domain} was authenticated successfully");
 
-        $account = Amo::api()->account()->getCurrent(['amojo_id','datetime_settings']);
+        $account = Amo::domain($user->domain)->api()->account()->getCurrent(['amojo_id','datetime_settings']);
 
-        $users = Amo::api()->users()->get();
+        $users = Amo::domain($user->domain)->api()->users()->get();
 
         $currentUser = $users->getBy('id', $account->getCurrentUserId());
 
