@@ -60,7 +60,7 @@ class AmoMessaging implements AmoMessagingInterface
         $response = $this->apiClient->request($url, $message->toArray());
 
         if (isset($response['error'])) {
-            throw new UpdateMessageDeliveryStatusException('amochat', $response['error'], $response['errors']);
+            throw new UpdateMessageDeliveryStatusException('amochat', $response['error'], $response['error']['errors']);
         }
 
         return new SentMessageStatus(id: $message->getId(), status: $message->getStatus());

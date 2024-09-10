@@ -3,6 +3,7 @@
 namespace App\Services\Whatsapp\Instance;
 
 use App\Exceptions\Whatsapp\InstanceCreationException;
+use App\Exceptions\Whatsapp\InstanceDeletionException;
 use App\Services\Whatsapp\DTO\InstanceDTO;
 use App\Services\Whatsapp\Facades\Whatsapp;
 use GuzzleHttp\Client;
@@ -53,7 +54,7 @@ class InstanceApi implements InstanceApiInterface
     }
 
     /**
-     * @throws \App\Exceptions\Whatsapp\InstanceCreationException
+     * @throws \App\Exceptions\Whatsapp\InstanceDeletionException
      */
     public function deleteInstance(): bool
     {
@@ -73,7 +74,7 @@ class InstanceApi implements InstanceApiInterface
 
             return $response['deleteInstanceAccount'];
         } catch (ConnectionException $e) {
-            throw new  InstanceCreationException($e->getMessage());
+            throw new  InstanceDeletionException($e->getMessage());
         }
     }
 

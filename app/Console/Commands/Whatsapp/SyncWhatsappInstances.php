@@ -6,6 +6,7 @@ use App\Enums\InstanceStatus;
 use App\Models\WhatsappInstance;
 use App\Services\Whatsapp\Facades\Whatsapp;
 use Illuminate\Console\Command;
+use Illuminate\Support\Arr;
 
 class SyncWhatsappInstances extends Command
 {
@@ -30,6 +31,8 @@ class SyncWhatsappInstances extends Command
     {
         $instances = Whatsapp::instance()->all();
 
+        $syncedInstances = WhatsappInstance::query()->get();
+
         foreach ($instances as $instance) {
             $exists = WhatsappInstance::query()->where([
                 'id' => $instance->id,
@@ -44,6 +47,14 @@ class SyncWhatsappInstances extends Command
                 ]);
             }
         }
+
+        $deleteForgottenInstances = $syncedInstances->filter(function (WhatsappInstance $instance) use ($instances) {
+            return ! in_array($instance->id, Arr::map($instances, fn($item) => $item->id));
+        });
+
+        $deleteForgottenInstances->each(function (WhatsappInstance $instance) {
+            $instance->delete();
+        });
 
         do_log('crones/sync_instances')->info("The instances was synced. date: ".now()->toDateTimeString());
     }
