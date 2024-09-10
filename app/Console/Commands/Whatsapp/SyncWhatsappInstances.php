@@ -38,7 +38,7 @@ class SyncWhatsappInstances extends Command
             $exists = WhatsappInstance::query()->where([
                 'id' => $instance->id,
                 'token' => $instance->token,
-            ])->exists();
+            ])->first();
 
             if (! $exists) {
                 WhatsappInstance::query()->create([
