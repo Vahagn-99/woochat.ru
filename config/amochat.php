@@ -1,13 +1,5 @@
 <?php
 
-use App\Services\AmoChat\Messaging\Types\Audio;
-use App\Services\AmoChat\Messaging\Types\File;
-use App\Services\AmoChat\Messaging\Types\Picture;
-use App\Services\AmoChat\Messaging\Types\Sticker;
-use App\Services\AmoChat\Messaging\Types\Text;
-use App\Services\AmoChat\Messaging\Types\Video;
-use App\Services\AmoChat\Messaging\Types\Voice;
-
 return [
     'channel' => [
         "id" => "eb2f1b4f-c1bd-4d47-9158-01842999cf65",
