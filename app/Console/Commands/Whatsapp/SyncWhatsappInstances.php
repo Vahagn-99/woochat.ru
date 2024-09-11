@@ -66,6 +66,7 @@ class SyncWhatsappInstances extends Command
 
         $deleteForgottenInstances->each(function (WhatsappInstance $instance) {
             $instance->delete();
+            do_log('crones/sync_instances')->info("The instance {$instance->id} was deleted. date: ".now()->toDateTimeString());
         });
 
         do_log('crones/sync_instances')->info("The instances was synced. date: ".now()->toDateTimeString());
