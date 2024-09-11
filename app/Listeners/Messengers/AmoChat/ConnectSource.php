@@ -4,6 +4,7 @@ namespace App\Listeners\Messengers\AmoChat;
 
 use AmoCRM\Exceptions\AmoCRMApiException;
 use AmoCRM\Exceptions\AmoCRMoAuthApiException;
+use AmoCRM\Filters\SourcesFilter;
 use AmoCRM\Models\SourceModel;
 use App\Events\Messengers\Whatsapp\SettingsSaved;
 use App\Models\Settings;
@@ -48,13 +49,16 @@ class ConnectSource implements ShouldQueue
         try {
             $api = Amo::domain($user->domain)->api()->sources();
 
-            if ($settings->source_id && $api->getOne($settings->source_id)) {
-                $source->setId($settings->source_id);
+            $source = $api->get((new SourcesFilter())->setExternalIds([(string) $settings->instance_id]))?->first();
 
+            if ($source) {
                 $source = $api->updateOne($source);
             } else {
                 $source = $api->addOne($source);
             }
+
+            $settings->source_id = $source->getId();
+
         } catch (AmoCRMApiException|AmoCRMoAuthApiException $e) {
             do_log('amochat/sources')->error($e->getMessage(), [
                 'data' => $e->getLastRequestInfo(),
