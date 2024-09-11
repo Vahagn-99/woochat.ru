@@ -46,17 +46,18 @@ class SyncWhatsappInstances extends Command
                     'token' => $instance->token,
                     'status' => InstanceStatus::NOT_AUTHORIZED,
                 ]);
-            } elseif (! $exists->status->isAuthorized() && $exists->created_at->lessThan(now()->subHours(12))) {
-                $exists->phone = null;
-                $exists->settings()->delete();
-
-                if ($exists->user_id) {
-                    do_log('crones/instances')->warning("Инстанс {$exists->id} откреплень от клиента {$exists->user_id}");
-                    $exists->user_id = null;
-                }
-
-                $exists->save();
             }
+            //elseif (! $exists->status->isAuthorized() && $exists->created_at->lessThan(now()->subHours(12))) {
+            //    $exists->phone = null;
+            //    $exists->settings()->delete();
+            //
+            //    if ($exists->user_id) {
+            //        do_log('crones/instances')->warning("Инстанс {$exists->id} откреплень от клиента {$exists->user_id}");
+            //        $exists->user_id = null;
+            //    }
+            //
+            //    $exists->save();
+            //}
         }
 
         $deleteForgottenInstances = $syncedInstances->filter(function (WhatsappInstance $instance) use ($instances) {
