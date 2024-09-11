@@ -18,7 +18,7 @@ final readonly class CreateInstance
         $model = WhatsappInstance::whereFree()->first();
 
         $status = InstanceStatus::NOT_AUTHORIZED;
-        $name = "Инстанс No".WhatsappInstance::query()->count();
+        $name = "Инстанс №" . WhatsappInstance::query()->count();
 
         // if there is no free instance then create one
         if (! $model) {

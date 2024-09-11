@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\AmoCRM;
 
-use App\Events\Messengers\AmoChat\ChannelRequested;
 use App\Events\Widget\WidgetInstalled;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AmoCRM\WidgetInstallRequest;
@@ -32,8 +31,6 @@ class WidgetInstallController extends Controller
         }
 
         WidgetInstalled::dispatchIf(! $user->wasInformed(), $user, $data->info);
-
-        ChannelRequested::dispatch($user);
 
         return response()->json([
             'user_id' => $user->id,

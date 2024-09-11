@@ -2,6 +2,9 @@
 
 namespace App\Console\Commands;
 
+use App\Events\Messengers\AmoChat\ChannelRequested;
+use App\Listeners\Messengers\AmoChat\ConnectChannel;
+use App\Models\User;
 use App\Services\AmoChat\Facades\AmoChat;
 use Illuminate\Console\Command;
 
@@ -16,6 +19,7 @@ class TestServiceCommand extends Command
      */
     public function handle(): void
     {
-        $channel = AmoChat::connector()->connect("e505c508-64a4-4070-bca9-e99d10f9c3fe");
+        $listener = new ConnectChannel();
+        $listener->handle(new ChannelRequested(User::first()));
     }
 }

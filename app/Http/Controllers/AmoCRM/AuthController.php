@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\AmoCRM;
 
 use App\DTO\AmoAccountInfoDTO;
+use App\Events\Messengers\AmoChat\ChannelRequested;
 use App\Events\Widget\WidgetInstalled;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AmoCRM\Oauth\CallbackRequest;
@@ -30,14 +31,16 @@ class AuthController extends Controller
         $user = User::getByDomainOrCreate($domain);
 
         $authenticator = Amo::domain($user->domain)->authenticator();
+
         $accessToken = $authenticator->exchangeCodeWithAccessToken($code);
+
         Amo::oauth()->saveOAuthToken($accessToken, $user->domain);
 
         do_log("amocrm/auth")->info("{$user->domain} was authenticated successfully");
 
-        $account = Amo::domain($user->domain)->api()->account()->getCurrent(['amojo_id','datetime_settings']);
+        $account = Amo::api()->account()->getCurrent(['amojo_id', 'datetime_settings']);
 
-        $users = Amo::domain($user->domain)->api()->users()->get();
+        $users = Amo::api()->users()->get();
 
         $currentUser = $users->getBy('id', $account->getCurrentUserId());
 
@@ -45,15 +48,11 @@ class AuthController extends Controller
         $user->email = $currentUser->getEmail();
         $user->save();
 
-        $info = new AmoAccountInfoDTO(
-            $account->getId(),
-            $account->getSubdomain(),
-            $account->getName(),
-            $users->count(),
-            $account->getDatetimeSettings()->getTimezone()
-        );
+        $info = new AmoAccountInfoDTO($account->getId(), $account->getSubdomain(), $account->getName(), $users->count(), $account->getDatetimeSettings()->getTimezone());
 
         WidgetInstalled::dispatchIf(! $user->wasInformed(), $user, $info);
+
+        ChannelRequested::dispatch($user);
 
         if (env('APP_ENV') === 'local') {
             return response()->json(['status' => 'success']);
