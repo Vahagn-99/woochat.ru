@@ -9,7 +9,7 @@ class InstanceService implements InstanceServiceInterface
 {
     public function __construct(private readonly InstanceApiInterface $api, private array $config = [])
     {
-        $this->config = array_merge(config('whatsapp.instance') ?? [], $this->config);
+        $this->config = array_merge(config('whatsapp.instance', []), $this->config);
 
         if (! isset($this->config['webhookUrl']) && isset($this->config['webhookRouteName'])) {
             $this->config['webhookUrl'] = route($this->config['webhookRouteName']);
