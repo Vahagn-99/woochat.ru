@@ -23,9 +23,9 @@ class WebhookController extends Controller
         $payload = $request->all();
         $payload['scope_id'] = $scopeId;
 
-        do_log('webhooks/amochat')->info("message from AmoCRM was received", $payload);
-
         MessageReceived::dispatch($payload, 'amochat');
+
+        do_log('webhooks/amochat')->info("message from AmoCRM was passed to handling", $payload);
 
         return response()->json();
     }

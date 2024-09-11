@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Listeners\messaging;
+namespace App\Listeners\Messaging;
 
 use App\Base\Messaging\Factory;
 use App\Events\Messaging\MessageStatusReceived;
