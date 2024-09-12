@@ -106,8 +106,8 @@ class SendMessageAmo implements ShouldQueue
         /** @var Chat $chat */
         $chat = Chat::query()->updateOrCreate([
             'whatsapp_chat_id' => $whatsappChatId,
-            'amo_chat_instance_id' => $amoInstance->id,
         ], [
+            'amo_chat_instance_id' => $amoInstance->id,
             'whatsapp_instance_id' => $whatsappInstance->id,
         ]);
 
