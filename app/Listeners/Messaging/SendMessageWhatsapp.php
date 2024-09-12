@@ -85,12 +85,15 @@ class SendMessageWhatsapp implements ShouldQueue
         $whatsappChatId = Arr::get(Arr::get($chatPayload, 'conversation'), 'client_id') ?? Arr::get(Arr::get($chatPayload, 'receiver'), 'phone').'@c.us';
 
         /** @var Chat $chat */
-        $chat = Chat::query()->updateOrCreate([
-            'amo_chat_id' => $chatPayload['conversation']['id'],
-            'whatsapp_chat_id' => $whatsappChatId,
-        ], [
-            'whatsapp_instance_id' => $whatsappInstance->id,
-        ]);
+        $chat = Chat::query()->where('amo_chat_id', $chatPayload['conversation']['id'])->latest()->first();
+
+        if (! $chat) {
+            $chat = new Chat();
+            $chat->amo_chat_id = $chatPayload['conversation']['id'];
+            $chat->whatsapp_chat_id = $whatsappChatId;
+            $chat->whatsapp_instance_id = $whatsappInstance->id;
+            $chat->save();
+        }
 
         return $chat;
     }

@@ -104,16 +104,15 @@ class SendMessageAmo implements ShouldQueue
         Actor $sender): Chat
     {
         /** @var Chat $chat */
-        $chat = Chat::query()->updateOrCreate([
-            'whatsapp_chat_id' => $whatsappChatId,
-        ], [
-            'amo_chat_instance_id' => $amoInstance->id,
-            'whatsapp_instance_id' => $whatsappInstance->id,
-        ]);
+        $chat = Chat::query()->where('whatsapp_chat_id', $whatsappChatId)->latest('created_at')->first();
 
-        if (! $chat->amo_chat_id) {
-            $amoChat = AmoChat::chat($amoInstance->scope_id)->create(new SaveAmoChatDTO($chat->whatsapp_chat_id, $sender));
-            $chat->amo_chat_id = $amoChat->id;
+        if (! $chat) {
+            $chat = new Chat();
+            $chat->whatsapp_chat_id = $whatsappChatId;
+            $chat->amo_chat_instance_id = $amoInstance->id;
+            $chat->whatsapp_instance_id = $whatsappInstance->id;
+        } elseif (! $chat->amo_chat_id) {
+            $chat->amo_chat_id = AmoChat::chat($amoInstance->scope_id)->create(new SaveAmoChatDTO($chat->whatsapp_chat_id, $sender))->id;
         }
 
         $chat->save();
@@ -130,9 +129,8 @@ class SendMessageAmo implements ShouldQueue
         array $payload,
         Chat $chat,
         Actor $sender,
-        WhatsappInstance $whatsappInstance,): AmoMessage
+        WhatsappInstance $whatsappInstance): AmoMessage
     {
-
         $source = new Source($whatsappInstance->id);
 
         return new AmoMessage(sender: $sender, payload: $this->mapMessagePayload($payload['messageData']), source: $source, conversation_id: $chat->whatsapp_chat_id, conversation_ref_id: $chat->amo_chat_id, msgid: $payload['idMessage']);
