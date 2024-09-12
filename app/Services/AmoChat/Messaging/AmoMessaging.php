@@ -35,7 +35,8 @@ class AmoMessaging implements AmoMessagingInterface
     }
 
     /**
-     * @throws Exception
+     * @throws SendMessageException
+     * @throws \Exception
      */
     public function send(IMessage $message): SentMessage
     {

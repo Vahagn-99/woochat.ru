@@ -70,6 +70,7 @@ class SendMessageWhatsapp implements ShouldQueue
             do_log("messaging/whatsapp")->info("sent message with ID: ".$sentMessage->id, [
                 'record' => $record->toArray(),
                 'payload' => $messagePayload->toArray(),
+                'response' => $sentMessage->ref_id,
             ]);
         } catch (Exception|ModelNotFoundException $e) {
             do_log("messaging/whatsapp")->error($e->getMessage(), $event->payload);
@@ -84,11 +85,10 @@ class SendMessageWhatsapp implements ShouldQueue
         $whatsappChatId = Arr::get(Arr::get($chatPayload, 'conversation'), 'client_id') ?? Arr::get(Arr::get($chatPayload, 'receiver'), 'phone').'@c.us';
 
         /** @var Chat $chat */
-        $chat = Chat::query()->firstOrCreate(['amo_chat_id' => $chatPayload['conversation']['id']]);
-
-        $chat->whatsapp_chat_id = $whatsappChatId;
-        $chat->whatsapp_instance_id = $whatsappInstance->id;
-        $chat->save();
+        $chat = Chat::query()->updateOrCreate(['amo_chat_id' => $chatPayload['conversation']['id']], [
+            'whatsapp_chat_id' => $whatsappChatId,
+            'whatsapp_instance_id' => $whatsappInstance->id,
+        ]);
 
         return $chat;
     }

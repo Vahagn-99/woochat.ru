@@ -7,6 +7,7 @@ use App\Base\Messaging\IMessage;
 use App\Events\Messaging\MessageReceived;
 use App\Exceptions\Messaging\AdapterNotDefinedException;
 use App\Exceptions\Messaging\ProviderNotConfiguredException;
+use App\Exceptions\Messaging\SendMessageException;
 use App\Exceptions\Messaging\UnknownMessageTypeException;
 use App\Models\AmoInstance;
 use App\Models\Chat;
@@ -18,6 +19,7 @@ use App\Services\AmoChat\Messaging\Actor\Actor;
 use App\Services\AmoChat\Messaging\Actor\Profile;
 use App\Services\AmoChat\Messaging\Source\Source;
 use App\Services\AmoChat\Messaging\Types\AmoMessage;
+use Exception;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Queue\InteractsWithQueue;
@@ -75,14 +77,12 @@ class SendMessageAmo implements ShouldQueue
             ]);
 
             do_log("messaging/amochat")->info("sent message with ID: ".$sentMessage->id, $massager->getLastRequestInfo());
-        } catch (ProviderNotConfiguredException|AdapterNotDefinedException|UnknownMessageTypeException|ModelNotFoundException $e) {
+        } catch (ProviderNotConfiguredException|AdapterNotDefinedException|UnknownMessageTypeException|ModelNotFoundException|SendMessageException|Exception $e) {
             do_log("messaging/amochat")->error($e->getMessage(), [
                 'trace' => $e->getTraceAsString(),
             ]);
 
             $this->release();
-
-            return;
         }
     }
 
@@ -104,23 +104,17 @@ class SendMessageAmo implements ShouldQueue
         Actor $sender
     ): Chat {
         /** @var Chat $chat */
-        $chat = Chat::query()->firstOrCreate(['whatsapp_chat_id' => $whatsappChatId]);
+        $chat = Chat::query()->updateOrCreate(['whatsapp_chat_id' => $whatsappChatId], [
+            'whatsapp_instance_id' => $whatsappInstance->id,
+            'amo_chat_instance_id' => $amoInstance->id,
+        ]);
 
         if (! $chat->amo_chat_id) {
             $amoChat = AmoChat::chat($amoInstance->scope_id)->create(new SaveAmoChatDTO($chat->whatsapp_chat_id, $sender));
             $chat->amo_chat_id = $amoChat->id;
-            $chat->save();
         }
 
-        if (! $chat->whatsapp_instance_id) {
-            $chat->whatsapp_instance_id = $whatsappInstance->id;
-            $chat->save();
-        }
-
-        if (! $chat->amo_chat_instance_id) {
-            $chat->amo_chat_instance_id = $amoInstance->id;
-            $chat->save();
-        }
+        $chat->save();
 
         return $chat;
     }
@@ -158,6 +152,7 @@ class SendMessageAmo implements ShouldQueue
     private function mapMessagePayload(array $messageData): IMessage
     {
         $type = $messageData['typeMessage'];
+
         $factory = Factory::make();
 
         $factory->from('whatsapp')->type($type);
