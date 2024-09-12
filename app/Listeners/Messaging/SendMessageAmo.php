@@ -76,9 +76,9 @@ class SendMessageAmo implements ShouldQueue
                 'chat_id' => $chat->id,
             ]);
 
-            do_log("messaging/amochat")->info("sent message with ID: ".$sentMessage->id, $massager->getLastRequestInfo());
+            do_log("messaging/".class_basename($this))->info("sent message with ID: ".$sentMessage->id, $massager->getLastRequestInfo());
         } catch (ProviderNotConfiguredException|AdapterNotDefinedException|UnknownMessageTypeException|ModelNotFoundException|SendMessageException|Exception $e) {
-            do_log("messaging/amochat")->error($e->getMessage(), [
+            do_log("messaging/".class_basename($this))->error($e->getMessage(), [
                 'trace' => $e->getTraceAsString(),
             ]);
 
@@ -101,12 +101,14 @@ class SendMessageAmo implements ShouldQueue
         string $whatsappChatId,
         AmoInstance $amoInstance,
         WhatsappInstance $whatsappInstance,
-        Actor $sender
-    ): Chat {
+        Actor $sender): Chat
+    {
         /** @var Chat $chat */
-        $chat = Chat::query()->updateOrCreate(['whatsapp_chat_id' => $whatsappChatId], [
-            'whatsapp_instance_id' => $whatsappInstance->id,
+        $chat = Chat::query()->updateOrCreate([
+            'whatsapp_chat_id' => $whatsappChatId,
             'amo_chat_instance_id' => $amoInstance->id,
+        ], [
+            'whatsapp_instance_id' => $whatsappInstance->id,
         ]);
 
         if (! $chat->amo_chat_id) {
@@ -128,8 +130,8 @@ class SendMessageAmo implements ShouldQueue
         array $payload,
         Chat $chat,
         Actor $sender,
-        WhatsappInstance $whatsappInstance,
-    ): AmoMessage {
+        WhatsappInstance $whatsappInstance,): AmoMessage
+    {
 
         $source = new Source($whatsappInstance->id);
 

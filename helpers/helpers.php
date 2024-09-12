@@ -18,8 +18,11 @@ if (! function_exists('array_null_filter')) {
 }
 
 if (! function_exists('do_log')) {
-    function do_log(string $file): LoggerInterface
+    function do_log(string $path, $filename = ''): LoggerInterface
     {
+        $file = $filename ? $path.'/'.$filename : $path;
+        $file .= '_'.date('Y-m-d');
+
         return (new DoLog())->file($file);
     }
 }
