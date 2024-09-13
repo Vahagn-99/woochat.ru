@@ -104,7 +104,11 @@ class SendMessageAmo implements ShouldQueue
         Actor $sender): Chat
     {
         /** @var Chat $chat */
-        $chat = Chat::query()->where('whatsapp_chat_id', $whatsappChatId)->latest('created_at')->first();
+        $chat = Chat::query()->where([
+            'whatsapp_chat_id',
+            $whatsappChatId,
+            'whatsapp_instance_id' => $whatsappInstance->id,
+        ])->latest('created_at')->first();
 
         if (! $chat) {
             $chat = new Chat();
