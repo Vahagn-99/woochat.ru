@@ -2,12 +2,12 @@
 
 namespace App\Exceptions\Whatsapp;
 
-use App\Exceptions\RendererException;
+use App\Exceptions\RenderableException;
 use App\Exceptions\ReportableException;
 use Exception;
 use Illuminate\Http\Response;
 
-class GetQrCodeException extends Exception implements ReportableException, RendererException
+class GetQrCodeException extends Exception implements ReportableException, RenderableException
 {
     private mixed $errors;
 

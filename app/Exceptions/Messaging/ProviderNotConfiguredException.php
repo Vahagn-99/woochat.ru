@@ -9,12 +9,12 @@ class ProviderNotConfiguredException extends Exception implements ReportableExce
 {
     public function __construct(private readonly string $provider)
     {
-        parent::__construct("Provider '{$this->provider}' not configured");
+        parent::__construct("Провайдер '{$this->provider}' не настроен.");
     }
 
     public function report(): bool
     {
-        do_log("messaging/providers")->error("The provider {$this->provider} is not configured.");
+        do_log("messaging/providers")->error("Провайдер {$this->provider} не настроен.");
 
         return false;
     }

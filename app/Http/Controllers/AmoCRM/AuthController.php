@@ -36,7 +36,7 @@ class AuthController extends Controller
 
         Amo::oauth()->saveOAuthToken($accessToken, $user->domain);
 
-        do_log("amocrm/auth")->info("{$user->domain} was authenticated successfully");
+        do_log("amocrm/auth")->info("{$user->domain} Успешно авторизован.");
 
         $account = Amo::api()->account()->getCurrent(['amojo_id', 'datetime_settings']);
 

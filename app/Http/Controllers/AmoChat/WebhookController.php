@@ -17,7 +17,7 @@ class WebhookController extends Controller
     public function __invoke(Request $request, string $scopeId): JsonResponse
     {
         if (! AmoInstance::whereScopeId($scopeId)->exists()) {
-            throw new GivenScopeNotFoundException("Scope '{$scopeId}' not found", 404);
+            throw new GivenScopeNotFoundException("scopeId '{$scopeId}' не найдень", 404);
         }
 
         $payload = $request->all();
@@ -25,7 +25,7 @@ class WebhookController extends Controller
 
         MessageReceived::dispatch($payload, 'amochat');
 
-        do_log('webhooks/amochat')->info("message from AmoCRM was passed to handling", $payload);
+        do_log('webhooks/amochat')->info("Сообщение из amo было передано на обработку.", $payload);
 
         return response()->json();
     }

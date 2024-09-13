@@ -11,7 +11,7 @@ class WidgetInstalled
 {
     use Dispatchable, SerializesModels;
 
-    public function __construct(public User $user, public AmoAccountInfoDTO $amoAccountInfoDTO)
+    public function __construct(public User $user, public AmoAccountInfoDTO $amo_account_info_DTO)
     {
     }
 }

@@ -41,7 +41,7 @@ class DeleteAdditionalWhatsappInstances extends Command
 
             $instance->delete();
 
-            do_log('crones/delete_instances')->info("The instance with ID: {$instance->id}  was deleted ".now()->toDateTimeString());
+            do_log('crones/delete_instances')->info("экземпляр ID: {$instance->id}  удален.");
         }
     }
 }

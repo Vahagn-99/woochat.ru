@@ -6,6 +6,8 @@ use App\Base\Messaging\Factory;
 use App\Base\Messaging\IMessage;
 use App\Base\Messaging\SentMessage;
 use App\Events\Messaging\MessageReceived;
+use App\Exceptions\Whatsapp\InstanceNotFoundException;
+use App\Models\AmoInstance;
 use App\Models\Chat;
 use App\Models\Message;
 use App\Models\WhatsappInstance;
@@ -51,8 +53,18 @@ class SendMessageWhatsapp implements ShouldQueue
 
             $messagePayload = $this->mapMessage($event->payload['message']);
 
-            /** @var WhatsappInstance $whatsappInstance */
-            $whatsappInstance = WhatsappInstance::query()->find($event->payload['message']['source']['external_id']);
+            $user = AmoInstance::with([
+                'user' => fn(
+                    $query) => $query->with('whatsappInstances'),
+            ])->where('scope_id', $event->payload['scope_id'])->first()->user;
+
+            /** @var ?WhatsappInstance $whatsappInstance */
+            $whatsappInstance = $user->whatsappInstances->first(fn(
+                $item) => $item->id == $event->payload['message']['source']['external_id']);
+
+            if (! $whatsappInstance) {
+                throw new InstanceNotFoundException("Нет удалесь отправить собшение из амо в ватсапп так как нет подключеного инстанса для этого аккаунта {$user->domain}");
+            }
 
             $chat = $this->getChat($event->payload['message'], $whatsappInstance);
 
@@ -67,12 +79,12 @@ class SendMessageWhatsapp implements ShouldQueue
                 'chat_id' => $chat->id,
             ]);
 
-            do_log("messaging", class_basename($this))->info("sent message with ID: ".$sentMessage->id, [
+            do_log("messaging", class_basename($this))->info("Сообщение отправлено. ID: ".$sentMessage->id, [
                 'record' => $record->toArray(),
                 'payload' => $messagePayload->toArray(),
                 'response' => $sentMessage->ref_id,
             ]);
-        } catch (Exception|ModelNotFoundException $e) {
+        } catch (Exception|ModelNotFoundException|InstanceNotFoundException $e) {
             do_log("messaging", class_basename($this))->error($e->getMessage(), $event->payload);
             $this->release();
 

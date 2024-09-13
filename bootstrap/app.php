@@ -53,44 +53,9 @@ return Application::configure(basePath: dirname(__DIR__))->withRouting(web: [
         'auth.basic' => BasicAuthMiddleware::class,
     ]);
 })->withExceptions(function (Exceptions $exceptions) {
-    $exceptions->render(function (InstanceCreationException $e) {
-        return response()->json([
-            'message' => $e->getMessage(),
-        ], $e->getCode());
-    });
-    $exceptions->render(function (CreateAmoChatException $e) {
-        return response()->json([
-            'message' => $e->getMessage(),
-        ], $e->getCode());
-    });
-    $exceptions->report(function (UserNotFoundException $e) {
-        do_log("amocrm/auth-callback")->error($e->getMessage());
-    });
-    $exceptions->render(function (UserNotFoundException $e) {
-        return response()->json([
-            'message' => $e->getMessage(),
-        ], $e->getCode());
-    });
     $exceptions->report(function (AmoCRMMissedTokenException|AmoCRMoAuthApiException|AmoCRMApiException $e) {
         do_log("widget/installation")->error($e->getMessage(), $e->getLastRequestInfo());
 
         return false;
-    });
-    $exceptions->report(function (UnsupportedWebhookType $e) {
-
-        do_log("whatsapp/webhooks")->warning($e->getMessage());
-
-        return false;
-    });
-    $exceptions->report(function (GivenScopeNotFoundException $e) {
-
-        do_log("amocrm/scopes")->warning($e->getMessage());
-
-        return false;
-    });
-    $exceptions->render(function (GivenScopeNotFoundException $e) {
-        return response()->json([
-            'message' => $e->getMessage(),
-        ], $e->getCode());
     });
 })->create();

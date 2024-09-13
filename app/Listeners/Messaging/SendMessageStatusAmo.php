@@ -5,6 +5,7 @@ namespace App\Listeners\Messaging;
 use App\Base\Messaging\Factory;
 use App\Events\Messaging\MessageStatusReceived;
 use App\Exceptions\Messaging\ProviderNotConfiguredException;
+use App\Exceptions\Messaging\UnknownMessageException;
 use App\Exceptions\Messaging\UnknownMessageStatusException;
 use App\Models\Message;
 use App\Models\WhatsappInstance;
@@ -39,11 +40,18 @@ class SendMessageStatusAmo implements ShouldQueue
         return 'messaging';
     }
 
+    /**
+     * @throws \App\Exceptions\Messaging\UnknownMessageException
+     */
     public function handle(MessageStatusReceived $event): void
     {
         try {
             /** @var Message $message */
             $message = Message::query()->where('whatsapp_message_id', $event->payload['idMessage'])->first();
+
+            if (! $message) {
+                throw new UnknownMessageException($event->payload['idMessage'], 'whatsapp', $event->payload);
+            }
 
             $whatsappInstance = $this->getWhatsappInstance($event->payload['instanceData']['idInstance']);
 
@@ -55,7 +63,7 @@ class SendMessageStatusAmo implements ShouldQueue
 
             $massager->sendStatus(new Status($message->amo_message_id, $newStatus));
 
-            do_log("messaging/status/amochat")->info("update amo message status with ID: ".$message->amo_message_id, $massager->getLastRequestInfo());
+            do_log("messaging/status/amochat")->info("Обновлено статус сообщения ID: ".$message->amo_message_id, $massager->getLastRequestInfo());
         } catch (ProviderNotConfiguredException|ModelNotFoundException|UnknownMessageStatusException $e) {
             do_log("messaging/status/amochat")->error($e->getMessage());
 

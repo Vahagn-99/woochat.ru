@@ -76,7 +76,7 @@ class SendMessageAmo implements ShouldQueue
                 'chat_id' => $chat->id,
             ]);
 
-            do_log("messaging/".class_basename($this))->info("sent message with ID: ".$sentMessage->id, $massager->getLastRequestInfo());
+            do_log("messaging/".class_basename($this))->info("Собшение отправлено. ID: ".$sentMessage->id, $massager->getLastRequestInfo());
         } catch (ProviderNotConfiguredException|AdapterNotDefinedException|UnknownMessageTypeException|ModelNotFoundException|SendMessageException|Exception $e) {
             do_log("messaging/".class_basename($this))->error($e->getMessage(), [
                 'trace' => $e->getTraceAsString(),

@@ -12,12 +12,12 @@ class AdapterNotDefinedException extends Exception implements ReportableExceptio
         private readonly string $to,
         private readonly string $type
     ) {
-        parent::__construct("There is no adapter '{$this->type}' in provider '{$this->from}' for '{$this->to}'");
+        parent::__construct("Адаптер сообщения '{$this->type}' в провайдере '{$this->from}' для '{$this->to}' не найден.");
     }
 
     public function report(): bool
     {
-        do_log("messaging/adapters")->error("There is no adapter '{$this->type}' in provider '{$this->from}' for '{$this->to}'");
+        do_log("messaging/adapters")->error("Не найдень '{$this->type}' в провайдере '{$this->from}' для '{$this->to}'");
 
         return false;
     }

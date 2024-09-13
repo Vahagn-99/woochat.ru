@@ -21,7 +21,7 @@ class WidgetDeleteController extends Controller
 
         UserDeleted::dispatch($user);
 
-        do_log('amocrm/widget')->info("The widget was deleted");
+        do_log('amocrm/widget')->info("Пользователь {$user->domain} удалил виджет.");
 
         return response()->json(["widget" => "deleted"]);
     }

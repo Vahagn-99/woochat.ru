@@ -13,7 +13,7 @@ class UnknownMessageTypeException extends Exception implements ReportableExcepti
 
     public static function localType(string $localType, string $fromProvider): UnknownMessageTypeException
     {
-        $instance = new self("local type '{$localType}' in provider '$fromProvider' not found", 404);
+        $instance = new self("Типь собшение '{$localType}' в провайдере '$fromProvider' не найдень", 404);
         $instance->type = $localType;
         $instance->provider = $fromProvider;
 
@@ -22,7 +22,7 @@ class UnknownMessageTypeException extends Exception implements ReportableExcepti
 
     public function report(): bool
     {
-        do_log("messaging/types")->error("Given type '{$this->type}' in provider '$this->provider' not found");
+        do_log("messaging/types")->error("Тип '{$this->type}' в провайдере '$this->provider' не найдень");
 
         return false;
     }
