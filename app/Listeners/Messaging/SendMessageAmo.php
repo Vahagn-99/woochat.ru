@@ -50,6 +50,9 @@ class SendMessageAmo implements ShouldQueue
         return 'messaging';
     }
 
+    /**
+     * @throws \App\Exceptions\Messaging\SendMessageException
+     */
     public function handle(MessageReceived $event): void
     {
         try {
@@ -77,7 +80,7 @@ class SendMessageAmo implements ShouldQueue
             ]);
 
             do_log("messaging/".class_basename($this))->info("Собшение отправлено. ID: ".$sentMessage->id, $massager->getLastRequestInfo());
-        } catch (ProviderNotConfiguredException|AdapterNotDefinedException|UnknownMessageTypeException|ModelNotFoundException|SendMessageException|Exception $e) {
+        } catch (ProviderNotConfiguredException|AdapterNotDefinedException|UnknownMessageTypeException|ModelNotFoundException $e) {
             do_log("messaging/".class_basename($this))->error($e->getMessage(), [
                 'trace' => $e->getTraceAsString(),
             ]);
