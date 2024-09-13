@@ -17,6 +17,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 class SendMessageWhatsapp implements ShouldQueue
 {
@@ -94,7 +95,7 @@ class SendMessageWhatsapp implements ShouldQueue
 
     private function getChat(array $chatPayload, WhatsappInstance $whatsappInstance): Chat
     {
-        $whatsappChatId = Arr::get(Arr::get($chatPayload, 'conversation'), 'client_id') ?? Arr::get(Arr::get($chatPayload, 'receiver'), 'phone').'@c.us';
+        $whatsappChatId = Str::replace('+', '', Arr::get(Arr::get($chatPayload, 'conversation'), 'client_id') ?? Arr::get(Arr::get($chatPayload, 'receiver'), 'phone').'@c.us');
 
         /** @var Chat $chat */
         $chat = Chat::query()->where('amo_chat_id', $chatPayload['conversation']['id'])->latest('created_at')->first();
