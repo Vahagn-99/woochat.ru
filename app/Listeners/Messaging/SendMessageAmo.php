@@ -105,8 +105,7 @@ class SendMessageAmo implements ShouldQueue
     {
         /** @var Chat $chat */
         $chat = Chat::query()->where([
-            'whatsapp_chat_id',
-            $whatsappChatId,
+            'whatsapp_chat_id' => $whatsappChatId,
             'whatsapp_instance_id' => $whatsappInstance->id,
         ])->latest('created_at')->first();
 
