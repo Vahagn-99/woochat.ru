@@ -60,7 +60,7 @@ class SendMessageAmo implements ShouldQueue
 
             $sender = $this->mapSender($event->payload['senderData']);
 
-            $chat = $this->getChat($event->payload['senderData']['chatId'], $amoInstance, $whatsappInstance, $sender);
+            $chat = $this->getChat($event->payload['senderData']['chatId'], $amoInstance, $whatsappInstance);
 
             $message = $this->mapMessage($event->payload, $chat, $sender, $whatsappInstance);
 
@@ -101,8 +101,7 @@ class SendMessageAmo implements ShouldQueue
     private function getChat(
         string $whatsappChatId,
         AmoInstance $amoInstance,
-        WhatsappInstance $whatsappInstance,
-        Actor $sender): Chat
+        WhatsappInstance $whatsappInstance): Chat
     {
         /** @var Chat $chat */
         $chat = Chat::query()->where([
@@ -115,10 +114,6 @@ class SendMessageAmo implements ShouldQueue
             $chat->whatsapp_chat_id = $whatsappChatId;
             $chat->amo_chat_instance_id = $amoInstance->id;
             $chat->whatsapp_instance_id = $whatsappInstance->id;
-        }
-
-        if (! $chat->amo_chat_id) {
-            $chat->amo_chat_id = AmoChat::chat($amoInstance->scope_id)->create(new SaveAmoChatDTO($chat->whatsapp_chat_id, $sender))->id;
         }
 
         if (! $chat->amo_chat_instance_id) {
