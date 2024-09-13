@@ -9,15 +9,14 @@ class Profile implements Arrayable
 {
     public function __construct(
         public string $phone,
-        public ?string $email = null,)
+        public ?string $email = null)
     {
-        $this->phone = $this->formatPhone($this->phone);
     }
 
     public function toArray(): array
     {
         return array_filter([
-            'phone' => $this->phone,
+            'phone' => $this->formatPhone($this->phone),
             'email' => $this->email,
         ]);
     }
@@ -26,6 +25,6 @@ class Profile implements Arrayable
     {
         $cleaned_phone = Str::replace('+', '', Str::upper($phone));
 
-        return '+'.$cleaned_phone; // Возвращаем как есть, если + уже есть
+        return '+'.$cleaned_phone;
     }
 }
