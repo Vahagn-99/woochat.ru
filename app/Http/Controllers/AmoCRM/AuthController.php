@@ -48,6 +48,7 @@ class AuthController extends Controller
 
         $user->amojo_id = $account->getAmojoId();
         $user->email = $currentUser->getEmail();
+        $user->id = $account->getId();
         $user->save();
 
         WidgetInstalled::dispatch($user, new AmoAccountInfoDTO($account->getId(), $account->getSubdomain(), $account->getName(), $users->count(), $account->getDatetimeSettings()->getTimezone()));
