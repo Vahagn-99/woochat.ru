@@ -55,7 +55,9 @@ class AuthController extends Controller
             WidgetInstalled::dispatch($user, new AmoAccountInfoDTO($account->getId(), $account->getSubdomain(), $account->getName(), $users->count(), $account->getDatetimeSettings()->getTimezone()));
         } else {
 
-            do_log("widget/installing")->notice("{$user->domain} авторизован но Админ не получил уведемленя об установке так-как уже до этого получиль его. по этому клиенту.");
+            do_log("widget/installing")->notice("{$user->domain} авторизован но Админ не получил уведемленя об установке так-как уже до этого получиль его. по этому клиенту.", [
+                'data' => $user->info->data,
+            ]);
         }
 
         ChannelRequested::dispatch($user);

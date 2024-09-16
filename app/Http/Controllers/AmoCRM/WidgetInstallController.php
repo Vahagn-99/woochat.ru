@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\AmoCRM;
 
-use App\DTO\AmoAccountInfoDTO;
 use App\Events\Messengers\AmoChat\ChannelRequested;
 use App\Events\Widget\WidgetInstalled;
 use App\Http\Controllers\Controller;
@@ -37,7 +36,9 @@ class WidgetInstallController extends Controller
             WidgetInstalled::dispatchIf($user->AdminShouldBeNotified(), $user, $data->info);
         } else {
 
-            do_log("widget/installing")->notice("{$user->domain} авторизован но Админ не получил уведемленя об установке так-как уже до этого получиль его. по этому клиенту.");
+            do_log("widget/installing")->notice("{$user->domain} авторизован но Админ не получил уведемленя об установке так-как уже до этого получиль его. по этому клиенту.", [
+                'data' => $user->info->data,
+            ]);
         }
 
         ChannelRequested::dispatch($user);
