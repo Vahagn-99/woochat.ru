@@ -120,6 +120,6 @@ final class User extends Authenticatable implements AmoAccountInterface
 
     public function wasInformed(): bool
     {
-        return ! ! $this->info;
+        return $this->info()->exists();
     }
 }

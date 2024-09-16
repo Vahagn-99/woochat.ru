@@ -8,7 +8,7 @@ use App\Services\Whatsapp\Facades\Whatsapp;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
 
-class SyncWhatsappInstances extends Command
+class SyncInstances extends Command
 {
     /**
      * The name and signature of the console command.

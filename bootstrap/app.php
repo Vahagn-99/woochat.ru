@@ -4,11 +4,7 @@ use AmoCRM\Exceptions\AmoCRMApiException;
 use AmoCRM\Exceptions\AmoCRMMissedTokenException;
 use AmoCRM\Exceptions\AmoCRMoAuthApiException;
 use App\Console\Scheduler;
-use App\Exceptions\AmoChat\CreateAmoChatException;
-use App\Exceptions\AmoChat\GivenScopeNotFoundException;
 use App\Exceptions\AmoChat\UserNotFoundException;
-use App\Exceptions\Whatsapp\InstanceCreationException;
-use App\Exceptions\Whatsapp\UnsupportedWebhookType;
 use App\Http\Middleware\BasicAuthMiddleware;
 use App\Services\AmoChat\Providers\AmoChatServiceProvider;
 use App\Services\AmoCRM\Core\Providers\AmoCRMServiceProvider;
@@ -25,8 +21,7 @@ return Application::configure(basePath: dirname(__DIR__))->withRouting(web: [
     __DIR__.'/../routes/api.php',
     __DIR__.'/../routes/amocrm.php',
 ], commands: __DIR__.'/../routes/console.php', channels: __DIR__.'/../routes/channels.php', health: '/up',)->withMiddleware(function (
-    Middleware $middleware
-) {
+    Middleware $middleware) {
     $middleware->api(prepend: [
         \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
     ]);
@@ -54,7 +49,12 @@ return Application::configure(basePath: dirname(__DIR__))->withRouting(web: [
     ]);
 })->withExceptions(function (Exceptions $exceptions) {
     $exceptions->report(function (AmoCRMMissedTokenException|AmoCRMoAuthApiException|AmoCRMApiException $e) {
-        do_log("widget/installation")->error($e->getMessage(), $e->getLastRequestInfo());
+        do_log("widget/installing")->error("Не удалесь подключится к апи амосрм.", [
+            'request' => $e->getLastRequestInfo(),
+            'reason' => $e->getMessage(),
+            'description' => $e->getDescription(),
+            'code' => $e->getCode(),
+        ]);
 
         return false;
     });
