@@ -31,15 +31,7 @@ class WidgetInstallController extends Controller
             $user = User::query()->create($updateData);
         }
 
-        if ($user->AdminShouldBeNotified()) {
-
-            WidgetInstalled::dispatchIf($user->AdminShouldBeNotified(), $user, $data->info);
-        } else {
-
-            do_log("widget/installing")->notice("{$user->domain} авторизован но Админ не получил уведемленя об установке так-как уже до этого получиль его. по этому клиенту.", [
-                'data' => $user->info->data,
-            ]);
-        }
+        WidgetInstalled::dispatch($user, $data->info);
 
         ChannelRequested::dispatch($user);
 

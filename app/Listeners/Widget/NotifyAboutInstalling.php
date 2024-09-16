@@ -33,6 +33,7 @@ use App\Events\Widget\WidgetInstalled;
 use App\Models\User;
 use App\Services\AmoCRM\Core\Facades\Amo;
 use App\Services\AmoCRM\CustomFieldAdapter;
+use Exception;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Arr;
@@ -64,11 +65,14 @@ class NotifyAboutInstalling implements ShouldQueue
 
         Amo::main();
 
+        $lead_id = $user->hasNotificationInfo() ? $user->info->data['lead_id'] : null;
+        $contact_id = $user->hasNotificationInfo() ? $user->info->data['contact_id'] : null;
+
         $mapped_notification_fields = $this->mapNotificationFields($user, $data, $config);
 
         try {
-            $lead = $this->createLead($user, $mapped_notification_fields['leads'], $config);
-            $contact = $this->createContact($user, $lead, $mapped_notification_fields['contacts'], $data, $config);
+            $lead = $this->createOrUpdateLead($user, $mapped_notification_fields['leads'], $config, $lead_id);
+            $contact = $this->createOrUpdateContact($user, $lead, $mapped_notification_fields['contacts'], $data, $config, $contact_id);
             $this->notify($lead, $contact);
 
             $user->info()->delete();
@@ -181,19 +185,38 @@ class NotifyAboutInstalling implements ShouldQueue
      * @throws \AmoCRM\Exceptions\AmoCRMoAuthApiException
      * @throws \AmoCRM\Exceptions\AmoCRMMissedTokenException
      */
-    private function createLead(User $user, array $leadsCf, AmoDctDTO $config): LeadModel
+    private function createOrUpdateLead(
+        User $user,
+        array $custom_fields,
+        AmoDctDTO $config,
+        ?int $lead_id = null): LeadModel
     {
         $model = new LeadModel();
+
         $model->setStatusId($config->status_id);
         $model->setPipelineId($config->pipeline_id);
         $model->setResponsibleUserId($config->responsible_user_id);
         $model->setName(config('app_name').' ( '." $user->domain, $user->id ".')')->setPrice(0)->setPipelineId($config->pipeline_id)->setStatusId($config->status_id)->setResponsibleUserId($config->responsible_user_id);
-        if (! empty($leadsCf)) {
-            $model->setCustomFieldsValues($this->custom_field_adapter->adapt($leadsCf));
+        if (! empty($custom_fields)) {
+            $model->setCustomFieldsValues($this->custom_field_adapter->adapt($custom_fields));
         }
         $model->setTags($this->addTag());
 
-        return Amo::main()->api()->leads()->addOne($model);
+        $leadApi = Amo::main()->api()->leads();
+
+        if ($lead_id) {
+            try {
+                $leadApi->getOne($lead_id);
+
+                $model->setId($lead_id);
+
+                return $leadApi->updateOne($model);
+            } catch (Exception) {
+                return $leadApi->addOne($model);
+            }
+        }
+
+        return $leadApi->addOne($model);
     }
 
     /**
@@ -220,29 +243,42 @@ class NotifyAboutInstalling implements ShouldQueue
      * @throws \AmoCRM\Exceptions\AmoCRMoAuthApiException
      * @throws \AmoCRM\Exceptions\AmoCRMMissedTokenException
      */
-    private function createContact(
+    private function createOrUpdateContact(
         User $user,
         LeadModel $lead,
-        array $contactCf,
+        array $custom_fields,
         AmoAccountInfoDTO $data,
-        AmoDctDTO $config): ContactModel
+        AmoDctDTO $config,
+        ?int $contact_id = null): ContactModel
     {
         $leads = new LeadsCollection;
         $leads->add($lead);
 
-        $contact = new ContactModel();
-        $contact->setLeads($leads);
-        $contact->setName($data->name);
-        $contact->setAccountId($user->id);
-        $contact->setResponsibleUserId($config->responsible_user_id);
+        $model = new ContactModel();
+        $model->setLeads($leads);
+        $model->setName($data->name);
+        $model->setAccountId($user->id);
+        $model->setResponsibleUserId($config->responsible_user_id);
 
-        $cfs = $this->custom_field_adapter->adapt($contactCf);
+        $cfs = $this->custom_field_adapter->adapt($custom_fields);
 
-        $contact->setCustomFieldsValues($cfs);
+        $model->setCustomFieldsValues($cfs);
 
-        $api = Amo::api()->contacts();
+        $contact_api = Amo::api()->contacts();
 
-        return $api->addOne($contact);
+        if ($contact_id) {
+            try {
+                $contact_api->getOne($contact_id);
+
+                $model->setId($contact_id);
+
+                return $contact_api->updateOne($model);
+            } catch (Exception) {
+                return $contact_api->addOne($model);
+            }
+        }
+
+        return $contact_api->addOne($model);
     }
 
     /**

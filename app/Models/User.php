@@ -118,8 +118,8 @@ final class User extends Authenticatable implements AmoAccountInterface
         return $this->id;
     }
 
-    public function AdminShouldBeNotified(): bool
+    public function hasNotificationInfo(): bool
     {
-        return ! $this->info()->exists();
+        return $this->info()->exists();
     }
 }
