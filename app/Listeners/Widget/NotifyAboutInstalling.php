@@ -75,6 +75,8 @@ class NotifyAboutInstalling implements ShouldQueue
             $user->info()->delete();
             $user->info()->create([
                 'type' => InfoType::AMOCRM,
+                'infoable_id' => $user->id,
+                'infoable_type' => User::class,
                 'data' => [
                     'contact_id' => $contact->getId(),
                     'lead_id' => $lead->getId(),
