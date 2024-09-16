@@ -30,17 +30,19 @@ class AuthController extends Controller
         $code = $request->validated("code");
         $user = User::getByDomainOrCreate($domain);
 
-        $authenticator = Amo::domain($user->domain)->authenticator();
+        $amo = Amo::domain($user->domain);
+
+        $authenticator = $amo->authenticator();
 
         $accessToken = $authenticator->exchangeCodeWithAccessToken($code);
 
-        Amo::oauth()->saveOAuthToken($accessToken, $user->domain);
+        $amo->oauth()->saveOAuthToken($accessToken, $user->domain);
 
-        do_log("amocrm/auth")->info("{$user->domain} Успешно авторизован.");
+        do_log("widget/installing")->info("{$user->domain} Успешно авторизован.");
 
-        $account = Amo::api()->account()->getCurrent(['amojo_id', 'datetime_settings']);
+        $account = $amo->api()->account()->getCurrent(['amojo_id', 'datetime_settings']);
 
-        $users = Amo::api()->users()->get();
+        $users = $amo->api()->users()->get();
 
         $currentUser = $users->getBy('id', $account->getCurrentUserId());
 
@@ -48,9 +50,13 @@ class AuthController extends Controller
         $user->email = $currentUser->getEmail();
         $user->save();
 
-        $info = new AmoAccountInfoDTO($account->getId(), $account->getSubdomain(), $account->getName(), $users->count(), $account->getDatetimeSettings()->getTimezone());
+        if ($user->AdminShouldBeNotified()) {
 
-        WidgetInstalled::dispatchIf(! $user->wasInformed(), $user, $info);
+            WidgetInstalled::dispatch($user, new AmoAccountInfoDTO($account->getId(), $account->getSubdomain(), $account->getName(), $users->count(), $account->getDatetimeSettings()->getTimezone()));
+        } else {
+
+            do_log("widget/installing")->notice("{$user->domain} авторизован но Админ не получил уведемленя об установке так-как уже до этого получиль его. по этому клиенту.");
+        }
 
         ChannelRequested::dispatch($user);
 
