@@ -41,7 +41,7 @@ class AuthController extends Controller
         do_log("widget/installing")->info("{$user->domain} Успешно авторизован.");
 
         $account = $amo->api()->account()->getCurrent(['amojo_id', 'datetime_settings']);
-        dd($account);
+
         $users = $amo->api()->users()->get();
 
         $currentUser = $users->getBy('id', $account->getCurrentUserId());
@@ -49,7 +49,7 @@ class AuthController extends Controller
         $user->amojo_id = $account->getAmojoId();
         $user->email = $currentUser->getEmail();
         $user->save();
-
+        dd($user);
         if ($user->AdminShouldBeNotified()) {
 
             WidgetInstalled::dispatch($user, new AmoAccountInfoDTO($account->getId(), $account->getSubdomain(), $account->getName(), $users->count(), $account->getDatetimeSettings()->getTimezone()));
