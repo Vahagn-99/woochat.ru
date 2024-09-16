@@ -89,7 +89,7 @@ class NotifyAboutInstalling implements ShouldQueue
                 'description' => $e->getDescription(),
                 'code' => $e->getCode(),
                 'last_request_info' => $e->getLastRequestInfo(),
-                'line' => $e->getLine()
+                'line' => $e->getLine(),
             ]);
 
             $this->release($e);
@@ -98,7 +98,10 @@ class NotifyAboutInstalling implements ShouldQueue
 
     private function mapNotificationFields(User $user, AmoAccountInfoDTO $data, AmoDctDTO $config): array
     {
-        $custom_fields = [];
+        $custom_fields = [
+            'leads' => [],
+            'contacts' => [],
+        ];
 
         $user_tariff = current(Arr::where($config->tariffs, function (TariffDTO $item) use ($data) {
             return Str::contains($item->name, $data->tariff, true);
@@ -187,7 +190,9 @@ class NotifyAboutInstalling implements ShouldQueue
         $model->setPipelineId($config->pipeline_id);
         $model->setResponsibleUserId($config->responsible_user_id);
         $model->setName(config('app_name').' ( '." $user->domain, $user->id ".')')->setPrice(0)->setPipelineId($config->pipeline_id)->setStatusId($config->status_id)->setResponsibleUserId($config->responsible_user_id);
-        $model->setCustomFieldsValues($this->custom_field_adapter->adapt($leadsCf));
+        if (! empty($leadsCf)) {
+            $model->setCustomFieldsValues($this->custom_field_adapter->adapt($leadsCf));
+        }
         $model->setTags($this->addTag());
 
         return Amo::main()->api()->leads()->addOne($model);
