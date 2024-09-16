@@ -13,10 +13,13 @@ return new class extends Migration{
     {
         Schema::create('infos', function (Blueprint $table) {
             $table->id();
-            $table->morphs('infoable');
+            $table->string('infoable_type');
+            $table->string('infoable_id');
             $table->string('type')->default(InfoType::AMOCRM->name);
             $table->json('data');
             $table->timestamp('created_at')->useCurrent();
+
+            $table->index(['infoable_id', 'infoable_type']);
         });
     }
 
