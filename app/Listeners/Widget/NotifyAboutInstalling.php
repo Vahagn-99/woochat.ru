@@ -29,7 +29,6 @@ use AmoCRM\Models\TagModel;
 use App\DTO\AmoAccountInfoDTO;
 use App\DTO\dct\AmoDctDTO;
 use App\DTO\dct\TariffDTO;
-use App\Enums\InfoType;
 use App\Events\Widget\WidgetInstalled;
 use App\Models\User;
 use App\Services\AmoCRM\Core\Facades\Amo;
@@ -74,9 +73,6 @@ class NotifyAboutInstalling implements ShouldQueue
 
             $user->info()->delete();
             $user->info()->create([
-                'type' => InfoType::AMOCRM,
-                'infoable_id' => $user->id,
-                'infoable_type' => User::class,
                 'data' => [
                     'contact_id' => $contact->getId(),
                     'lead_id' => $lead->getId(),
