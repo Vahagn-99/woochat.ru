@@ -48,14 +48,14 @@ return Application::configure(basePath: dirname(__DIR__))->withRouting(web: [
         'auth.basic' => BasicAuthMiddleware::class,
     ]);
 })->withExceptions(function (Exceptions $exceptions) {
-    $exceptions->report(function (AmoCRMMissedTokenException|AmoCRMoAuthApiException|AmoCRMApiException $e) {
-        do_log("widget/installing")->error("Не удалесь подключится к апи амосрм.", [
-            'request' => $e->getLastRequestInfo(),
-            'reason' => $e->getMessage(),
-            'description' => $e->getDescription(),
-            'code' => $e->getCode(),
-        ]);
-
-        return false;
-    });
+    //$exceptions->report(function (AmoCRMMissedTokenException|AmoCRMoAuthApiException|AmoCRMApiException $e) {
+    //    do_log("widget/installing")->error("Не удалесь подключится к апи амосрм.", [
+    //        'request' => $e->getLastRequestInfo(),
+    //        'reason' => $e->getMessage(),
+    //        'description' => $e->getDescription(),
+    //        'code' => $e->getCode(),
+    //    ]);
+    //
+    //    return false;
+    //});
 })->create();

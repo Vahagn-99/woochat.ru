@@ -49,7 +49,7 @@ class AuthController extends Controller
         $user->amojo_id = $account->getAmojoId();
         $user->email = $currentUser->getEmail();
         $user->save();
-        dd($user);
+
         if ($user->AdminShouldBeNotified()) {
 
             WidgetInstalled::dispatch($user, new AmoAccountInfoDTO($account->getId(), $account->getSubdomain(), $account->getName(), $users->count(), $account->getDatetimeSettings()->getTimezone()));
