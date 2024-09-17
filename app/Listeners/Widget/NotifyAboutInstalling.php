@@ -71,11 +71,15 @@ class NotifyAboutInstalling implements ShouldQueue
         $mapped_notification_fields = $this->mapNotificationFields($user, $data, $config);
 
         try {
-            $lead = $this->createOrUpdateLead($user, $mapped_notification_fields['leads'], $config, $lead_id);
-            $contact = $this->createOrUpdateContact($user, $lead, $mapped_notification_fields['contacts'], $data, $config, $contact_id);
+
+            $lead = $this->createLeadAndAttachAccountInfo($user, $mapped_notification_fields['leads'], $config, $lead_id);
+
+            $contact = $this->createContactBasedOnUserInstalledWidget($user, $lead, $mapped_notification_fields['contacts'], $data, $config, $contact_id);
+
             $this->notify($lead, $contact);
 
             $user->info()->delete();
+
             $user->info()->create([
                 'data' => [
                     'contact_id' => $contact->getId(),
@@ -83,7 +87,7 @@ class NotifyAboutInstalling implements ShouldQueue
                     'data' => $data->toArray(),
                 ],
             ]);
-        } catch (AmoCRMMissedTokenException|AmoCRMoAuthApiException|AmoCRMApiException $e) {
+        } catch (AmoCRMMissedTokenException|AmoCRMoAuthApiException|AmoCRMApiException|InvalidArgumentException $e) {
 
             do_log('widget/installing')->error("Админ не получиль уведемления по уставновке виджета для домена {$user->domain}.", [
                 'reason' => $e->getMessage(),
@@ -181,11 +185,12 @@ class NotifyAboutInstalling implements ShouldQueue
     }
 
     /**
-     * @throws \AmoCRM\Exceptions\AmoCRMApiException
      * @throws \AmoCRM\Exceptions\AmoCRMoAuthApiException
+     * @throws \AmoCRM\Exceptions\InvalidArgumentException
+     * @throws \AmoCRM\Exceptions\AmoCRMApiException
      * @throws \AmoCRM\Exceptions\AmoCRMMissedTokenException
      */
-    private function createOrUpdateLead(
+    private function createLeadAndAttachAccountInfo(
         User $user,
         array $custom_fields,
         AmoDctDTO $config,
@@ -200,6 +205,7 @@ class NotifyAboutInstalling implements ShouldQueue
         if (! empty($custom_fields)) {
             $model->setCustomFieldsValues($this->custom_field_adapter->adapt($custom_fields));
         }
+
         $model->setTags($this->addTag());
 
         $leadApi = Amo::main()->api()->leads();
@@ -220,10 +226,10 @@ class NotifyAboutInstalling implements ShouldQueue
     }
 
     /**
-     * @throws InvalidArgumentException
-     * @throws AmoCRMMissedTokenException
-     * @throws AmoCRMoAuthApiException
-     * @throws AmoCRMApiException
+     * @throws \AmoCRM\Exceptions\InvalidArgumentException
+     * @throws \AmoCRM\Exceptions\AmoCRMApiException
+     * @throws \AmoCRM\Exceptions\AmoCRMMissedTokenException
+     * @throws \AmoCRM\Exceptions\AmoCRMoAuthApiException
      */
     private function addTag(): TagsCollection
     {
@@ -243,7 +249,7 @@ class NotifyAboutInstalling implements ShouldQueue
      * @throws \AmoCRM\Exceptions\AmoCRMoAuthApiException
      * @throws \AmoCRM\Exceptions\AmoCRMMissedTokenException
      */
-    private function createOrUpdateContact(
+    private function createContactBasedOnUserInstalledWidget(
         User $user,
         LeadModel $lead,
         array $custom_fields,
