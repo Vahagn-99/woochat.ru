@@ -96,6 +96,7 @@ class NotifyAboutInstalling implements ShouldQueue
                 'code' => $e->getCode(),
                 'last_request_info' => $e->getLastRequestInfo(),
                 'line' => $e->getLine(),
+                'trace' => $e->getTrace(),
             ]);
 
             $this->release($e);
