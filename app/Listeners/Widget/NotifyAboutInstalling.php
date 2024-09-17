@@ -10,6 +10,7 @@ use AmoCRM\Exceptions\AmoCRMApiException;
 use AmoCRM\Exceptions\AmoCRMMissedTokenException;
 use AmoCRM\Exceptions\AmoCRMoAuthApiException;
 use AmoCRM\Exceptions\InvalidArgumentException;
+use AmoCRM\Filters\ContactsFilter;
 use AmoCRM\Helpers\EntityTypesInterface;
 use AmoCRM\Models\ContactModel;
 use AmoCRM\Models\CustomFieldsValues\DateCustomFieldValuesModel;
@@ -118,19 +119,9 @@ class NotifyAboutInstalling implements ShouldQueue
     {
         $custom_fields = [];
 
-        if ($data->paid_from) {
-            $custom_fields[] = [
-                'id' => $config->paid_from_cf_id,
-                'value' => $data->paid_from,
-                'custom_field_value_model' => new DateCustomFieldValueModel(),
-                'custom_field_values_model' => new DateCustomFieldValuesModel(),
-                'custom_field_value_collection' => new DateCustomFieldValueCollection(),
-            ];
-        }
-
         if ($data->paid_till) {
             $custom_fields[] = [
-                'id' => $config->leads_cf_id,
+                'id' => $config->paid_till_id,
                 'value' => $data->paid_till,
                 'custom_field_value_model' => new DateCustomFieldValueModel(),
                 'custom_field_values_model' => new DateCustomFieldValuesModel(),
@@ -145,14 +136,14 @@ class NotifyAboutInstalling implements ShouldQueue
     {
         $custom_fields = [
             [
-                'id' => $config->amocrm_id_cf_id,
+                'id' => $config->account_id,
                 'value' => $user->id,
                 'custom_field_value_model' => new NumericCustomFieldValueModel(),
                 'custom_field_values_model' => new NumericCustomFieldValuesModel(),
                 'custom_field_value_collection' => new NumericCustomFieldValueCollection(),
             ],
             [
-                'id' => $config->user_count_cf_id,
+                'id' => $config->user_count_id,
                 'value' => (string)$data->users_count,
                 'custom_field_value_model' => new NumericCustomFieldValueModel(),
                 'custom_field_values_model' => new NumericCustomFieldValuesModel(),
@@ -187,7 +178,7 @@ class NotifyAboutInstalling implements ShouldQueue
         }));
         if ($user_tariff) {
             $custom_fields[] = [
-                'id' => $config->contact_cf_id,
+                'id' => $config->tariff_id,
                 'custom_field_value_model' => new SelectCustomFieldValueModel(),
                 'custom_field_values_model' => new SelectCustomFieldValuesModel(),
                 'custom_field_value_collection' => new SelectCustomFieldValueCollection(),
@@ -299,6 +290,10 @@ class NotifyAboutInstalling implements ShouldQueue
                 return $contact_api->addOne($model);
             }
         }
+
+        //elseif ($user->email) {
+        //    $contact_api->get((new ContactsFilter)->setCustomFieldsValues($cfs->toArray()));
+        //}
 
         return $contact_api->addOne($model);
     }
