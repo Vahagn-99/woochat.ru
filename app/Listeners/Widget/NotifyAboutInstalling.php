@@ -10,7 +10,6 @@ use AmoCRM\Exceptions\AmoCRMApiException;
 use AmoCRM\Exceptions\AmoCRMMissedTokenException;
 use AmoCRM\Exceptions\AmoCRMoAuthApiException;
 use AmoCRM\Exceptions\InvalidArgumentException;
-use AmoCRM\Filters\ContactsFilter;
 use AmoCRM\Helpers\EntityTypesInterface;
 use AmoCRM\Models\ContactModel;
 use AmoCRM\Models\CustomFieldsValues\DateCustomFieldValuesModel;
@@ -173,9 +172,12 @@ class NotifyAboutInstalling implements ShouldQueue
             ];
         }
 
-        $user_tariff = current(Arr::where($config->tariffs, function (TariffDTO $item) use ($data) {
-            return Str::contains($item->name, $data->tariff, true);
-        }));
+        $user_tariff = Arr::first($config->tariffs, function (TariffDTO $item) use ($data) {
+            $current_tariff = explode(' ', $item->name);
+
+            return Str::contains($data->tariff, $current_tariff, true);
+        });
+
         if ($user_tariff) {
             $custom_fields[] = [
                 'id' => $config->tariff_id,
