@@ -19,6 +19,7 @@ class CustomFieldAdapter
     public function adapt(mixed $adaptable): CustomFieldsValuesCollection
     {
         $customFieldsValuesCollection = new CustomFieldsValuesCollection();
+
         foreach ($adaptable as $field) {
             $fieldValueModel = $this->getFieldValueModel($field);
             $fieldValuesModel = $this->getFieldValuesModel($field, $fieldValueModel);
@@ -42,7 +43,7 @@ class CustomFieldAdapter
             $fieldValueModel->setValue($field['value']);
         }
         if ($fieldValueModel instanceof SelectCustomFieldValueModel) {
-            $fieldValueModel->setEnumId((int) $field['enum_id']);
+            $fieldValueModel->setEnumId((int)$field['enum_id']);
         } else {
             $fieldValueModel->setValue($field['value']);
         }
