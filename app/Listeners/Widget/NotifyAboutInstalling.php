@@ -172,11 +172,19 @@ class NotifyAboutInstalling implements ShouldQueue
             ];
         }
 
-        $user_tariff = Arr::first($config->tariffs, function (TariffDTO $item) use ($data) {
-            $current_tariff = explode(' ', $item->name);
+        $user_tariff = Arr::first(
+             $config->tariffs,
+             function (TariffDTO $item) use ($data) {
+               $current_tariff = explode(' ', $item->name);
 
-            return Str::contains($data->tariff, $current_tariff, true);
-        });
+               return Str::containsAll($data->tariff, $current_tariff, true);
+           },
+             function (TariffDTO $item) use ($data) {
+                $current_tariff = explode(' ', $item->name);
+
+                return Str::contains($data->tariff, $current_tariff, true);
+            },
+        );
 
         if ($user_tariff) {
             $custom_fields[] = [
