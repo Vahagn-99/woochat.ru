@@ -30,15 +30,15 @@ class AuthController extends Controller
         $code = $request->validated("code");
         $user = User::getByDomainOrCreate($domain);
 
-        $amo = Amo::domain($user->domain);
-
-        $authenticator = $amo->authenticator();
+        $authenticator = Amo::domain($user->domain)->authenticator();
 
         $accessToken = $authenticator->exchangeCodeWithAccessToken($code);
 
-        $amo->oauth()->saveOAuthToken($accessToken, $user->domain);
+        Amo::oauth()->saveOAuthToken($accessToken, $user->domain);
 
         do_log("widget/installing")->info("{$user->domain} Успешно авторизован.");
+
+        $amo = Amo::domain($user->domain);
 
         $account = $amo->api()->account()->getCurrent(['amojo_id', 'datetime_settings']);
 
@@ -51,7 +51,16 @@ class AuthController extends Controller
         $user->id = $account->getId();
         $user->save();
 
-        WidgetInstalled::dispatch($user, new AmoAccountInfoDTO($account->getId(), $account->getSubdomain(), $account->getName(), $users->count(), $account->getDatetimeSettings()->getTimezone()));
+        WidgetInstalled::dispatch(
+            $user,
+            new AmoAccountInfoDTO(
+                $account->getId(),
+                $account->getSubdomain(),
+                $account->getName(),
+                $users->count(),
+                $account->getDatetimeSettings()->getTimezone()
+            )
+        );
 
         ChannelRequested::dispatch($user);
 
