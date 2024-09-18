@@ -10,6 +10,7 @@ use AmoCRM\Exceptions\AmoCRMApiException;
 use AmoCRM\Exceptions\AmoCRMMissedTokenException;
 use AmoCRM\Exceptions\AmoCRMoAuthApiException;
 use AmoCRM\Exceptions\InvalidArgumentException;
+use AmoCRM\Filters\ContactsFilter;
 use AmoCRM\Helpers\EntityTypesInterface;
 use AmoCRM\Models\ContactModel;
 use AmoCRM\Models\CustomFieldsValues\DateCustomFieldValuesModel;
@@ -43,6 +44,12 @@ class NotifyAboutInstalling implements ShouldQueue
 {
     use InteractsWithQueue;
 
+    const AMOCRM_EMAIL_CUSTOM_FILED_ID = '277639';
+
+    public function delay()
+    {
+    }
+
     public function __construct(private readonly CustomFieldAdapter $custom_field_adapter)
     {
     }
@@ -53,6 +60,14 @@ class NotifyAboutInstalling implements ShouldQueue
     public function viaQueue(): string
     {
         return 'installation';
+    }
+
+    /**
+     * Get the number of seconds before the job should be processed.
+     */
+    public function withDelay(WidgetInstalled $event): int
+    {
+        return 60 * 10; // then minutes
     }
 
     public function handle(WidgetInstalled $event): void
@@ -72,13 +87,13 @@ class NotifyAboutInstalling implements ShouldQueue
         $mapped_contacts_fields = $this->mapContactFields($user, $data, $config);
 
         try {
-            $lead = $this->createLeadAndAttachAccountInfo(
+            $lead = $this->createLead(
                 $user,
                 $mapped_lead_fields,
                 $config,
                 $lead_id
             );
-            $contact = $this->createContactBasedOnUserInstalledWidget(
+            $contact = $this->createContact(
                 $user,
                 $lead,
                 $mapped_contacts_fields,
@@ -202,7 +217,7 @@ class NotifyAboutInstalling implements ShouldQueue
      * @throws \AmoCRM\Exceptions\AmoCRMApiException
      * @throws \AmoCRM\Exceptions\AmoCRMMissedTokenException
      */
-    private function createLeadAndAttachAccountInfo(
+    private function createLead(
         User $user,
         array $custom_fields,
         AmoDctDTO $config,
@@ -263,7 +278,7 @@ class NotifyAboutInstalling implements ShouldQueue
      * @throws \AmoCRM\Exceptions\AmoCRMoAuthApiException
      * @throws \AmoCRM\Exceptions\AmoCRMMissedTokenException
      */
-    private function createContactBasedOnUserInstalledWidget(
+    private function createContact(
         User $user,
         LeadModel $lead,
         array $custom_fields,
@@ -296,11 +311,21 @@ class NotifyAboutInstalling implements ShouldQueue
             } catch (Exception) {
                 return $contact_api->addOne($model);
             }
-        }
+        } elseif ($user->email) {
+            $email_custom_field = [
+                self::AMOCRM_EMAIL_CUSTOM_FILED_ID => $user->email,
+            ];
+            try {
+                $exists = $contact_api
+                    ->get((new ContactsFilter())
+                    ->setCustomFieldsValues($email_custom_field))
+                    ->first();
 
-        //elseif ($user->email) {
-        //    $contact_api->get((new ContactsFilter)->setCustomFieldsValues($cfs->toArray()));
-        //}
+                return $contact_api->updateOne($model->setId($exists->getId()));
+            } catch (AmoCRMApiException) {
+                return $contact_api->addOne($model);
+            }
+        }
 
         return $contact_api->addOne($model);
     }
