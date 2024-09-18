@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Middleware\BasicAuthMiddleware;
+
 return [
 
     /*
@@ -14,7 +16,7 @@ return [
 
     'api_only' => env('LOG_VIEWER_API_ONLY', false),
 
-    'require_auth_in_production' => true,
+    'require_auth_in_production' => false,
 
     /*
     |--------------------------------------------------------------------------
@@ -88,9 +90,13 @@ return [
     'api_middleware' => [
         \Opcodes\LogViewer\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
         \Opcodes\LogViewer\Http\Middleware\AuthorizeLogViewer::class,
+        BasicAuthMiddleware::class,
     ],
 
-    'api_stateful_domains' => env('LOG_VIEWER_API_STATEFUL_DOMAINS') ? explode(',', env('LOG_VIEWER_API_STATEFUL_DOMAINS')) : null,
+    'api_stateful_domains' => env('LOG_VIEWER_API_STATEFUL_DOMAINS') ? explode(
+        ',',
+        env('LOG_VIEWER_API_STATEFUL_DOMAINS')
+    ) : null,
 
     /*
     |--------------------------------------------------------------------------
@@ -161,8 +167,7 @@ return [
     |
     */
 
-    'exclude_files' => [
-        // 'my_secret.log'
+    'exclude_files' => [// 'my_secret.log'
     ],
 
     /*
