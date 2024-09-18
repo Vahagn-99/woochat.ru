@@ -173,18 +173,14 @@ class NotifyAboutInstalling implements ShouldQueue
         }
 
         $user_tariff = Arr::first(
-            $config->tariffs, function (TariffDTO $item) use ($data) {
-            $current_tariff = explode(' ', $item->name);
+            $config->tariffs, function (TariffDTO $tariff) use ($data) {
+            // Приводим и тарифы, и данные из amo к нижнему регистру
+            $amo_tariff = mb_strtolower($data->tariff);
+            $current_tariff = mb_strtolower($tariff->name);
 
-            return Str::containsAll($data->tariff, $current_tariff, true);
+            // Проверяем, содержится ли ключевое слово из названия тарифа в данных amo
+            return Str::contains($amo_tariff, $current_tariff);
         }
-        ) ?? Arr::first(
-            $config->tariffs,
-            function (TariffDTO $item) use ($data) {
-                $current_tariff = explode(' ', $item->name);
-
-                return Str::contains($data->tariff, $current_tariff, true);
-            },
         );
 
         if ($user_tariff) {

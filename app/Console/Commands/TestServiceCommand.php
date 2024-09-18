@@ -2,10 +2,10 @@
 
 namespace App\Console\Commands;
 
-use App\Events\Messengers\AmoChat\ChannelRequested;
-use App\Listeners\Messengers\AmoChat\ConnectChannel;
-use App\Models\User;
-use App\Services\AmoChat\Facades\AmoChat;
+use AmoCRM\Exceptions\AmoCRMApiException;
+use AmoCRM\Filters\ContactsFilter;
+use App\Services\AmoCRM\Core\Facades\Amo;
+use App\Services\AmoCRM\CustomFieldAdapter;
 use Illuminate\Console\Command;
 
 class TestServiceCommand extends Command
@@ -17,9 +17,19 @@ class TestServiceCommand extends Command
     /**
      * @throws \Exception
      */
-    public function handle(): void
+    public function handle(CustomFieldAdapter $adapter): void
     {
-        $listener = new ConnectChannel();
-        $listener->handle(new ChannelRequested(User::first()));
+        $email_custom_field = [
+            '277639' => 'widget.dev@dicitech.com',
+        ];
+
+        try {
+            $contact = Amo::main()->api()->contacts()->get(
+                (new ContactsFilter())->setCustomFieldsValues($email_custom_field)
+            );
+            dd($contact);
+        } catch (AmoCRMApiException  $exception) {
+            dd($exception->getDescription());
+        }
     }
 }

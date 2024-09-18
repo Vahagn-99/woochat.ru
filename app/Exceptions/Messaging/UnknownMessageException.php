@@ -28,4 +28,9 @@ class UnknownMessageException extends Exception implements ReportableException
 
         return false;
     }
+
+    public function getPayload(): array
+    {
+        return $this->payload;
+    }
 }

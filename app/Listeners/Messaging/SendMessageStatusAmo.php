@@ -21,7 +21,6 @@ class SendMessageStatusAmo implements ShouldQueue
 
     public function __construct()
     {
-
     }
 
     /**
@@ -40,9 +39,6 @@ class SendMessageStatusAmo implements ShouldQueue
         return 'messaging';
     }
 
-    /**
-     * @throws \App\Exceptions\Messaging\UnknownMessageException
-     */
     public function handle(MessageStatusReceived $event): void
     {
         try {
@@ -63,11 +59,16 @@ class SendMessageStatusAmo implements ShouldQueue
 
             $massager->sendStatus(new Status($message->amo_message_id, $newStatus));
 
-            do_log("messaging/status/amochat")->info("Обновлено статус сообщения ID: ".$message->amo_message_id, $massager->getLastRequestInfo());
+            do_log("messaging/status/amochat")->info(
+                "Обновлено статус сообщения ID: ".$message->amo_message_id,
+                $massager->getLastRequestInfo()
+            );
         } catch (ProviderNotConfiguredException|ModelNotFoundException|UnknownMessageStatusException $e) {
             do_log("messaging/status/amochat")->error($e->getMessage());
 
             $this->release();
+        } catch (UnknownMessageException $e) {
+            do_log("messaging/status/amochat")->error($e->getMessage(), $e->getPayload());
         }
     }
 
