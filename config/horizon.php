@@ -174,16 +174,6 @@ return [
     | queued jobs and will be provisioned by Horizon during deployment.
     |
     */
-
-    'defaults' => [
-        'supervisor-1' => [
-
-        ],
-        'supervisor-2' => [
-
-        ],
-    ],
-
     'environments' => [
         'production' => [
             'supervisor-1' => [
