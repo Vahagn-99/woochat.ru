@@ -311,23 +311,24 @@ class NotifyAboutInstalling implements ShouldQueue
             } catch (Exception) {
                 return $contact_api->addOne($model);
             }
-        } elseif ($user->email) {
+        } else {
             $email_custom_field = [
                 self::AMOCRM_EMAIL_CUSTOM_FILED_ID => $user->email,
             ];
             try {
-                $exists = $contact_api
-                    ->get((new ContactsFilter())
-                    ->setCustomFieldsValues($email_custom_field))
-                    ->first();
+                $exists = $contact_api->get(
+                    (new ContactsFilter())->setCustomFieldsValues($email_custom_field)
+                )->first();
+
+                if (! $exists) {
+                    throw new Exception("Контакть не найдень.");
+                }
 
                 return $contact_api->updateOne($model->setId($exists->getId()));
-            } catch (AmoCRMApiException) {
+            } catch (AmoCRMApiException|Exception) {
                 return $contact_api->addOne($model);
             }
         }
-
-        return $contact_api->addOne($model);
     }
 
     /**
