@@ -37,7 +37,7 @@ class NotifyAboutPhoneNumber implements ShouldQueue
                 throw new Exception("The user doesn't have a amocrm information");
             }
 
-            $api = Amo::main()->api()->contacts();
+            $api = Amo::admin()->api()->contacts();
 
             $contact = new ContactModel();
 

@@ -2,14 +2,14 @@
 
 namespace App\Http\Requests\AmoCRM;
 
-use App\Contracts\DTOable;
+use App\Contracts\Dtoable;
 use App\DTO\AmoAccountInfoDTO;
 use App\DTO\NewAmoUserDTO;
 use App\DTO\WidgetInstalledDTO;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Arr;
 
-class WidgetInstallRequest extends FormRequest implements DTOable
+class WidgetInstallRequest extends FormRequest implements Dtoable
 {
     public function rules(): array
     {

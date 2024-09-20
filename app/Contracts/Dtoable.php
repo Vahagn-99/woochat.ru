@@ -2,7 +2,7 @@
 
 namespace App\Contracts;
 
-interface DTOable
+interface Dtoable
 {
     public function toDTO();
 }

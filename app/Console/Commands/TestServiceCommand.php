@@ -24,7 +24,7 @@ class TestServiceCommand extends Command
         ];
 
         try {
-            $contact = Amo::main()->api()->contacts()->get(
+            $contact = Amo::admin()->api()->contacts()->get(
                 (new ContactsFilter())->setCustomFieldsValues($email_custom_field)
             );
             dd($contact);

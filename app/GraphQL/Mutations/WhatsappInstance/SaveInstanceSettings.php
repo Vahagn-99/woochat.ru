@@ -1,15 +1,20 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\GraphQL\Mutations\WhatsappInstance;
 
 use App\Events\Messengers\Whatsapp\SettingsSaved;
 use App\Models\WhatsappInstance;
+use Illuminate\Support\Facades\Gate;
 
 final readonly class SaveInstanceSettings
 {
     /** @param array{} $args */
     public function __invoke(null $_, array $args): WhatsappInstance
     {
+        Gate::authorize('save');
+
         /** @var WhatsappInstance $instance */
         $instance = WhatsappInstance::query()->find($args['input']['instance_id']);
 

@@ -78,7 +78,7 @@ class NotifyAboutInstalling implements ShouldQueue
 
         $config = AmoDctDTO::make();
 
-        Amo::main();
+        Amo::admin();
 
         $lead_id = $user->info?->data['lead_id'];
         $contact_id = $user->info?->data['contact_id'];
@@ -237,7 +237,7 @@ class NotifyAboutInstalling implements ShouldQueue
 
         $model->setTags($this->addTag());
 
-        $lead_api = Amo::main()->api()->leads();
+        $lead_api = Amo::admin()->api()->leads();
 
         if ($lead_id) {
             try {

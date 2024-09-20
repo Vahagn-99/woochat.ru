@@ -19,7 +19,8 @@
         "opcodesio/log-viewer": "^3.10",
         "predis/predis": "^2.2",
         "pusher/pusher-php-server": "^7.2",
-        "spatie/laravel-data": "^4.7"
+        "spatie/laravel-data": "^4.7",
+        "spatie/laravel-model-flags": "^1.3"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

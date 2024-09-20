@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Base\Subscription\SubscriptionStatus;
 use App\DTO\NewAmoUserDTO;
 use App\Services\AmoCRM\Core\Account\AmoAccountInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,6 +14,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use League\OAuth2\Client\Token\AccessToken;
+use Spatie\ModelFlags\Models\Concerns\HasFlags;
 
 /**
  * @property int $id
@@ -27,10 +29,14 @@ use League\OAuth2\Client\Token\AccessToken;
  * @property-read \App\Models\AmoInstance $amoInstance
  * @property-read \App\Models\AmoAccessToken $amoAccessToken
  * @property-read \App\Models\Info $info
+ * @property-read \App\Models\Subscription $activeTrialSubscription
+ * @property-read \App\Models\Subscription $activeSubscription
+ * @property-read \App\Models\Subscription $trialSubscription
+ * @property-read \Illuminate\Database\Eloquent\Collection<\App\Models\Subscription> $subscriptions
  */
 final class User extends Authenticatable implements AmoAccountInterface
 {
-    use HasFactory, Notifiable, HasApiTokens, SoftDeletes;
+    use HasFactory, Notifiable, HasApiTokens, SoftDeletes, HasFlags;
 
     protected $table = 'users';
 
@@ -68,6 +74,29 @@ final class User extends Authenticatable implements AmoAccountInterface
     public function amoAccessToken(): HasOne
     {
         return $this->hasOne(AmoAccessToken::class, 'domain', 'domain');
+    }
+
+    public function subscriptions(): HasMany
+    {
+        return $this->hasMany(Subscription::class, 'domain', 'domain');
+    }
+
+    public function activeSubscription(): HasOne
+    {
+        return $this->hasOne(Subscription::class, 'domain', 'domain')
+            ->where('status', SubscriptionStatus::ACTIVE);
+    }
+
+    public function trialSubscription(): HasOne
+    {
+        return $this->hasOne(Subscription::class, 'domain', 'domain')->where('is_trial', true);
+    }
+
+    public function activeTrialSubscription(): HasOne
+    {
+        return $this->hasOne(Subscription::class, 'domain', 'domain')
+            ->where('status', SubscriptionStatus::ACTIVE)
+            ->where('is_trial', true);
     }
 
     public function Info(): MorphOne
@@ -121,5 +150,9 @@ final class User extends Authenticatable implements AmoAccountInterface
     public function hasNotificationInfo(): bool
     {
         return $this->info()->exists();
+    }
+
+    public function hasValidSubscription()
+    {
     }
 }

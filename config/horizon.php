@@ -195,6 +195,7 @@ return [
                 'connection' => 'redis',
                 'queue' => [
                     'installation',
+                    'subscription',
                 ],
                 'balance' => 'simple',
                 'processes' => 5,

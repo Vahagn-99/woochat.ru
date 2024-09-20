@@ -1,11 +1,16 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\GraphQL\Mutations\WhatsappInstance;
 
 use App\Enums\InstanceStatus;
 use App\Events\Messengers\Whatsapp\NewInstanceOrdered;
+use App\Events\Subscription\Trial as SubscriptionTrialEvent;
 use App\Models\WhatsappInstance;
 use App\Services\Whatsapp\Facades\Whatsapp;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Gate;
 
 final readonly class CreateInstance
 {
@@ -15,10 +20,12 @@ final readonly class CreateInstance
         /** @var \App\Models\User $user */
         $user = auth()->user();
 
+        Gate::authorize('save');
+
         $model = WhatsappInstance::whereFree()->first();
 
         $status = InstanceStatus::NOT_AUTHORIZED;
-        $name = "Инстанс №" . WhatsappInstance::query()->count();
+        $name = "Инстанс №".WhatsappInstance::query()->count();
 
         // if there is no free instance then create one
         if (! $model) {
@@ -39,10 +46,19 @@ final readonly class CreateInstance
             ])->api()->clearQueue();
         }
 
-        NewInstanceOrdered::dispatchIf(WhatsappInstance::whereFree()->count() <= 1, $name);
-
         $model->user_id = $user->id;
         $model->save();
+
+        NewInstanceOrdered::dispatchIf(WhatsappInstance::whereFree()->count() <= 1, $name);
+
+        if (! $user->hasFlag('has_already_started_trial_subscription')) {
+            SubscriptionTrialEvent::dispatch(
+                auth()->user(),
+                Carbon::now()->addDays(4)
+            );
+
+            $user->flag('has_already_started_trial_subscription');
+        }
 
         return $model;
     }

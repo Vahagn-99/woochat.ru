@@ -50,6 +50,11 @@ return [
     'webhooks' => [
         'incomingMessageReceived' => MessageReceived::class, // Входящее сообщение
         'stateInstanceChanged' => InstanceStatusChanged::class, // Статус инстанса
-        'outgoingMessageStatus' => MessageStatusReceived::class // статус сообщение
+        'outgoingMessageStatus' => MessageStatusReceived::class, // статус сообщение
+    ],
+
+    'admin' => [
+        'id' => '',
+        'token' => '',
     ],
 ];

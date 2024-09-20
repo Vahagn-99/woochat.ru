@@ -31,6 +31,12 @@ use Mockery;
  */
 class Whatsapp extends Facade
 {
+    public static function admin(): WhatsappManagerInterface
+    {
+        $config = config('whatsapp.admin');
+        return self::for(new (new InstanceDTO($config['id'], $config['token'])));
+    }
+
     protected static function getFacadeAccessor(): string
     {
         return 'whatsapp';
@@ -67,7 +73,9 @@ class Whatsapp extends Facade
 
         // fake qr code service
         $fakeQRCodeService = Mockery::mock(QRCodeServiceInterface::class);
-        $fakeQRCodeService->shouldReceive('getQRCode')->andReturn(new QRCodeResponseDTO("qrCode", "test-qr-base64-code"));
+        $fakeQRCodeService->shouldReceive('getQRCode')->andReturn(
+            new QRCodeResponseDTO("qrCode", "test-qr-base64-code")
+        );
 
         // fake client api service
         $fakeClientService = Mockery::mock(WhatsappApiServiceInterface::class);
@@ -81,7 +89,13 @@ class Whatsapp extends Facade
         $fakeInstanceStatus = Mockery::mock(GetInstanceStatusServiceInterface::class);
         $fakeInstanceStatus->shouldReceive('get')->andReturn(InstanceStatus::AUTHORIZED);
 
-        $fakeManager = new WhatsappManager($fakeClientService, $fakeQRCodeService, $fakeInstanceService, $fakeInstanceStatus, $fakeMessagingService);
+        $fakeManager = new WhatsappManager(
+            $fakeClientService,
+            $fakeQRCodeService,
+            $fakeInstanceService,
+            $fakeInstanceStatus,
+            $fakeMessagingService
+        );
 
         app()->instance(WhatsappManagerInterface::class, $fakeManager);
     }

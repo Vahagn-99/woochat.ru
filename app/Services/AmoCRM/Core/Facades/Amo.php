@@ -25,7 +25,7 @@ use League\OAuth2\Client\Token\AccessToken;
  */
 class Amo extends Facade
 {
-    public static function main(): AmoManagerInterface
+    public static function admin(): AmoManagerInterface
     {
         /** @var AmoCRMApiClient $client */
         $client = app("dct-amo-client");

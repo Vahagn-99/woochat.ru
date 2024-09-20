@@ -19,7 +19,7 @@ class DctAuthController extends Controller
         $domain = $request->validated("referer");
         $code = $request->validated("code");
 
-        $accessToken = Amo::main()->authenticator()->exchangeCodeWithAccessToken($code);
+        $accessToken = Amo::admin()->authenticator()->exchangeCodeWithAccessToken($code);
 
         $this->saveAccessTokenService->saveOAuthToken($accessToken, $domain);
 
