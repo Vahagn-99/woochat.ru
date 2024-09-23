@@ -65,12 +65,13 @@ class Full implements Subscription
             $item->status = SubscriptionStatus::ACTIVE;
             $item->save();
         });
+        $user->refresh();
 
         return new SubscribedDto(
             $user->domain,
             $subscription->id,
             $subscription->expired_at,
-            $subscription_dto->max_instances_count,
+            $user->max_instances_count,
             $user->whatsappInstances->count()
         );
     }
