@@ -33,7 +33,7 @@ class UserWithSubscriptionController extends Controller
                 $query->when(isset($filters['domain']), fn( $query) => $query->where('domain', 'LIKE', "%{$filters['domain']}%"));
                 $query->when(isset($filters['has_subscription']), fn( $query) => $filters['has_subscription'] ? $query->whereHas("activePaidSubscription") : $query->whereDoesntHave("activePaidSubscription"));
             })
-            ->orderByDesc('expired_at')
+            ->orderByDesc('activeSubscription.expired_at')
             ->orderByDesc('created_at')
             ->paginate(perPage:  $perPage, page:  $page);
 
