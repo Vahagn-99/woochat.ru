@@ -5,9 +5,9 @@ namespace App\GraphQL\Queries;
 final readonly class Subscription
 {
     /**
-     * @return string
+     * @return string|null
      */
-    public function __invoke(): string
+    public function __invoke(): ?string
     {
         /** @var \App\Models\User $user */
         $user = auth()->user();
