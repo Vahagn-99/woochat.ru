@@ -14,7 +14,7 @@ class UserWithSubscriptionController extends Controller
     {
         $users = User::with(['subscriptions' => fn($query) => $query->select(['id', 'domain', 'expired_at'])]
         )->withCount(['whatsappInstances'])
-            ->select(['users.id', 'users.domain', 'expired_at','whatsapp_instances_count'])->get();
+            ->select(['users.id', 'users.domain'])->get();
 
         return response()->json($users);
     }
