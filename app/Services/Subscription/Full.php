@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services\Subscription;
 
-use App\Base\Subscription\{SubscribedDto, Subscription, SubscriptionDto,};
+use App\Base\Subscription\{SubscribedDto, Subscription, SubscriptionDto, SubscriptionStatus};
 use App\Models\Subscription as SubscriptionModel;
 use App\Models\User as UserModel;
 
@@ -37,6 +37,7 @@ class Full implements Subscription
 
         if ($last = $user->lastSubscription) {
             $last->expired_at = $subscription_dto->expired_at;
+            $last->status = SubscriptionStatus::ACTIVE;
             $last->save();
 
             return new SubscribedDto(
