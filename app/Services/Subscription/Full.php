@@ -4,13 +4,9 @@ declare(strict_types=1);
 
 namespace App\Services\Subscription;
 
-use App\Models\User as UserModel;
+use App\Base\Subscription\{SubscribedDto, Subscription, SubscriptionDto,};
 use App\Models\Subscription as SubscriptionModel;
-use App\Base\Subscription\{
-    SubscribedDto,
-    Subscription,
-    SubscriptionDto,
-};
+use App\Models\User as UserModel;
 
 class Full implements Subscription
 {
@@ -18,6 +14,9 @@ class Full implements Subscription
     {
         /** @var \App\Models\User $user */
         $user = UserModel::query()->findOrFail($subscription_dto->user_domain);
+
+        $user->max_instances_count = $subscription_dto->whatsapp_max_instances_count;
+        $user->save();
 
         if ($trial = $user->activeTrialSubscription?->archive()) {
             $trial->archive();

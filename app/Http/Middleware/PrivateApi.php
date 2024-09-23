@@ -15,10 +15,10 @@ class PrivateApi
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if ($request->header('X-PAK') === config('service.private_api_key')) {
+        if ($request->header('X-PAC') === config('services.private_api_key')) {
             return $next($request);
         }
 
-        return response()->json(['error' => 'private api key not match'], 400);
+        return response()->json(['error' => 'Պրիվատ կօդը չէս գրել արևս, Վահագն վիշապաքաղին ասա ասի․ '], 400);
     }
 }

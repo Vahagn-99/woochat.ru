@@ -10,17 +10,19 @@ use App\Events\Subscription\Trial as SubscriptionTrialEvent;
 use App\Models\WhatsappInstance;
 use App\Services\Whatsapp\Facades\Whatsapp;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Gate;
 
 final readonly class CreateInstance
 {
-    /** @param array{} $args */
+    /** @param array{} $args
+     *
+     * @throws \App\Exceptions\Settings\NewInstanceException
+     */
     public function __invoke(null $_, array $args): WhatsappInstance
     {
         /** @var \App\Models\User $user */
         $user = auth()->user();
 
-        Gate::authorize('save');
+        $user->ensureHasFreeInstanceSlot();
 
         $model = WhatsappInstance::whereFree()->first();
 

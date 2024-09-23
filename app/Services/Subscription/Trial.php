@@ -26,6 +26,9 @@ class Trial implements Subscription
             SubscriptionException::hasActive($user);
         }
 
+        $user->max_instances_count = $subscription_dto->whatsapp_max_instances_count;
+        $user->save();
+
         $subscription = new SubscriptionModel();
         $subscription->domain = $user->domain;
         $subscription->expired_at = $subscription_dto->expired_at;

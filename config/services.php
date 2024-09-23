@@ -45,5 +45,5 @@ return [
         'account_delete' => env('AMOCRM_ACCOUNT_DELETE', 'https://api.woochat.ru/api/amocrm/widget/delete'),
     ],
 
-    'private_api_key' => env('AMOCRM_CLIENT_ID', 'local'),
+    'private_api_key' => env('WOOCHAT_PRIVATE_API_KEY', 'local'),
 ];

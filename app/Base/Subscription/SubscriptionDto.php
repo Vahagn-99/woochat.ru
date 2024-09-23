@@ -9,9 +9,15 @@ use Spatie\LaravelData\Data;
 
 class SubscriptionDto extends Data
 {
+    /**
+     * @param string $user_domain
+     * @param \Illuminate\Support\Carbon $expired_at
+     * @param int $whatsapp_max_instances_count
+     */
     public function __construct(
         public string $user_domain,
         public Carbon $expired_at,
+        public int $whatsapp_max_instances_count = 1,
     ) {
     }
 }

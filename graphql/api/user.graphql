@@ -18,6 +18,7 @@ type User {
     email:String
     phone:String
     created_at: String!
+    max_instances_count: Int!
     instances: [WhatsappInstance]! @hasMany
 }
 

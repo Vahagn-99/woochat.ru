@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Base\Subscription\SubscriptionStatus;
 use App\DTO\NewAmoUserDTO;
+use App\Exceptions\Settings\NewInstanceException;
 use App\Services\AmoCRM\Core\Account\AmoAccountInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -21,6 +22,7 @@ use Spatie\ModelFlags\Models\Concerns\HasFlags;
  * @property string $domain
  * @property string $amojo_id
  * @property string $deleted_at
+ * @property int $max_instances_count
  * @property string $email
  * @property string $phone
  * @property string $country
@@ -52,6 +54,7 @@ final class User extends Authenticatable implements AmoAccountInterface
         'country',
         'amojo_id',
         'deleted_at',
+        'max_instances_count',
     ];
 
     protected $primaryKey = 'domain';
@@ -83,8 +86,7 @@ final class User extends Authenticatable implements AmoAccountInterface
 
     public function activeSubscription(): HasOne
     {
-        return $this->hasOne(Subscription::class, 'domain', 'domain')
-            ->where('status', SubscriptionStatus::ACTIVE);
+        return $this->hasOne(Subscription::class, 'domain', 'domain')->where('status', SubscriptionStatus::ACTIVE);
     }
 
     public function trialSubscription(): HasOne
@@ -94,9 +96,10 @@ final class User extends Authenticatable implements AmoAccountInterface
 
     public function activeTrialSubscription(): HasOne
     {
-        return $this->hasOne(Subscription::class, 'domain', 'domain')
-            ->where('status', SubscriptionStatus::ACTIVE)
-            ->where('is_trial', true);
+        return $this->hasOne(Subscription::class, 'domain', 'domain')->where(
+            'status',
+            SubscriptionStatus::ACTIVE
+        )->where('is_trial', true);
     }
 
     public function Info(): MorphOne
@@ -154,5 +157,15 @@ final class User extends Authenticatable implements AmoAccountInterface
 
     public function hasValidSubscription()
     {
+    }
+
+    /**
+     * @throws \App\Exceptions\Settings\NewInstanceException
+     */
+    public function ensureHasFreeInstanceSlot(): void
+    {
+        if ($this->whatsappInstances()->count() >= $this->max_instances_count) {
+            throw NewInstanceException::limitOver($this->max_instances_count);
+        }
     }
 }
