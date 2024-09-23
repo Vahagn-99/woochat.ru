@@ -33,6 +33,7 @@ use Spatie\ModelFlags\Models\Concerns\HasFlags;
  * @property-read \App\Models\Info $info
  * @property-read \App\Models\Subscription $activeTrialSubscription
  * @property-read \App\Models\Subscription $activeSubscription
+ * @property-read \App\Models\Subscription $lastSubscription
  * @property-read \App\Models\Subscription $trialSubscription
  * @property-read \Illuminate\Database\Eloquent\Collection<\App\Models\Subscription> $subscriptions
  */
@@ -87,6 +88,12 @@ final class User extends Authenticatable implements AmoAccountInterface
     public function activeSubscription(): HasOne
     {
         return $this->hasOne(Subscription::class, 'domain', 'domain')->where('status', SubscriptionStatus::ACTIVE);
+    }
+
+    public function lastSubscription(): HasOne
+    {
+        return $this->hasOne(Subscription::class, 'domain', 'domain')
+            ->latest();
     }
 
     public function activePaidSubscription(): HasOne

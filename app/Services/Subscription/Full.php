@@ -35,6 +35,19 @@ class Full implements Subscription
             );
         }
 
+        if ($last = $user->lastSubscription) {
+            $last->expired_at = $subscription_dto->expired_at;
+            $last->save();
+
+            return new SubscribedDto(
+                $user->domain,
+                $last->id,
+                $last->expired_at,
+                $subscription_dto->max_instances_count,
+                $user->whatsappInstances()->count()
+            );
+        }
+
         $subscription = new SubscriptionModel();
         $subscription->domain = $user->domain;
         $subscription->expired_at = $subscription_dto->expired_at;
