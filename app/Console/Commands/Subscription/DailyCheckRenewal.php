@@ -38,10 +38,7 @@ class DailyCheckRenewal extends Command
             if ($subscription?->expired_at->isPast()) {
                 $user->whatsappInstances?->each(function (WhatsappInstance $instance) {
                     Whatsapp::for($instance)->instance()->logout();
-                    $instance->user_id = null;
-                    $instance->status = InstanceStatus::NOT_AUTHORIZED;
-                    $instance->phone = null;
-                    $instance->settings->delete();
+                    $instance->status = InstanceStatus::BLOCKED;
                     $instance->save();
                 });
 

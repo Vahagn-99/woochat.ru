@@ -20,6 +20,13 @@ type User {
     created_at: String!
     max_instances_count: Int!
     instances: [WhatsappInstance]! @hasMany
+    subscription: Subscription @field(resolver: "\\App\\GraphQL\\queries\\Subscription")
+}
+
+type Subscription {
+    id: ID!
+    domain: String!
+    expired_at:String!
 }
 
 # inputs
