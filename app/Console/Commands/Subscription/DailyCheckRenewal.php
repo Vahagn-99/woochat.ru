@@ -5,6 +5,7 @@ namespace App\Console\Commands\Subscription;
 use App\Enums\InstanceStatus;
 use App\Models\User as UserModel;
 use App\Models\WhatsappInstance;
+use App\Services\Whatsapp\Facades\Whatsapp;
 use Illuminate\Console\Command;
 
 class DailyCheckRenewal extends Command
@@ -36,6 +37,7 @@ class DailyCheckRenewal extends Command
 
             if ($subscription->expired_at->isPast()) {
                 $user->whatsappInstances?->each(function (WhatsappInstance $instance) {
+                    Whatsapp::for($instance)->instance()->logout();
                     $instance->user_id = null;
                     $instance->status = InstanceStatus::NOT_AUTHORIZED;
                     $instance->phone = null;
