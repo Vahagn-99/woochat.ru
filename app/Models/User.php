@@ -89,6 +89,11 @@ final class User extends Authenticatable implements AmoAccountInterface
         return $this->hasOne(Subscription::class, 'domain', 'domain')->where('status', SubscriptionStatus::ACTIVE);
     }
 
+    public function activePaidSubscription(): HasOne
+    {
+        return $this->hasOne(Subscription::class, 'domain', 'domain')->where('status', SubscriptionStatus::ACTIVE);
+    }
+
     public function trialSubscription(): HasOne
     {
         return $this->hasOne(Subscription::class, 'domain', 'domain')->where('is_trial', true);
