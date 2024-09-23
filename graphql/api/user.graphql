@@ -20,7 +20,7 @@ type User {
     created_at: String!
     max_instances_count: Int!
     instances: [WhatsappInstance]! @hasMany
-    subscription: Subscription @field(resolver: "\\App\\GraphQL\\queries\\Subscription")
+    subscription: Subscription @field(resolver: "\\App\\GraphQL\\Queries\\Subscription")
 }
 
 type Subscription {
