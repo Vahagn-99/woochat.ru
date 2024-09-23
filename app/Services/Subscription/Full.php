@@ -4,9 +4,15 @@ declare(strict_types=1);
 
 namespace App\Services\Subscription;
 
-use App\Base\Subscription\{SubscribedDto, Subscription, SubscriptionDto, SubscriptionStatus};
+use App\Base\Subscription\{
+    SubscribedDto,
+    Subscription,
+    SubscriptionDto,
+    SubscriptionStatus
+};
 use App\Models\Subscription as SubscriptionModel;
 use App\Models\User as UserModel;
+use App\Models\WhatsappInstance;
 
 class Full implements Subscription
 {
@@ -55,12 +61,17 @@ class Full implements Subscription
         $subscription->is_trial = false;
         $subscription->save();
 
+        $user->whatsappInstances->each(function (WhatsappInstance $item) {
+            $item->status = SubscriptionStatus::ACTIVE;
+            $item->save();
+        });
+
         return new SubscribedDto(
             $user->domain,
             $subscription->id,
             $subscription->expired_at,
             $subscription_dto->max_instances_count,
-            $user->whatsappInstances()->count()
+            $user->whatsappInstances->count()
         );
     }
 }
