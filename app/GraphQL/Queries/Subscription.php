@@ -10,6 +10,6 @@ final readonly class Subscription
         /** @var \App\Models\User $user */
         $user = auth()->user();
 
-        return $user->activeSubscription;
+        return $user->activeSubscription?->expired_at;
     }
 }
