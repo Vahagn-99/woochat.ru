@@ -35,7 +35,7 @@ class DailyCheckRenewal extends Command
         foreach ($users as $user) {
             $subscription = $user->activeSubscription;
 
-            if ($subscription->expired_at->isPast()) {
+            if ($subscription?->expired_at->isPast()) {
                 $user->whatsappInstances?->each(function (WhatsappInstance $instance) {
                     Whatsapp::for($instance)->instance()->logout();
                     $instance->user_id = null;
@@ -45,7 +45,7 @@ class DailyCheckRenewal extends Command
                     $instance->save();
                 });
 
-                $subscription->archive();
+                $subscription?->archive();
             }
         }
 
