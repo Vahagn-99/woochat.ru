@@ -13,7 +13,8 @@ class UserWithSubscriptionController extends Controller
     public function __invoke(): JsonResponse
     {
         $users = User::with(['subscriptions' => fn($query) => $query->select(['id', 'domain', 'expired_at'])]
-        )->withCount(['whatsappInstances'])->get(['id', 'domain', 'expired_at','whatsapp_instances_count']);
+        )->withCount(['whatsappInstances'])
+            ->select(['users.id', 'users.domain', 'expired_at','whatsapp_instances_count'])->get();
 
         return response()->json($users);
     }
