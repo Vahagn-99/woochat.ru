@@ -21,9 +21,9 @@ class SubscriptionController extends Controller
         $subscription = $this->subscription_full_service->subscribe($request->toDto());
 
         do_log("subscription")->info(
-            "Подписка для {$subscription->user_domain} проделна до {$subscription->expired_at}"
+            "Подписка для {$subscription->domain} проделна до {$subscription->expired_at}"
         );
 
-        return response()->json("Подписка для {$subscription->user_domain} проделна до {$subscription->expired_at}");
+        return response()->json(['data' => $subscription->toArray()]);
     }
 }
