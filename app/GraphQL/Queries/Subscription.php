@@ -12,6 +12,6 @@ final readonly class Subscription
         /** @var \App\Models\User $user */
         $user = auth()->user();
 
-        return $user->activeSubscription?->expired_at?->format('Y-m-d');
+        return $user->lastSubscription?->expired_at?->format('Y-m-d');
     }
 }
