@@ -7,6 +7,7 @@ use AmoCRM\OAuth\OAuthServiceInterface;
 use App\Models\User;
 use App\Services\AmoCRM\Auth\AuthManagerInterface;
 use App\Services\AmoCRM\Core\Oauth\OauthStatusInterface;
+use App\Services\AmoCRM\Dirty\PrivateApiInterface;
 
 readonly class AmoManager implements AmoManagerInterface
 {
@@ -15,6 +16,7 @@ readonly class AmoManager implements AmoManagerInterface
         private AuthManagerInterface $authManager,
         private OAuthServiceInterface $authService,
         private OauthStatusInterface $instance,
+        private PrivateApiInterface $private_api,
     ) {
     }
 
@@ -52,5 +54,10 @@ readonly class AmoManager implements AmoManagerInterface
     public function instance(): OauthStatusInterface
     {
         return $this->instance;
+    }
+
+    public function privateApi(): PrivateApiInterface
+    {
+        return $this->private_api;
     }
 }

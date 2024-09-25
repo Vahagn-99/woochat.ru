@@ -8,6 +8,7 @@ use App\Services\AmoCRM\Auth\AuthManagerInterface;
 use App\Services\AmoCRM\Core\Manager\AmoManager;
 use App\Services\AmoCRM\Core\Manager\AmoManagerInterface;
 use App\Services\AmoCRM\Core\Oauth\OauthStatusInterface;
+use App\Services\AmoCRM\Dirty\PrivateApiInterface;
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Testing\TestResponse;
@@ -17,6 +18,7 @@ use League\OAuth2\Client\Token\AccessToken;
  * @method static AmoManagerInterface domain(string $domain)
  * @method static AuthManagerInterface authenticator()
  * @method static AmoCRMApiClient api()
+ * @method static PrivateApiInterface privateApi()
  * @method static OAuthServiceInterface oauth()
  * @method static OauthStatusInterface instance()
  *

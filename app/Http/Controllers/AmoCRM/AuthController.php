@@ -56,7 +56,7 @@ class AuthController extends Controller
             new AmoAccountInfoDTO(
                 $account->getId(),
                 $account->getSubdomain(),
-                $account->getName(),
+                $currentUser->getName(),
                 $users->count(),
                 $account->getDatetimeSettings()->getTimezone()
             )

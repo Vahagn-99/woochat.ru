@@ -2,11 +2,10 @@
 
 namespace App\Console\Commands;
 
-use AmoCRM\Exceptions\AmoCRMApiException;
-use AmoCRM\Filters\ContactsFilter;
 use App\Services\AmoCRM\Core\Facades\Amo;
-use App\Services\AmoCRM\CustomFieldAdapter;
+use App\Services\AmoCRM\Dirty\Filters\Email;
 use Illuminate\Console\Command;
+use Illuminate\Support\Arr;
 
 class TestServiceCommand extends Command
 {
@@ -15,21 +14,18 @@ class TestServiceCommand extends Command
     protected $description = 'The command to test any service';
 
     /**
-     * @throws \Exception
+     * @throws \Illuminate\Http\Client\ConnectionException
      */
-    public function handle(CustomFieldAdapter $adapter): void
+    public function handle(): void
     {
-        $email_custom_field = [
-            '277639' => 'widget.dev@dicitech.com',
-        ];
+        $doubles = Amo::privateApi()->contacts(new Email('widget.dev@dicitech.com'));
 
-        try {
-            $contact = Amo::admin()->api()->contacts()->get(
-                (new ContactsFilter())->setCustomFieldsValues($email_custom_field)
-            );
-            dd($contact);
-        } catch (AmoCRMApiException  $exception) {
-            dd($exception->getDescription());
+        if (! isset($doubles)) {
+            $this->error('No contacts found');
+
+            return;
         }
+
+        $last_double = Arr::last($doubles['response']['contacts']);
     }
 }

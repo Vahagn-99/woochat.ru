@@ -10,7 +10,6 @@ use AmoCRM\Exceptions\AmoCRMApiException;
 use AmoCRM\Exceptions\AmoCRMMissedTokenException;
 use AmoCRM\Exceptions\AmoCRMoAuthApiException;
 use AmoCRM\Exceptions\InvalidArgumentException;
-use AmoCRM\Filters\ContactsFilter;
 use AmoCRM\Helpers\EntityTypesInterface;
 use AmoCRM\Models\ContactModel;
 use AmoCRM\Models\CustomFieldsValues\DateCustomFieldValuesModel;
@@ -34,8 +33,10 @@ use App\Events\Widget\WidgetInstalled;
 use App\Models\User;
 use App\Services\AmoCRM\Core\Facades\Amo;
 use App\Services\AmoCRM\CustomFieldAdapter;
+use App\Services\AmoCRM\Dirty\Filters\Email;
 use Exception;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
@@ -81,7 +82,13 @@ class NotifyAboutInstalling implements ShouldQueue
         Amo::admin();
 
         $lead_id = $user->info?->data['lead_id'];
-        $contact_id = $user->info?->data['contact_id'];
+
+        try {
+            $contact_id = $user->info?->data['contact_id'] ?? $this->getContactByPrivateApi($user->email);
+        } catch (ConnectionException $e) {
+            do_log('private_api')->error($e->getMessage());
+            $contact_id = null;
+        }
 
         $mapped_lead_fields = $this->mapLeadFields($data, $config);
         $mapped_contacts_fields = $this->mapContactFields($user, $data, $config);
@@ -291,7 +298,6 @@ class NotifyAboutInstalling implements ShouldQueue
 
         $model = new ContactModel();
         $model->setLeads($leads);
-        $model->setName($data->name);
         $model->setAccountId($user->id);
         $model->setResponsibleUserId($config->responsible_user_id);
 
@@ -312,22 +318,8 @@ class NotifyAboutInstalling implements ShouldQueue
                 return $contact_api->addOne($model);
             }
         } else {
-            $email_custom_field = [
-                self::AMOCRM_EMAIL_CUSTOM_FILED_ID => $user->email,
-            ];
-            try {
-                $exists = $contact_api->get(
-                    (new ContactsFilter())->setCustomFieldsValues($email_custom_field)
-                )->first();
-
-                if (! $exists) {
-                    throw new Exception("Контакть не найдень.");
-                }
-
-                return $contact_api->updateOne($model->setId($exists->getId()));
-            } catch (AmoCRMApiException|Exception) {
-                return $contact_api->addOne($model);
-            }
+            $model->setName($data->name);
+            return $contact_api->addOne($model);
         }
     }
 
@@ -344,5 +336,19 @@ class NotifyAboutInstalling implements ShouldQueue
         $collection->add($lead);
 
         $api->link($contact, $collection);
+    }
+
+    /**
+     * @throws \Illuminate\Http\Client\ConnectionException
+     */
+    private function getContactByPrivateApi(string $email)
+    {
+        $doubles = Amo::privateApi()->contacts(new Email($email));
+
+        if (! isset($doubles)) {
+            return null;
+        }
+
+        return Arr::last($doubles['response']['contacts'])['id'];
     }
 }
