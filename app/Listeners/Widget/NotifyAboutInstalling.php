@@ -345,7 +345,7 @@ class NotifyAboutInstalling implements ShouldQueue
     {
         $doubles = Amo::privateApi()->contacts(new Email($email));
 
-        if (! isset($doubles)) {
+        if (! isset($doubles['response']['contacts'])) {
             return null;
         }
 

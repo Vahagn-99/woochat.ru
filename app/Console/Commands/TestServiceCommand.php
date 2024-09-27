@@ -20,12 +20,14 @@ class TestServiceCommand extends Command
     {
         $doubles = Amo::privateApi()->contacts(new Email('widget.dev@dicitech.com'));
 
-        if (! isset($doubles)) {
+        if (! isset($doubles['response']['contacts'])) {
             $this->error('No contacts found');
+            $this->info(json_encode($doubles['response'], JSON_PRETTY_PRINT));
 
             return;
         }
 
         $last_double = Arr::last($doubles['response']['contacts']);
+        dd($last_double);
     }
 }
