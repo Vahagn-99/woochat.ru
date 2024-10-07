@@ -18,7 +18,7 @@ class TestServiceCommand extends Command
      */
     public function handle(): void
     {
-        $doubles = Amo::privateApi()->contacts(new Email('widget.dev@dicitech.com'));
+        $doubles = Amo::privateApi()->contacts(new Email('alena.12041997@gmail.com'));
 
         if (! isset($doubles['response']['contacts'])) {
             $this->error('No contacts found');

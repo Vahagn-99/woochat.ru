@@ -13,7 +13,7 @@ class DeleteAdditionalWhatsappInstances extends Command
      *
      * @var string
      */
-    protected $signature = 'delete:instances';
+    protected $signature = 'delete:instances {--id=}';
 
     /**
      * The console command description.
@@ -28,20 +28,22 @@ class DeleteAdditionalWhatsappInstances extends Command
     public function handle(): void
     {
         // Get all free instances
-        $instances = WhatsappInstance::whereFree()->get()->slice(1);
+        if ($this->option('id')) {
+            $instances = WhatsappInstance::query()->where('id', $this->option('id'))->get();
+        } else {
+            $instances = WhatsappInstance::whereFree()->get()->slice(1);
+        }
 
         foreach ($instances as $instance) {
-            $deleted = Whatsapp::for($instance)->instance()->delete();
+            try {
+                Whatsapp::for($instance)->instance()->delete();
 
-            if (! $deleted) {
-                $this->warn("Не удалось удалить экземпляр WhatsApp. {$instance->id}");
+                $instance->delete();
 
-                continue;
+                do_log('crones/delete_instances')->info("экземпляр ID: {$instance->id}  удален.");
+            } catch (\Exception $e) {
+                $this->warn($e);
             }
-
-            $instance->delete();
-
-            do_log('crones/delete_instances')->info("экземпляр ID: {$instance->id}  удален.");
         }
     }
 }

@@ -44,10 +44,11 @@ class InstanceApi implements InstanceApiInterface
         $endpoint = $this->setEndpoint("/partner/createInstance");
 
         try {
-
             $response = $this->buildRequest()->post($endpoint, $params)->json();
 
-            return new CreatedInstanceDTO($response['idInstance'], $response['apiTokenInstance'], Arr::get($params, 'name'));
+            return new CreatedInstanceDTO(
+                $response['idInstance'], $response['apiTokenInstance'], Arr::get($params, 'name')
+            );
         } catch (ConnectionException $e) {
             throw new  InstanceCreationException($e->getMessage());
         }
@@ -65,11 +66,10 @@ class InstanceApi implements InstanceApiInterface
         ];
 
         try {
-
             $response = $this->buildRequest()->post($endpoint, $params)->json();
 
-            if ($response['code'] === 404) {
-                return false;
+            if (isset($response['code']) && $response['code'] === 404) {
+                throw new  InstanceDeletionException("Инстанс не найден {$this->instance->id}");
             }
 
             return $response['deleteInstanceAccount'];
@@ -86,13 +86,14 @@ class InstanceApi implements InstanceApiInterface
         $endpoint = $this->setEndpoint("/partner/getInstances");
 
         try {
-
             $response = $this->buildRequest()->post($endpoint)->json();
 
             $data = Arr::where($response, fn(array $item) => ! $item['deleted'] && ! $item['isExpired']);
 
-            return Arr::map($data, fn(array $item
-            ) => new CreatedInstanceDTO($item['idInstance'], $item['apiTokenInstance'], $item['name']));
+            return Arr::map(
+                $data,
+                fn(array $item) => new CreatedInstanceDTO($item['idInstance'], $item['apiTokenInstance'], $item['name'])
+            );
         } catch (ConnectionException $e) {
             throw new  InstanceCreationException($e->getMessage());
         }
