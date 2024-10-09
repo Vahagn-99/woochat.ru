@@ -95,6 +95,11 @@ class SendMessageWhatsapp implements ShouldQueue
 
     private function getChat(array $chatPayload, WhatsappInstance $whatsappInstance): Chat
     {
+        if (isset($chatPayload['receiver']['phone'])) {
+            $chatPayload['receiver']['phone'] = Str::replaceStart('8', '7', $chatPayload['receiver']['phone']);
+            $chatPayload['receiver']['phone'] = Str::replaceStart('+8', '7', $chatPayload['receiver']['phone']);
+        }
+
         $whatsappChatId = Str::replace('+', '', Arr::get(Arr::get($chatPayload, 'conversation'), 'client_id') ?? Arr::get(Arr::get($chatPayload, 'receiver'), 'phone').'@c.us');
 
         /** @var Chat $chat */
