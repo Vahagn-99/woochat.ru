@@ -48,7 +48,7 @@ class SendMessageWhatsapp implements ShouldQueue
      */
     public function handle(MessageReceived $event): void
     {
-        try {
+        //try {
 
             $amoMessageId = $event->payload['message']['message']['id'];
 
@@ -85,21 +85,25 @@ class SendMessageWhatsapp implements ShouldQueue
                 'payload' => $messagePayload->toArray(),
                 'response' => $sentMessage->ref_id,
             ]);
-        } catch (Exception|ModelNotFoundException|InstanceNotFoundException $e) {
-            do_log("messaging", class_basename($this))->error($e->getMessage(), $event->payload);
-            $this->release();
-
-            return;
-        }
+        //} catch (Exception|ModelNotFoundException|InstanceNotFoundException $e) {
+        //    do_log("messaging", class_basename($this))->error($e->getMessage(), $event->payload);
+        //    $this->release();
+        //
+        //    return;
+        //}
     }
 
     private function getChat(array $chatPayload, WhatsappInstance $whatsappInstance): Chat
     {
-        if (isset($chatPayload['receiver']['phone'])) {
-            $chatPayload['receiver']['phone'] = Str::replaceStart('8', '7', $chatPayload['receiver']['phone']);
-        }
+        $whatsappChatId = null;
 
-        $whatsappChatId = Str::replace('+', '', Arr::get(Arr::get($chatPayload, 'conversation'), 'client_id') ?? Arr::get(Arr::get($chatPayload, 'receiver'), 'phone').'@c.us');
+        if (isset($chatPayload['conversation']['client_id'])) {
+            $whatsappChatId = Str::replaceStart('+', '', $chatPayload['conversation']['client_id']);
+        }
+        elseif (isset($chatPayload['receiver']['phone'])) {
+            $whatsappChatId = Str::replaceStart('8', '7', $chatPayload['receiver']['phone']);
+            $whatsappChatId .= "@c.us";
+        }
 
         /** @var Chat $chat */
         $chat = Chat::query()->where('amo_chat_id', $chatPayload['conversation']['id'])->latest('created_at')->first();
