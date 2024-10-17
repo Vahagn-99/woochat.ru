@@ -5,7 +5,9 @@ namespace App\Listeners\Messaging;
 use App\Base\Messaging\Factory;
 use App\Base\Messaging\IMessage;
 use App\Base\Messaging\SentMessage;
+use App\Enums\InstanceStatus;
 use App\Events\Messaging\MessageReceived;
+use App\Exceptions\Whatsapp\InstanceBlockedException;
 use App\Exceptions\Whatsapp\InstanceNotFoundException;
 use App\Models\AmoInstance;
 use App\Models\Chat;
@@ -48,7 +50,7 @@ class SendMessageWhatsapp implements ShouldQueue
      */
     public function handle(MessageReceived $event): void
     {
-        //try {
+        try {
 
             $amoMessageId = $event->payload['message']['message']['id'];
 
@@ -60,11 +62,16 @@ class SendMessageWhatsapp implements ShouldQueue
             ])->where('scope_id', $event->payload['scope_id'])->first()->user;
 
             /** @var ?WhatsappInstance $whatsappInstance */
-            $whatsappInstance = $user->whatsappInstances->first(fn(
-                $item) => $item->id == $event->payload['message']['source']['external_id']);
+            $whatsappInstance = $user->whatsappInstances->first(fn($item) => $item->id == $event->payload['message']['source']['external_id']);
 
             if (! $whatsappInstance) {
                 throw new InstanceNotFoundException("Нет удалесь отправить собшение из амо в ватсапп так как нет подключеного инстанса для этого аккаунта {$user->domain}");
+            }
+
+            if ($whatsappInstance->status === InstanceStatus::BLOCKED) {
+                throw new InstanceBlockedException(
+                    "Инстанс {$whatsappInstance->id} блокирован и не может быть исползован!"
+                );
             }
 
             $chat = $this->getChat($event->payload['message'], $whatsappInstance);
@@ -85,12 +92,10 @@ class SendMessageWhatsapp implements ShouldQueue
                 'payload' => $messagePayload->toArray(),
                 'response' => $sentMessage->ref_id,
             ]);
-        //} catch (Exception|ModelNotFoundException|InstanceNotFoundException $e) {
-        //    do_log("messaging", class_basename($this))->error($e->getMessage(), $event->payload);
-        //    $this->release();
-        //
-        //    return;
-        //}
+        } catch (InstanceBlockedException|Exception|ModelNotFoundException|InstanceNotFoundException $e) {
+            do_log("messaging", class_basename($this))->error($e->getMessage(), $event->payload);
+            $this->release();
+        }
     }
 
     private function getChat(array $chatPayload, WhatsappInstance $whatsappInstance): Chat

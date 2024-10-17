@@ -4,15 +4,16 @@ namespace App\Listeners\Messaging;
 
 use App\Base\Messaging\Factory;
 use App\Base\Messaging\IMessage;
+use App\Enums\InstanceStatus;
 use App\Events\Messaging\MessageReceived;
 use App\Exceptions\Messaging\AdapterNotDefinedException;
 use App\Exceptions\Messaging\ProviderNotConfiguredException;
 use App\Exceptions\Messaging\UnknownMessageTypeException;
+use App\Exceptions\Whatsapp\InstanceBlockedException;
 use App\Models\AmoInstance;
 use App\Models\Chat;
 use App\Models\Message;
 use App\Models\WhatsappInstance;
-use App\Services\AmoChat\Chat\Create\SaveAmoChatDTO;
 use App\Services\AmoChat\Facades\AmoChat;
 use App\Services\AmoChat\Messaging\Actor\Actor;
 use App\Services\AmoChat\Messaging\Actor\Profile;
@@ -29,7 +30,6 @@ class SendMessageAmo implements ShouldQueue
 
     public function __construct()
     {
-
     }
 
     /**
@@ -56,6 +56,12 @@ class SendMessageAmo implements ShouldQueue
         try {
             $whatsappInstance = $this->getWhatsappInstance($event->payload['instanceData']['idInstance']);
 
+            if ($whatsappInstance->status === InstanceStatus::BLOCKED) {
+                throw new InstanceBlockedException(
+                    "Инстанс {$whatsappInstance->id} блокирован и не может быть исползован!"
+                );
+            }
+
             $amoInstance = $this->getAmoInstance($whatsappInstance);
 
             $sender = $this->mapSender($event->payload['senderData']);
@@ -77,8 +83,11 @@ class SendMessageAmo implements ShouldQueue
                 'chat_id' => $chat->id,
             ]);
 
-            do_log("messaging/".class_basename($this))->info("Собшение отправлено. ID: ".$sentMessage->id, $massager->getLastRequestInfo());
-        } catch (ProviderNotConfiguredException|AdapterNotDefinedException|UnknownMessageTypeException|ModelNotFoundException $e) {
+            do_log("messaging/".class_basename($this))->info(
+                "Собшение отправлено. ID: ".$sentMessage->id,
+                $massager->getLastRequestInfo()
+            );
+        } catch (InstanceBlockedException|ProviderNotConfiguredException|AdapterNotDefinedException|UnknownMessageTypeException|ModelNotFoundException $e) {
             do_log("messaging/".class_basename($this))->error($e->getMessage(), [
                 'trace' => $e->getTraceAsString(),
             ]);
@@ -101,8 +110,8 @@ class SendMessageAmo implements ShouldQueue
     private function getChat(
         string $whatsappChatId,
         AmoInstance $amoInstance,
-        WhatsappInstance $whatsappInstance): Chat
-    {
+        WhatsappInstance $whatsappInstance
+    ): Chat {
         /** @var Chat $chat */
         $chat = Chat::query()->where([
             'whatsapp_chat_id' => $whatsappChatId,
@@ -134,19 +143,30 @@ class SendMessageAmo implements ShouldQueue
         array $payload,
         Chat $chat,
         Actor $sender,
-        WhatsappInstance $whatsappInstance): AmoMessage
-    {
+        WhatsappInstance $whatsappInstance
+    ): AmoMessage {
         $source = new Source($whatsappInstance->id);
 
-        return new AmoMessage(sender: $sender, payload: $this->mapMessagePayload($payload['messageData']), source: $source, conversation_id: $chat->whatsapp_chat_id, conversation_ref_id: $chat->amo_chat_id, msgid: $payload['idMessage']);
+        return new AmoMessage(
+            sender: $sender,
+            payload: $this->mapMessagePayload($payload['messageData']),
+            source: $source,
+            conversation_id: $chat->whatsapp_chat_id,
+            conversation_ref_id: $chat->amo_chat_id,
+            msgid: $payload['idMessage']
+        );
     }
 
     private function mapSender(mixed $senderData): Actor
     {
-        return new Actor(id: $senderData['sender'], name: $senderData['senderName'], profile: new Profile(phone: Str::replace([
-            "@c.us",
-            "@g.us",
-        ], "", $senderData['sender'])));
+        return new Actor(
+            id: $senderData['sender'], name: $senderData['senderName'], profile: new Profile(
+            phone: Str::replace([
+                "@c.us",
+                "@g.us",
+            ], "", $senderData['sender'])
+        )
+        );
     }
 
     /**
