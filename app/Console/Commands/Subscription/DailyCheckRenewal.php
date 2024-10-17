@@ -39,6 +39,7 @@ class DailyCheckRenewal extends Command
                 $user->whatsappInstances?->each(function (WhatsappInstance $instance) {
                     Whatsapp::for($instance)->instance()->withQueue()->logout();
                     $instance->status = InstanceStatus::BLOCKED;
+                    $instance->blocked_at = now();
                     $instance->save();
                 });
 

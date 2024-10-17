@@ -1,11 +1,9 @@
 <?php
 
-namespace App\Console\Commands\Subscription;
+namespace App\Console\Commands\Whatsapp;
 
 use App\Enums\InstanceStatus;
-use App\Models\User as UserModel;
 use App\Models\WhatsappInstance;
-use App\Services\Whatsapp\Facades\Whatsapp;
 use Illuminate\Console\Command;
 
 class DailyCheckBLockedInstances extends Command
@@ -33,7 +31,7 @@ class DailyCheckBLockedInstances extends Command
         $instances = WhatsappInstance::whereBlocked()->get();
 
         foreach ($instances as $instance) {
-            if ($instance->blocked_at->isBefore(now()->subDays(3))) {
+            if ($instance->blocked_at->isBefore(now()->subHours(6))) {
                 $instance->status = InstanceStatus::NOT_AUTHORIZED;
                 $instance->save();
             }
