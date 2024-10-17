@@ -56,7 +56,7 @@ final readonly class CreateInstance
         if (! $user->hasFlag('has_already_started_trial_subscription')) {
             SubscriptionTrialEvent::dispatch(
                 auth()->user(),
-                Carbon::now()->addDays(4)
+                Carbon::now()->addDays(3)
             );
 
             $user->flag('has_already_started_trial_subscription');
