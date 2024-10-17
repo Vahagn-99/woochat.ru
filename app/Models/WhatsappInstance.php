@@ -19,11 +19,13 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property string $token
  * @property string $phone
  * @property \Illuminate\Support\Carbon $created_at
+ * @property \Illuminate\Support\Carbon $blocked_at
  *
  * @property-read User $user
  * @property-read \App\Models\Settings $settings
  *
  * @method static Builder whereFree()
+ * @method static Builder whereBlocked()
  */
 final class WhatsappInstance extends Model
 {
@@ -37,6 +39,7 @@ final class WhatsappInstance extends Model
         'status',
         'token',
         'phone',
+        'blocked_at',
     ];
 
     public $incrementing = false;
@@ -46,6 +49,7 @@ final class WhatsappInstance extends Model
     protected $casts = [
         'status' => InstanceStatus::class,
         'created_at' => 'date',
+        'blocked_at' => 'date',
     ];
 
     public static function firstInAccount(User $user): ?WhatsappInstance
@@ -79,6 +83,11 @@ final class WhatsappInstance extends Model
         return $query->whereNull('user_id');
     }
 
+    public function scopeWhereBlocked(Builder $query): Builder
+    {
+        return $query->where('status', InstanceStatus::BLOCKED);
+    }
+
     public static function dto(string $instanceId): InstanceDTO
     {
         /** @var WhatsappInstance $instance */
@@ -87,7 +96,7 @@ final class WhatsappInstance extends Model
         return new InstanceDTO($instance->id, $instance->token);
     }
 
-    public function toDto(): InstanceDTO
+    public function transformToDto(): InstanceDTO
     {
         return new InstanceDTO($this->id, $this->token);
     }

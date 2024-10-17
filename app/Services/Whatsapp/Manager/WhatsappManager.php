@@ -10,14 +10,14 @@ use App\Services\Whatsapp\Instance\InstanceServiceInterface;
 use App\Services\Whatsapp\Messaging\WhatsappMessagingInterface;
 use App\Services\Whatsapp\QRCode\QRCodeServiceInterface;
 
-class WhatsappManager implements WhatsappManagerInterface
+readonly class WhatsappManager implements WhatsappManagerInterface
 {
     public function __construct(
-        private readonly WhatsappApiServiceInterface $apiService,
-        private readonly QRCodeServiceInterface $qrCodeService,
-        private readonly InstanceServiceInterface $instanceService,
-        private readonly GetInstanceStatusServiceInterface $statusService,
-        private readonly WhatsappMessagingInterface $messagingService
+        private WhatsappApiServiceInterface $apiService,
+        private QRCodeServiceInterface $qrCodeService,
+        private InstanceServiceInterface $instanceService,
+        private GetInstanceStatusServiceInterface $statusService,
+        private WhatsappMessagingInterface $messagingService
     ) {
     }
 

@@ -30,14 +30,14 @@ class DailyCheckRenewal extends Command
     public function handle(): void
     {
         /** @var \Illuminate\Database\Eloquent\Collection<\App\Models\User> $users */
-        $users = UserModel::query()->withWhereHas('subscriptions')->get();
+        $users = UserModel::query()->get();
 
         foreach ($users as $user) {
             $subscription = $user->activeSubscription;
 
-            if ($subscription?->expired_at->isPast()) {
+            if (! isset($subscription) || $subscription->expired_at->isPast()) {
                 $user->whatsappInstances?->each(function (WhatsappInstance $instance) {
-                    Whatsapp::for($instance)->instance()->logout();
+                    Whatsapp::for($instance)->instance()->withQueue()->logout();
                     $instance->status = InstanceStatus::BLOCKED;
                     $instance->save();
                 });

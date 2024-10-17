@@ -29,8 +29,10 @@ class SyncInstances extends Command
      */
     public function handle(): void
     {
+        // api
         $instances = Whatsapp::instance()->all();
 
+        // DB
         $syncedInstances = WhatsappInstance::query()->get();
 
         foreach ($instances as $instance) {
@@ -47,17 +49,6 @@ class SyncInstances extends Command
                     'status' => InstanceStatus::NOT_AUTHORIZED,
                 ]);
             }
-            //elseif (! $exists->status->isAuthorized() && $exists->created_at->lessThan(now()->subHours(12))) {
-            //    $exists->phone = null;
-            //    $exists->settings()->delete();
-            //
-            //    if ($exists->user_id) {
-            //        do_log('crones/instances')->warning("Инстанс {$exists->id} откреплень от клиента {$exists->user_id}");
-            //        $exists->user_id = null;
-            //    }
-            //
-            //    $exists->save();
-            //}
         }
 
         $deleteForgottenInstances = $syncedInstances->filter(function (WhatsappInstance $instance) use ($instances) {
@@ -66,7 +57,7 @@ class SyncInstances extends Command
 
         $deleteForgottenInstances->each(function (WhatsappInstance $instance) {
             $instance->delete();
-            do_log('crones/sync_instances')->info("Экземпляр {$instance->id} был удалён по причине того, что не использовался.");
+            do_log('crones/sync_instances')->info("Экземпляр {$instance->id} был удалён по причине того, что не использовался долгое время.");
         });
 
         do_log('crones/sync_instances')->info("Все экземпляры были синхронизированы.");

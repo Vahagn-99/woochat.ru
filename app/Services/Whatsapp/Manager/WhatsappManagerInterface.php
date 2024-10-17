@@ -7,6 +7,7 @@ use App\Services\Whatsapp\ClientService\WhatsappApiServiceInterface;
 use App\Services\Whatsapp\Instance\InstanceServiceInterface;
 use App\Services\Whatsapp\Messaging\WhatsappMessagingInterface;
 use App\Services\Whatsapp\QRCode\QRCodeServiceInterface;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
 interface WhatsappManagerInterface
 {

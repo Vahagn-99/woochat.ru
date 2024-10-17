@@ -7,6 +7,8 @@ use Illuminate\Support\Arr;
 
 class InstanceService implements InstanceServiceInterface
 {
+    private bool $shouldQueue = false;
+
     public function __construct(private readonly InstanceApiInterface $api, private array $config = [])
     {
         $this->config = array_merge(config('whatsapp.instance', []), $this->config);
@@ -20,6 +22,12 @@ class InstanceService implements InstanceServiceInterface
     {
         $params = array_merge($this->config, ['name' => $name]);
 
+        if ($this->shouldQueue) {
+            dispatch(function () use ($params) {
+                $this->api->newInstance($params);
+            });
+        }
+
         return $this->api->newInstance($params);
     }
 
@@ -30,6 +38,12 @@ class InstanceService implements InstanceServiceInterface
 
     public function reboot(): bool
     {
+        if ($this->shouldQueue) {
+            dispatch(function () {
+                $this->api->rebootInstance();
+            });
+        }
+
         $this->api->rebootInstance();
 
         return true;
@@ -37,6 +51,12 @@ class InstanceService implements InstanceServiceInterface
 
     public function logout(): bool
     {
+        if ($this->shouldQueue) {
+            dispatch(function () {
+                $this->api->logoutInstance();
+            });
+        }
+
         $this->api->logoutInstance();
 
         return true;
@@ -52,12 +72,32 @@ class InstanceService implements InstanceServiceInterface
 
     public function delete(): bool
     {
+        if ($this->shouldQueue) {
+            dispatch(function () {
+                $this->api->deleteInstance();
+            });
+        }
+
         return $this->api->deleteInstance();
     }
 
     public function setInstance(InstanceDTO $instance): static
     {
         $this->api->setInstance($instance);
+
+        return $this;
+    }
+
+    public function withoutQueue(): static
+    {
+        $this->shouldQueue = false;
+
+        return $this;
+    }
+
+    public function withQueue(): static
+    {
+        $this->shouldQueue = true;
 
         return $this;
     }

@@ -11,5 +11,7 @@ class Scheduler extends ServiceProvider
     {
         Schedule::command('sync:instances')->everyMinute()->withoutOverlapping();
         Schedule::command('delete:instances')->dailyAt('19:55');
+        Schedule::command('subscription:daily_check_renewal')->dailyAt('17:55');
+        Schedule::command('instance:daily_check_blocked')->dailyAt('14:55');
     }
 }

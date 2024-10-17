@@ -45,7 +45,7 @@ class Whatsapp extends Facade
     public static function for(WhatsappInstance|InstanceDTO|array $instance): WhatsappManagerInterface
     {
         $instance = is_array($instance) ? InstanceDTO::fromArray($instance) : $instance;
-        $instance = $instance instanceof WhatsappInstance ? $instance->toDto() : $instance;
+        $instance = $instance instanceof WhatsappInstance ? $instance->transformToDto() : $instance;
 
         $client = new GreenApiClient($instance->id, $instance->token);
 

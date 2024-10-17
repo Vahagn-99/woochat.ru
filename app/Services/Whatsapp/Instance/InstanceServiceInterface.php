@@ -38,5 +38,15 @@ interface InstanceServiceInterface
      */
     public function logout(): bool;
 
+    /**
+     * @return \App\Services\Whatsapp\Instance\InstanceServiceInterface
+     */
+    public function withoutQueue(): static;
+
+    /**
+     * @return \App\Services\Whatsapp\Instance\InstanceServiceInterface
+     */
+    public function withQueue(): static;
+
     public function setInstance(InstanceDTO $instance): static;
 }
