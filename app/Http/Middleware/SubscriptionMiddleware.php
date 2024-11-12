@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\User;
 use Closure;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -19,6 +20,9 @@ class SubscriptionMiddleware
     {
         /** @var \App\Models\User $user */
         $user = $request->user();
+        if(! $user && $request->has('account_id')) {
+            $user = User::getByAmojoId($request->get('account_id'));
+        }
 
         if (! $user || $user->activeSubscription) {
             return $next($request);

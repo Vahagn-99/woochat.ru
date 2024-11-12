@@ -147,6 +147,18 @@ final class User extends Authenticatable implements AmoAccountInterface
         return $user;
     }
 
+    public static function getByAmojoId(string $amojo_id): ?User
+    {
+        /** @var User $user */
+        $user = User::withTrashed()->where('amojo_id', $amojo_id)->first();
+
+        if ($user && $user->trashed()) {
+            $user->restore();
+        }
+
+        return $user;
+    }
+
     public function getAccessToken(): ?AccessToken
     {
         return $this->amoAccessToken?->getAccessToken();

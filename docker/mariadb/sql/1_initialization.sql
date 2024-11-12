@@ -1,0 +1,5 @@
+CREATE USER IF NOT EXISTS 'woochat_user'@'%' IDENTIFIED BY 'password';
+GRANT ALL PRIVILEGES ON * . * TO 'woochat_user'@'%';
+FLUSH PRIVILEGES;
+
+CREATE DATABASE IF NOT EXISTS woochat_db;
