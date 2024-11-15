@@ -20,8 +20,13 @@ class SubscriptionMiddleware
     {
         /** @var \App\Models\User $user */
         $user = $request->user();
+
         if(! $user && $request->has('account_id')) {
             $user = User::getByAmojoId($request->get('account_id'));
+        }
+
+        if(! $user && $request->has('instanceData.idInstance')) {
+            $user = User::getByWhatsappInstanceId($request->input('instanceData.idInstance'));
         }
 
         if (! $user || $user->activeSubscription) {

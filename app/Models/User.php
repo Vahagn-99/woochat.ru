@@ -159,6 +159,18 @@ final class User extends Authenticatable implements AmoAccountInterface
         return $user;
     }
 
+    public static function getByWhatsappInstanceId(int $instance_id): ?User
+    {
+        /** @var User $user */
+        $user = User::withTrashed()->whereHas('whatsappInstances', fn($query)=>$query->where('id', $instance_id))->first();
+
+        if ($user && $user->trashed()) {
+            $user->restore();
+        }
+
+        return $user;
+    }
+
     public function getAccessToken(): ?AccessToken
     {
         return $this->amoAccessToken?->getAccessToken();
