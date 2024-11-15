@@ -29,7 +29,7 @@ class SubscriptionMiddleware
             $user = User::getByWhatsappInstanceId($request->input('instanceData.idInstance'));
         }
 
-        if (! $user || $user->activeSubscription) {
+        if ($user && $user->activeSubscription) {
             return $next($request);
         }
 
