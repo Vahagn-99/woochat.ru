@@ -38,8 +38,6 @@ class DeleteUnused extends Command
                 ->slice(1);
         }
 
-        dd($instances->pluck("id")->toArray());
-
         foreach ($instances as $instance) {
             try {
                 try {
