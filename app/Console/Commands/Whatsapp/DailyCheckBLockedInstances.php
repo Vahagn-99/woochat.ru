@@ -29,7 +29,7 @@ class DailyCheckBLockedInstances extends Command
     public function handle(): void
     {
         /** @var \Illuminate\Database\Eloquent\Collection<\App\Models\WhatsappInstance> $instances */
-        $instances = WhatsappInstance::whereBlocked()->where('blocked_at', '>=', Carbon::now()->addHours(6))->get();
+        $instances = WhatsappInstance::whereBlocked()->where('blocked_at', '<=', Carbon::now()->addHours(6))->get();
 dd($instances->toArray());
         foreach ($instances as $instance) {
             $instance->status = InstanceStatus::NOT_AUTHORIZED;
