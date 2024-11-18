@@ -4,6 +4,7 @@ namespace App\Console\Commands\Whatsapp;
 
 use App\Models\WhatsappInstance;
 use App\Services\Whatsapp\Facades\Whatsapp;
+use Exception;
 use Illuminate\Console\Command;
 
 class DeleteAdditionalWhatsappInstances extends Command
@@ -27,21 +28,34 @@ class DeleteAdditionalWhatsappInstances extends Command
      */
     public function handle(): void
     {
-        // Get all free instances
         if ($this->option('id')) {
-            $instances = WhatsappInstance::query()->where('id', $this->option('id'))->get();
+            $instances = WhatsappInstance::query()
+                ->where('id', $this->option('id'))
+                ->get();
         } else {
-            $instances = WhatsappInstance::whereFree()->get()->slice(1);
+            $instances = WhatsappInstance::whereFree()
+                ->get()
+                ->slice(1);
         }
+
+        dd($instances->toArray());
 
         foreach ($instances as $instance) {
             try {
-                Whatsapp::for($instance)->instance()->delete();
+                try {
+                    Whatsapp::for($instance)->instance()->delete();
+                } catch (Exception $e) {
+                    do_log('crones/delete_instances')->info("экземпляр ID: {$instance->id} не получилось удалить через апи grenapi.");
+
+                    continue;
+                }
 
                 $instance->delete();
 
                 do_log('crones/delete_instances')->info("экземпляр ID: {$instance->id}  удален.");
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
+                do_log('crones/delete_instances')->info("экземпляр ID: {$instance->id} не получилось удалить.");
+
                 $this->warn($e);
             }
         }

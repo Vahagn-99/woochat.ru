@@ -3,14 +3,15 @@
 namespace App\Services\Whatsapp\Instance;
 
 use App\Services\Whatsapp\DTO\InstanceDTO;
+use Illuminate\Foundation\Bus\PendingDispatch;
 
 interface InstanceServiceInterface
 {
     /**
      * @param string $name
-     * @return \App\Services\Whatsapp\Instance\CreatedInstanceDTO
+     * @return \App\Services\Whatsapp\Instance\CreatedInstanceDTO|\Illuminate\Foundation\Bus\PendingDispatch
      */
-    public function create(string $name): CreatedInstanceDTO;
+    public function create(string $name): CreatedInstanceDTO|PendingDispatch;
 
     /**
      * @return array<\App\Services\Whatsapp\Instance\CreatedInstanceDTO>
