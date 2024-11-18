@@ -33,7 +33,7 @@ class SubscriptionMiddleware
             return $next($request);
         }
 
-        do_log('subscription')->warning("Пользавтель {$user->domain} пытался исползовать виджет без подписки.");
+        do_log('subscription')->warning("Пользавтель {$user?->domain} пытался исползовать виджет без подписки.");
 
         return $request->expectsJson()
             ? response()->json('User Subscription required', 403)
