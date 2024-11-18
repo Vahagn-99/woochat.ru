@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services\Subscription;
 
+use App\Enums\InstanceStatus;
 use App\Base\Subscription\{
     SubscribedDto,
     Subscription,
@@ -58,13 +59,15 @@ class Full implements Subscription
         $subscription = new SubscriptionModel();
         $subscription->domain = $user->domain;
         $subscription->expired_at = $subscription_dto->expired_at;
-        $subscription->is_trial = false;
+        $subscription->is_trial = 0;
         $subscription->save();
 
-        $user->whatsappInstances->each(function (WhatsappInstance $item) {
-            $item->status = SubscriptionStatus::ACTIVE;
-            $item->save();
+        $user->whatsappInstances->each(function (WhatsappInstance $instance) {
+            $instance->status = InstanceStatus::AUTHORIZED;
+
+            $instance->save();
         });
+
         $user->refresh();
 
         return new SubscribedDto(
