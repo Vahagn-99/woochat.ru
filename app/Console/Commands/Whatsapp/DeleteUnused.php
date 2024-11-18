@@ -7,14 +7,14 @@ use App\Services\Whatsapp\Facades\Whatsapp;
 use Exception;
 use Illuminate\Console\Command;
 
-class DeleteAdditionalWhatsappInstances extends Command
+class DeleteUnused extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'delete:instances {--id=}';
+    protected $signature = 'whatsapp:delete-unused-instances {--id=}';
 
     /**
      * The console command description.

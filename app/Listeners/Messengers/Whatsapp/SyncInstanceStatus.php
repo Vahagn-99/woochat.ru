@@ -13,7 +13,7 @@ class SyncInstanceStatus
 
     public function handle(InstanceCreated $event): void
     {
-        Artisan::queue("sync:instance", ['instance' => $event->instance->id])
+        Artisan::queue("whatsapp:sync-instances", ['instance' => $event->instance->id])
             ->afterCommit()
             ->afterResponse();
     }

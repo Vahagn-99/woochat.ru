@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Console\Commands\Subscription;
+namespace App\Console\Commands\Whatsapp;
 
 use App\Enums\InstanceStatus;
 use App\Models\User as UserModel;
 use App\Models\WhatsappInstance;
-use App\Services\Whatsapp\Facades\Whatsapp;
 use Illuminate\Console\Command;
 
 class DailyCheckRenewal extends Command
@@ -15,7 +14,7 @@ class DailyCheckRenewal extends Command
      *
      * @var string
      */
-    protected $signature = 'subscription:daily_check_renewal';
+    protected $signature = 'subscription:daily-check-renewal';
 
     /**
      * The console command description.

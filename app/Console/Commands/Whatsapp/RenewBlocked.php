@@ -7,14 +7,14 @@ use App\Models\WhatsappInstance;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
 
-class DailyCheckBLockedInstances extends Command
+class RenewBlocked extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'instance:daily_check_blocked';
+    protected $signature = 'whatsapp:renew-blocked-instances';
 
     /**
      * The console command description.
@@ -29,8 +29,10 @@ class DailyCheckBLockedInstances extends Command
     public function handle(): void
     {
         /** @var \Illuminate\Database\Eloquent\Collection<\App\Models\WhatsappInstance> $instances */
-        $instances = WhatsappInstance::whereBlocked()->where('blocked_at', '<=', Carbon::now()->addHours(6))->get();
-dd($instances->toArray());
+        $instances = WhatsappInstance::whereBlocked()
+            ->where('blocked_at', '<=', Carbon::now()->addHours(6))
+            ->get();
+
         foreach ($instances as $instance) {
             $instance->status = InstanceStatus::NOT_AUTHORIZED;
             $instance->save();

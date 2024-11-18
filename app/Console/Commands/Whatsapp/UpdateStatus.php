@@ -6,9 +6,9 @@ use App\Models\WhatsappInstance;
 use App\Services\Whatsapp\Facades\Whatsapp;
 use Illuminate\Console\Command;
 
-class SyncInstanceStatus extends Command
+class UpdateStatus extends Command
 {
-    protected $signature = 'sync:instance {instance}';
+    protected $signature = 'whatsapp:update-instance-status {instance}';
 
     protected $description = 'The command to sync instance status';
 

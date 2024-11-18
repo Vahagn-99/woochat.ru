@@ -8,14 +8,14 @@ use App\Services\Whatsapp\Facades\Whatsapp;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
 
-class SyncInstances extends Command
+class Sync extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'sync:instances';
+    protected $signature = 'whatsapp:sync-instances';
 
     /**
      * The console command description.
