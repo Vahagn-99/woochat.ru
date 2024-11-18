@@ -38,7 +38,7 @@ class DeleteAdditionalWhatsappInstances extends Command
                 ->slice(1);
         }
 
-        dd($instances->toArray());
+        dd($instances->pluck("id")->toArray());
 
         foreach ($instances as $instance) {
             try {
