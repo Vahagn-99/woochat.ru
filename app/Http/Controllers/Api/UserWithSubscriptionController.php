@@ -20,8 +20,8 @@ class UserWithSubscriptionController extends Controller
         $perPage = $request->input('perPage', 20);
 
         $users = UserModel::with([
-            'whatsappInstances',
-            'activeSubscription' => fn($query) => $query->select(['domain', 'expired_at']),
+            'whatsapp_instances',
+            'active_subscription' => fn($query) => $query->select(['domain', 'expired_at']),
         ])
             ->select(
                 [
@@ -30,17 +30,17 @@ class UserWithSubscriptionController extends Controller
                     'max_instances_count',
                 ]
             )
-            ->withCount(['whatsappInstances as current_instances_count'])
+            ->withCount(['whatsapp_instances as current_instances_count'])
             ->where(function ($query) use ($filters) {
                 $query->when(isset($filters['id']), fn($query) => $query->where('id', 'LIKE', "%{$filters['id']}%"));
                 $query->when(isset($filters['domain']), fn($query) => $query->where('domain', 'LIKE', "%{$filters['domain']}%"));
-                $query->when(isset($filters['has_subscription']), fn($query) => $filters['has_subscription'] ? $query->whereHas("activePaidSubscription") : $query->whereDoesntHave("activePaidSubscription"));
-                $query->when(isset($filters['instance']), fn($query) => $query->whereHas('whatsappInstances',function ($query) use($filters) {
+                $query->when(isset($filters['has_subscription']), fn($query) => $filters['has_subscription'] ? $query->whereHas("active_paid_subscription") : $query->whereDoesntHave("active_paid_subscription"));
+                $query->when(isset($filters['instance']), fn($query) => $query->whereHas('whatsapp_instances',function ($query) use($filters) {
                     $query->where("whatsapp_instances.id", "LIKE", "%{$filters['instance']}%");
                     $query->orWhere("whatsapp_instances.phone", "LIKE", "%{$filters['instance']}%");
                 }));
             })
-            ->withAggregate('activeSubscription', 'expired_at')
+            ->withAggregate('active_subscription', 'expired_at')
             ->orderByDesc(
                 'active_subscription_expired_at'
             )->orderByDesc('created_at')

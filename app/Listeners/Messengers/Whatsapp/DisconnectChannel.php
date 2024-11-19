@@ -19,7 +19,7 @@ class DisconnectChannel implements ShouldQueue
      */
     public function handle(UserDeleted $event): void
     {
-        $instances = $event->user->whatsappInstances;
+        $instances = $event->user->whatsapp_instances;
         $amoApi = Amo::domain($event->user->id)->api()->sources();
 
         foreach ($instances as $instance) {

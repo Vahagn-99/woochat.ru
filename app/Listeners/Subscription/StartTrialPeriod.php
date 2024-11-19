@@ -3,8 +3,8 @@
 namespace App\Listeners\Subscription;
 
 use App\Base\Subscription\SubscriptionDto;
-use App\Events\Subscription\Trial as TrialEvent;
 use App\Services\Subscription\Trial as TrialSubscriptionService;
+use App\Events\Subscription\Trial as TrialEvent;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 

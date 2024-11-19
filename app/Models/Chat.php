@@ -41,7 +41,7 @@ final class Chat extends Model
         return $this->belongsTo(WhatsappInstance::class, 'whatsapp_instance_id', 'id');
     }
 
-    public function amoInstance(): BelongsTo
+    public function amo_instance(): BelongsTo
     {
         return $this->belongsTo(AmoInstance::class, 'amo_chat_instance_id', 'id');
     }

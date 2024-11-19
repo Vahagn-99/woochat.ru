@@ -58,11 +58,11 @@ class SendMessageWhatsapp implements ShouldQueue
 
             $user = AmoInstance::with([
                 'user' => fn(
-                    $query) => $query->with('whatsappInstances'),
+                    $query) => $query->with('whatsapp_instances'),
             ])->where('scope_id', $event->payload['scope_id'])->first()->user;
 
             /** @var ?WhatsappInstance $whatsappInstance */
-            $whatsappInstance = $user->whatsappInstances->first(fn($item) => $item->id == $event->payload['message']['source']['external_id']);
+            $whatsappInstance = $user->whatsapp_instances->first(fn($item) => $item->id == $event->payload['message']['source']['external_id']);
 
             if (! $whatsappInstance) {
                 throw new InstanceNotFoundException("Нет удалесь отправить собшение из амо в ватсапп так как нет подключеного инстанса для этого аккаунта {$user->domain}");

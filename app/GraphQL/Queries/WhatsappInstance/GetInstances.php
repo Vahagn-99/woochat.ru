@@ -12,6 +12,6 @@ final readonly class GetInstances
         /** @var \App\Models\User $user */
         $user = auth()->user();
 
-        return $user->whatsappInstances()->get();
+        return $user->whatsapp_instances()->get();
     }
 }

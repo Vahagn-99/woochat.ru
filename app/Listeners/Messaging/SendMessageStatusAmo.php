@@ -51,7 +51,7 @@ class SendMessageStatusAmo implements ShouldQueue
 
             $whatsappInstance = $this->getWhatsappInstance($event->payload['instanceData']['idInstance']);
 
-            $amoInstance = $whatsappInstance->user->amoInstance;
+            $amoInstance = $whatsappInstance->user->amo_instance;
 
             $massager = AmoChat::messaging($amoInstance->scope_id);
 
@@ -75,6 +75,6 @@ class SendMessageStatusAmo implements ShouldQueue
     private function getWhatsappInstance(string $id): WhatsappInstance
     {
         /** @var WhatsappInstance */
-        return WhatsappInstance::with(['user' => fn($query) => $query->with('amoInstance')])->findOrFail($id);
+        return WhatsappInstance::with(['user' => fn($query) => $query->with('amo_instance')])->findOrFail($id);
     }
 }

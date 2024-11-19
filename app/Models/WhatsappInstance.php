@@ -55,7 +55,7 @@ final class WhatsappInstance extends Model
     public static function firstInAccount(User $user): ?WhatsappInstance
     {
         /** @var ?WhatsappInstance */
-        return $user->whatsappInstances()->where('status', InstanceStatus::AUTHORIZED)->first();
+        return $user->whatsapp_instances()->where('status', InstanceStatus::AUTHORIZED)->first();
     }
 
     protected static function booted(): void

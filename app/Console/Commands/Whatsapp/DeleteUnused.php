@@ -43,16 +43,16 @@ class DeleteUnused extends Command
                 try {
                     Whatsapp::for($instance)->instance()->delete();
                 } catch (Exception) {
-                    do_log('crones/delete-unused-instances')->info("экземпляр ID: {$instance->id} не получилось удалить через апи grenapi.");
+                    do_log('crones/delete-unused-instances')->info("инстанс ID: {$instance->id} не получилось удалить через апи grenapi.");
 
                     continue;
                 }
 
                 $instance->delete();
 
-                do_log('crones/delete-unused-instances')->info("экземпляр ID: {$instance->id}  удален.");
+                do_log('crones/delete-unused-instances')->info("инстанс ID: {$instance->id}  удален.");
             } catch (Exception $e) {
-                do_log('crones/delete-unused-instances')->info("экземпляр ID: {$instance->id} не получилось удалить.");
+                do_log('crones/delete-unused-instances')->info("инстанс ID: {$instance->id} не получилось удалить.");
 
                 $this->warn($e);
             }

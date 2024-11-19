@@ -22,8 +22,8 @@ class User extends JsonResource
             'domain' => $this->resource->domain,
             'max_instances_count' => $this->resource->max_instances_count,
             'current_instances_count' => $this->resource->current_instances_count,
-            'active_subscription' => Subscription::make($this->whenLoaded('activeSubscription')),
-            'instances' => WhatsappInstance::collection($this->whenLoaded('whatsappInstances')),
+            'active_subscription' => Subscription::make($this->whenLoaded('active_subscription')),
+            'instances' => WhatsappInstance::collection($this->whenLoaded('whatsapp_instances')),
         ];
     }
 }

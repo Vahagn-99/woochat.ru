@@ -14,7 +14,7 @@ class DisconnectChannel implements ShouldQueue
     public function handle(UserDeleted $event): void
     {
         // delete amochat instance
-        $instance = $event->user->amoInstance;
+        $instance = $event->user->amo_instance;
         try {
             $instance->delete();
             do_log('amochat/instance')->info("Канал {$instance->id} успешно удалень.");

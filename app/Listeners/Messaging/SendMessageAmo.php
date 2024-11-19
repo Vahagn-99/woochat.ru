@@ -98,7 +98,7 @@ class SendMessageAmo implements ShouldQueue
 
     private function getAmoInstance(WhatsappInstance $whatsappInstance): AmoInstance
     {
-        return $whatsappInstance->user->amoInstance;
+        return $whatsappInstance->user->amo_instance;
     }
 
     private function getWhatsappInstance(string $id): WhatsappInstance

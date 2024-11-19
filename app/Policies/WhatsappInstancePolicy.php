@@ -8,11 +8,11 @@ class WhatsappInstancePolicy
 {
     public function save(User $user): bool
     {
-        return $user->activeSubscription()->exists();
+        return $user->active_subscription()->exists();
     }
 
     public function delete(User $user): bool
     {
-        return $user->activeSubscription()->exists();
+        return $user->active_subscription()->exists();
     }
 }

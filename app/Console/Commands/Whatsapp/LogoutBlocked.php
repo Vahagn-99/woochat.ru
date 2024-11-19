@@ -40,14 +40,16 @@ class LogoutBlocked extends Command
                 $api->setInstance($instance->transformToDto());
 
                 $api->logoutInstance();
+
+                do_log('crones/logout-blocked-instances')->info("Заблокированный инстанс {$instance->id} был разлогинирован.");
             } catch (Exception) {
-                do_log('crones/logout-blocked-instances')->info("Заблокированный инстанс {$instance->id} не получилось залогинить.");
+                do_log('crones/logout-blocked-instances')->warning("Заблокированный инстанс {$instance->id} не получилось залогинить.");
             }
 
             $instance->status = InstanceStatus::NOT_AUTHORIZED;
             $instance->save();
         }
 
-        do_log('crones/logout-blocked-instances')->info("Заблокированные инстансы были проверены на предмет восстановление.");
+        do_log('crones/logout-blocked-instances')->info("Заблокированные инстансы были проверены на разлогинивание.");
     }
 }

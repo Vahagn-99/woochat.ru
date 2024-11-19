@@ -25,11 +25,11 @@ class Full implements Subscription
         $user->max_instances_count = $subscription_dto->max_instances_count;
         $user->save();
 
-        if ($trial = $user->activeTrialSubscription?->archive()) {
+        if ($trial = $user->active_trial_subscription?->archive()) {
             $trial->archive();
         }
 
-        if ($active = $user->activeSubscription) {
+        if ($active = $user->active_subscription) {
             $active->expired_at = $subscription_dto->expired_at;
             $active->save();
 
@@ -38,11 +38,11 @@ class Full implements Subscription
                 $active->id,
                 $active->expired_at,
                 $subscription_dto->max_instances_count,
-                $user->whatsappInstances()->count()
+                $user->whatsapp_instances()->count()
             );
         }
 
-        if ($last = $user->lastSubscription) {
+        if ($last = $user->last_subscription) {
             $last->expired_at = $subscription_dto->expired_at;
             $last->status = SubscriptionStatus::ACTIVE;
             $last->save();
@@ -52,7 +52,7 @@ class Full implements Subscription
                 $last->id,
                 $last->expired_at,
                 $subscription_dto->max_instances_count,
-                $user->whatsappInstances()->count()
+                $user->whatsapp_instances()->count()
             );
         }
 
@@ -62,7 +62,7 @@ class Full implements Subscription
         $subscription->is_trial = 0;
         $subscription->save();
 
-        $user->whatsappInstances->each(function (WhatsappInstance $instance) {
+        $user->whatsapp_instances->each(function (WhatsappInstance $instance) {
             $instance->status = InstanceStatus::AUTHORIZED;
 
             $instance->save();
@@ -75,7 +75,7 @@ class Full implements Subscription
             $subscription->id,
             $subscription->expired_at,
             $user->max_instances_count,
-            $user->whatsappInstances->count()
+            $user->whatsapp_instances->count()
         );
     }
 }

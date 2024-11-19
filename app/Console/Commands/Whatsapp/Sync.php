@@ -57,9 +57,10 @@ class Sync extends Command
 
         $deleteForgottenInstances->each(function (WhatsappInstance $instance) {
             $instance->delete();
-            do_log('crones/sync-instances')->info("Экземпляр {$instance->id} был удалён по причине того, что не использовался долгое время.");
+
+            do_log('crones/sync-instances')->info("инстанс {$instance->id} был удалён по причине того, что не использовался долгое время.");
         });
 
-        do_log('crones/sync-instances')->info("Все экземпляры были синхронизированы.");
+        do_log('crones/sync-instances')->info("Все инстансы были синхронизированы.");
     }
 }

@@ -28,7 +28,7 @@ class ConnectChannel implements ShouldQueue
     {
         $instance = AmoChat::connector()->connect($user->amojo_id);
 
-        $user->amoInstance()->updateOrCreate(['account_id' => $instance->account_id], [
+        $user->amo_instance()->updateOrCreate(['account_id' => $instance->account_id], [
             'scope_id' => $instance->scope_id,
             'title' => $instance->title,
         ]);

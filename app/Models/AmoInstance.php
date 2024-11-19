@@ -45,7 +45,7 @@ class AmoInstance extends Model
 
     public function chats(): HasMany
     {
-        return $this->hasMany(Chat::class, 'amo_instance_id', 'id');
+        return $this->hasMany(Chat::class, 'amo_access_token_id', 'id');
     }
 
     public static function findByScopeId(string $scopeId): AmoInstance

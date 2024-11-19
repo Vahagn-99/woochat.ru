@@ -9,11 +9,9 @@ class Scheduler extends ServiceProvider
 {
     public function boot(): void
     {
-        Schedule::command('whatsapp:sync-instances')->everyMinute()->withoutOverlapping();
+        Schedule::command('whatsapp:sync-instances')->everyMinute();
+        Schedule::command('whatsapp:block-unsubscribed-instances')->everyTwoHours();
+        Schedule::command('whatsapp:logout-blocked-instances')->everyTwoHours();
         Schedule::command('whatsapp:delete-unused-instances')->dailyAt('19:55');
-        Schedule::command('whatsapp:logout-blocked-instances')->everyTwoHours()->withoutOverlapping();
-
-        /** Обработка подписок */
-        Schedule::command('subscription:daily-check-renewal')->everyTwoHours()->withoutOverlapping();
     }
 }

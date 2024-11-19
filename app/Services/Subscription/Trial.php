@@ -18,11 +18,11 @@ class Trial implements Subscription
     {
         $user = UserModel::query()->findOrFail($subscription_dto->user_domain);
 
-        if ($user->trialSubscription()->exists()) {
+        if ($user->trial_subscription()->exists()) {
             SubscriptionException::alreadyHasTrial($user);
         }
 
-        if ($user->activeSubscription()->exists()) {
+        if ($user->active_subscription()->exists()) {
             SubscriptionException::hasActive($user);
         }
 
