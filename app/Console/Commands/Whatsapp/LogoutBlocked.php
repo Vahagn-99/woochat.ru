@@ -34,7 +34,7 @@ class LogoutBlocked extends Command
         $instances = WhatsappInstance::whereBlocked()
             ->where('blocked_at', '<=', Carbon::now()->addHours(6))
             ->get();
-dd($instances);
+
         foreach ($instances as $instance) {
             try {
                 $api->setInstance($instance->transformToDto());
