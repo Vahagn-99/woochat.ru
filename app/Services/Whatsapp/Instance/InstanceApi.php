@@ -101,14 +101,14 @@ class InstanceApi implements InstanceApiInterface
 
     public function rebootInstance(): bool
     {
-        Whatsapp::api()->getClient()->account->reboot();
+        Whatsapp::for($this->instance)->api()->getClient()->account->reboot();
 
         return true;
     }
 
     public function logoutInstance(): bool
     {
-        Whatsapp::api()->getClient()->account->logout();
+        Whatsapp::for($this->instance)->api()->getClient()->account->logout();
 
         return true;
     }
