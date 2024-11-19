@@ -2,10 +2,12 @@
 
 namespace App\Services\Whatsapp\Instance;
 
-use App\Jobs\CreateWhatsappInstance;
-use App\Jobs\DeleteWhatsappInstance as DeleteWhatsappInstanceJob;
-use App\Jobs\LogoutWhatsappInstance;
-use App\Jobs\RebootWhatsappInstance as RebootWhatsappInstanceJob;
+use App\Jobs\{
+    CreateWhatsappInstance as CreateWhatsappInstanceJob,
+    DeleteWhatsappInstance as DeleteWhatsappInstanceJob,
+    LogoutWhatsappInstance as LogoutWhatsappInstanceJob,
+    RebootWhatsappInstance as RebootWhatsappInstanceJob,
+};
 use App\Services\Whatsapp\DTO\InstanceDTO;
 use Illuminate\Foundation\Bus\PendingDispatch;
 use Illuminate\Support\Arr;
@@ -45,7 +47,7 @@ class InstanceService implements InstanceServiceInterface
         $params = array_merge($this->config, ['name' => $name]);
 
         if ($this->shouldQueue) {
-            return CreateWhatsappInstance::dispatch($params);
+            return CreateWhatsappInstanceJob::dispatch($params);
         }
 
         return $this->api->newInstance($params);
@@ -81,7 +83,7 @@ class InstanceService implements InstanceServiceInterface
     public function logout(): bool
     {
         if ($this->shouldQueue) {
-            LogoutWhatsappInstance::dispatch($this->instance);
+            LogoutWhatsappInstanceJob::dispatch($this->instance);
 
             return true;
         }

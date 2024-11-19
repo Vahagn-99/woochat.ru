@@ -4,7 +4,7 @@ namespace App\Console\Commands\Whatsapp;
 
 use App\Enums\InstanceStatus;
 use App\Models\WhatsappInstance;
-use App\Services\Whatsapp\Instance\InstanceApiInterface;
+use App\Services\Whatsapp\Facades\Whatsapp;
 use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
@@ -28,18 +28,14 @@ class LogoutBlocked extends Command
     /**
      * Execute the console command.
      */
-    public function handle(InstanceApiInterface $api): void
+    public function handle(): void
     {
         /** @var \Illuminate\Database\Eloquent\Collection<\App\Models\WhatsappInstance> $instances */
-        $instances = WhatsappInstance::whereBlocked()
-            ->where('blocked_at', '<=', Carbon::now()->addHours(6))
-            ->get();
+        $instances = WhatsappInstance::whereBlocked()->where('blocked_at', '<=', Carbon::now()->addHours(6))->get();
 
         foreach ($instances as $instance) {
             try {
-                $api->setInstance($instance->transformToDto());
-
-                $api->logoutInstance();
+                Whatsapp::for($instance->transformToDto())->instance()->logout();
 
                 do_log('crones/logout-blocked-instances')->info("Заблокированный инстанс {$instance->id} был разлогинирован.");
             } catch (Exception) {
