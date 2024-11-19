@@ -37,7 +37,6 @@ class LogoutBlocked extends Command
             try {
                 Whatsapp::for($instance->transformToDto())->instance()->logout();
 
-                do_log('crones/logout-blocked-instances')->info("Заблокированный инстанс {$instance->id} был разлогинирован.");
             } catch (Exception) {
                 do_log('crones/logout-blocked-instances')->warning("Заблокированный инстанс {$instance->id} не получилось залогинить.");
             }
