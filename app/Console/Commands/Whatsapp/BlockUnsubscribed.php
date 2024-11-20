@@ -41,7 +41,7 @@ class BlockUnsubscribed extends Command
 
                     $instance->save();
 
-                    do_log('crones/block-unsubscription-daily')->notice("Инстанс {$instance->id} заблокирован так-как у пользователя ID:{$user->id} подписка истекла в {$subscription->expired_at->toDateTimeString()}.");
+                    do_log('crones/block-unsubscription-daily')->notice("Инстанс {$instance->id} заблокирован так-как у пользователя ID:{$user->id} подписка истекла.");
                 });
 
                 $subscription?->archive();
