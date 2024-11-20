@@ -134,7 +134,7 @@ final class User extends Authenticatable implements AmoAccountInterface
      */
     public function last_subscription(): HasOne
     {
-        return $this->many(Subscription::class, 'domain', 'domain')->latest();
+        return $this->hasOne(Subscription::class, 'domain', 'domain')->latest();
     }
 
     /**
