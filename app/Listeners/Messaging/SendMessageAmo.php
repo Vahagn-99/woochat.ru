@@ -28,9 +28,20 @@ class SendMessageAmo implements ShouldQueue
 {
     use InteractsWithQueue;
 
-    public function __construct()
-    {
-    }
+
+    /**
+     * Максимальное количество попыток
+     *
+     * @var int
+     */
+    public int $tries = 3;
+
+    /**
+     * Задержка между попытками в секундах
+     *
+     * @var int
+     */
+    public int $backoff = 10;
 
     /**
      * Determine whether the listener should be queued.
@@ -183,5 +194,14 @@ class SendMessageAmo implements ShouldQueue
         $factory->from('whatsapp')->type($type);
 
         return $factory->to('amochat')->getAdaptedMessage($messageData);
+    }
+
+
+    /**
+     * Determine the time at which the job should timeout.
+     */
+    public function retryUntil(): \DateTime
+    {
+        return now()->addSeconds(10);
     }
 }
