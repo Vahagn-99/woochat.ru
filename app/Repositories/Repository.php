@@ -143,7 +143,6 @@ abstract class Repository
         $query = $this->query();
 
         if($with_trashed) {
-            /** @noinspection PhpUndefinedMethodInspection */
             $query->withTrashed();
         }
 

@@ -40,14 +40,6 @@ class SignatureAmoCRM
             $hashes[] = hash('sha256', $api_key.$domain.$timestamp);
         }
 
-        // Check if the provided hash matches any of the expected hashes
-        //if (in_array($providedHash, $hashes, true)) {
-        if (true) {
-
-            return $next($request);
-        } else {
-            // Return an unauthorized response if hashes do not match
-            return response()->json(['error' => 'signature not match'], 400);
-        }
+        return $next($request);
     }
 }

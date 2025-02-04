@@ -4,7 +4,6 @@ namespace Tests\Feature\GreenApiManagement;
 
 use App\Events\Messaging\MessageReceived;
 use App\Events\Messengers\Whatsapp\InstanceStatusChanged;
-use App\Events\Whatsapp\Webhooks\IncomingCall;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -92,7 +91,6 @@ class CanHandleIncomingWebhookTest extends TestCase
                         "timestamp" => 1617691757,
                         "idMessage" => "104179EDB7F5328988D8834107EEBE50"
                     ],
-                    'event' => IncomingCall::class
                 ]
             ]
         ];

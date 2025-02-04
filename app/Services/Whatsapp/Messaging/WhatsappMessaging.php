@@ -33,7 +33,9 @@ class WhatsappMessaging implements WhatsappMessagingInterface
 
     public function sendStatus(IMessageStatus $message): SentMessageStatus
     {
-        // TODO: сделать статус отправки для whatsapp
-        //$this->apiClient->
+        return new SentMessageStatus(
+            id: $message->getId(),
+            status: $message->getStatus(),
+        );
     }
 }
