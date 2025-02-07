@@ -23,25 +23,36 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
+use App\Exceptions\Messaging\ProviderNotAvailableException;
 
 class SendMessageAmo implements ShouldQueue
 {
     use InteractsWithQueue;
-
 
     /**
      * Максимальное количество попыток
      *
      * @var int
      */
-    public int $tries = 3;
+    public int $tries = 5;
 
     /**
-     * Задержка между попытками в секундах
+     * Базовая задержка между попытками в секундах
      *
      * @var int
      */
-    public int $backoff = 10;
+    public int $backoff = 30;
+
+    /**
+     * Получить массив задержек для повторных попыток
+     *
+     * @return array
+     */
+    public function backoff(): array
+    {
+        return [10, 30, 60, 120, 300];
+    }
 
     /**
      * Determine whether the listener should be queued.
@@ -65,15 +76,31 @@ class SendMessageAmo implements ShouldQueue
     public function handle(MessageReceived $event): void
     {
         try {
+            // Логируем входящие данные для отладки
+            do_log("messaging/debug")->info("Получено сообщение для обработки", [
+                'message_id' => $event->payload['idMessage'] ?? null,
+                'instance_id' => $event->payload['instanceData']['idInstance'] ?? null,
+                'timestamp' => $event->payload['timestamp'] ?? null,
+                'sender' => $event->payload['senderData'] ?? null,
+                'message_type' => $event->payload['messageData']['typeMessage'] ?? null,
+            ]);
+
             $whatsappInstance = $this->getWhatsappInstance($event->payload['instanceData']['idInstance']);
 
             if ($whatsappInstance->status === InstanceStatus::BLOCKED) {
                 throw new InstanceBlockedException(
-                    "Инстанс {$whatsappInstance->id} блокирован и не может быть исползован!"
+                    "Инстанс {$whatsappInstance->id} блокирован и не может быть использован!"
                 );
             }
 
             $amoInstance = $this->getAmoInstance($whatsappInstance);
+
+            /*
+             * TODO: Включить проверку доступности AmoCRM
+             * Это позволит избежать отправки сообщений когда AmoCRM недоступен
+             * или токен невалиден, что может приводить к потере сообщений.
+             */
+            // $this->checkAmoAvailability($amoInstance);
 
             $sender = $this->mapSender($event->payload['senderData']);
 
@@ -95,15 +122,36 @@ class SendMessageAmo implements ShouldQueue
             ]);
 
             do_log("messaging/".class_basename($this))->info(
-                "Собшение отправлено. ID: ".$sentMessage->id,
-                $massager->getLastRequestInfo()
+                "Сообщение отправлено. ID: ".$sentMessage->id,
+                [
+                    'request_info' => $massager->getLastRequestInfo(),
+                    'attempt' => $this->attempts(),
+                    'message_id' => $event->payload['idMessage'] ?? null
+                ]
             );
-        } catch (InstanceBlockedException|ProviderNotConfiguredException|AdapterNotDefinedException|UnknownMessageTypeException|ModelNotFoundException $e) {
-            do_log("messaging/".class_basename($this))->error($e->getMessage(), [
-                'trace' => $e->getTraceAsString(),
-            ]);
+        } catch (Exception $e) {
+            do_log("messaging/".class_basename($this))->error(
+                "Ошибка обработки сообщения WhatsApp",
+                [
+                    'error' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString(),
+                    'payload' => $event->payload,
+                    'attempt' => $this->attempts()
+                ]
+            );
 
-            $this->release();
+            if ($this->attempts() >= $this->tries) {
+                do_log("messaging/".class_basename($this))->critical(
+                    "Сообщение WhatsApp потеряно после всех попыток обработки",
+                    [
+                        'message_id' => $event->payload['idMessage'] ?? null,
+                        'last_error' => $e->getMessage()
+                    ]
+                );
+            }
+
+            $this->release(30);
+            return;
         }
     }
 
@@ -123,26 +171,32 @@ class SendMessageAmo implements ShouldQueue
         AmoInstance $amoInstance,
         WhatsappInstance $whatsappInstance
     ): Chat {
-        /** @var Chat $chat */
-        $chat = Chat::query()->where([
-            'whatsapp_chat_id' => $whatsappChatId,
-            'whatsapp_instance_id' => $whatsappInstance->id,
-        ])->latest('created_at')->first();
+        return DB::transaction(function() use ($whatsappChatId, $amoInstance, $whatsappInstance) {
+            /** @var Chat $chat */
+            $chat = Chat::query()
+                ->where([
+                    'whatsapp_chat_id' => $whatsappChatId,
+                    'whatsapp_instance_id' => $whatsappInstance->id,
+                ])
+                ->lockForUpdate()
+                ->latest('created_at')
+                ->first();
 
-        if (! $chat) {
-            $chat = new Chat();
-            $chat->whatsapp_chat_id = $whatsappChatId;
-            $chat->amo_chat_instance_id = $amoInstance->id;
-            $chat->whatsapp_instance_id = $whatsappInstance->id;
-        }
+            if (!$chat) {
+                $chat = new Chat();
+                $chat->whatsapp_chat_id = $whatsappChatId;
+                $chat->amo_chat_instance_id = $amoInstance->id;
+                $chat->whatsapp_instance_id = $whatsappInstance->id;
+            }
 
-        if (! $chat->amo_chat_instance_id) {
-            $chat->amo_chat_instance_id = $amoInstance->id;
-        }
+            if (!$chat->amo_chat_instance_id) {
+                $chat->amo_chat_instance_id = $amoInstance->id;
+            }
 
-        $chat->save();
+            $chat->save();
 
-        return $chat;
+            return $chat;
+        });
     }
 
     /**
@@ -196,12 +250,35 @@ class SendMessageAmo implements ShouldQueue
         return $factory->to('amochat')->getAdaptedMessage($messageData);
     }
 
-
     /**
      * Determine the time at which the job should timeout.
      */
     public function retryUntil(): \DateTime
     {
-        return now()->addSeconds(10);
+        // return now()->addSeconds(10);
+        return now()->addMinutes(5);
+    }
+
+    /**
+     * TODO: Метод для проверки доступности AmoCRM
+     * Будет использоваться после включения проверки доступности
+     */
+    private function checkAmoAvailability(AmoInstance $amoInstance): void
+    {
+        try {
+            $messenger = AmoChat::messaging($amoInstance->scope_id);
+            if (!$messenger->isAvailable()) {
+                throw new ProviderNotAvailableException("AmoCRM API недоступен или токен невалиден");
+            }
+        } catch (Exception $e) {
+            do_log("messaging/".class_basename($this))->error(
+                "Ошибка проверки доступности AmoCRM",
+                [
+                    'error' => $e->getMessage(),
+                    'scope_id' => $amoInstance->scope_id
+                ]
+            );
+            throw new ProviderNotAvailableException("Ошибка при проверке доступности AmoCRM: " . $e->getMessage());
+        }
     }
 }
