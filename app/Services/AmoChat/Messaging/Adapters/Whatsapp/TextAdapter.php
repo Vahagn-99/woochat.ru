@@ -26,6 +26,6 @@ class TextAdapter implements Adapter
 
         $payload = $data['message'];
 
-        return new Text(chatId: $chatId, message: $payload['text'],);
+        return new Text(chatId: $chatId, message: $payload['text'] ?? $payload['textMessage']);
     }
 }

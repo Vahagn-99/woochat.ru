@@ -68,6 +68,11 @@ return [
                     'model' => App\Services\Whatsapp\Messaging\Types\Text::class,
                 ],
                 [
+                    'type' => 'text',
+                    'local_type' => 'extendedTextMessage',
+                    'model' => App\Services\Whatsapp\Messaging\Types\Text::class,
+                ],
+                [
                     'type' => 'picture',
                     'local_type' => 'imageMessage',
                     'model' => App\Services\Whatsapp\Messaging\Types\File::class,
