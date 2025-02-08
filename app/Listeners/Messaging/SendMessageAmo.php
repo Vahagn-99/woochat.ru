@@ -241,13 +241,34 @@ class SendMessageAmo implements ShouldQueue
      */
     private function mapMessagePayload(array $messageData): IMessage
     {
-        $type = $messageData['typeMessage'];
+        try {
+            $type = $messageData['typeMessage'];
 
-        $factory = Factory::make();
+            do_log("messaging/debug")->info("Начало маппинга сообщения WhatsApp", [
+                'type' => $type,
+                'payload' => $messageData
+            ]);
 
-        $factory->from('whatsapp')->type($type);
+            $factory = Factory::make();
+            $factory->from('whatsapp')->type($type);
 
-        return $factory->to('amochat')->getAdaptedMessage($messageData);
+            $message = $factory->to('amochat')->getAdaptedMessage($messageData);
+
+            do_log("messaging/debug")->info("Сообщение WhatsApp успешно смаппировано", [
+                'type' => $type,
+                'message' => $message
+            ]);
+
+            return $message;
+        } catch (Exception $e) {
+            do_log("messaging/error")->error("Ошибка маппинга сообщения WhatsApp", [
+                'type' => $type ?? null,
+                'payload' => $messageData,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            throw $e;
+        }
     }
 
     /**

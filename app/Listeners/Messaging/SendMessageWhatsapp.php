@@ -87,7 +87,7 @@ class SendMessageWhatsapp implements ShouldQueue
             $whatsappInstance = $user->whatsapp_instances->first(fn($item) => $item->id == $event->payload['message']['source']['external_id']);
 
             if (!$whatsappInstance) {
-                throw new InstanceNotFoundException("Не удалось отправить сообщение из амо в ватсапп так как нет подключенного инстанса для этого аккаунта {$user->domain}");
+                throw new InstanceNotFoundException("Невозможно отправить сообщение из amoCRM в WhatsApp: отсутствует подключенный инстанс для аккаунта {$user->domain}");
             }
 
             if ($whatsappInstance->status === InstanceStatus::BLOCKED) {
