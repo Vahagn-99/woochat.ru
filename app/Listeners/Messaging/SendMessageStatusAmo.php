@@ -19,6 +19,30 @@ class SendMessageStatusAmo implements ShouldQueue
 {
     use InteractsWithQueue;
 
+    /**
+     * Максимальное количество попыток
+     *
+     * @var int
+     */
+    public int $tries = 5;
+
+    /**
+     * Базовая задержка между попытками в секундах
+     *
+     * @var int
+     */
+    public int $backoff = 30;
+
+    /**
+     * Получить массив задержек для повторных попыток
+     *
+     * @return array
+     */
+    public function backoff() : array
+    {
+        return [10, 30, 60, 120, 300];
+    }
+
     public function __construct()
     {
     }
@@ -59,10 +83,7 @@ class SendMessageStatusAmo implements ShouldQueue
 
             $massager->sendStatus(new Status($message->amo_message_id, $newStatus));
 
-            do_log("messaging/status/amochat")->info(
-                "Обновлено статус сообщения ID: ".$message->amo_message_id,
-                $massager->getLastRequestInfo()
-            );
+            do_log("messaging/status/amochat")->info("Обновлено статус сообщения ID: ".$message->amo_message_id, $massager->getLastRequestInfo());
         } catch (ProviderNotConfiguredException|ModelNotFoundException|UnknownMessageStatusException $e) {
             do_log("messaging/status/amochat")->error($e->getMessage());
 

@@ -13,4 +13,6 @@ interface AmoMessagingInterface extends MessagingInterface
     public function getLastRequestInfo(): array;
 
     public function send(IMessage $message): SentMessage;
+
+    public function isAvailable();
 }
