@@ -6,9 +6,7 @@ use App\Base\Messaging\Factory;
 use App\Base\Messaging\IMessage;
 use App\Enums\InstanceStatus;
 use App\Events\Messaging\MessageReceived;
-use App\Exceptions\Messaging\AdapterNotDefinedException;
-use App\Exceptions\Messaging\ProviderNotConfiguredException;
-use App\Exceptions\Messaging\UnknownMessageTypeException;
+use App\Exceptions\ProviderNotAvailableException;
 use App\Exceptions\Whatsapp\InstanceBlockedException;
 use App\Models\AmoInstance;
 use App\Models\Chat;
@@ -19,12 +17,11 @@ use App\Services\AmoChat\Messaging\Actor\Actor;
 use App\Services\AmoChat\Messaging\Actor\Profile;
 use App\Services\AmoChat\Messaging\Source\Source;
 use App\Services\AmoChat\Messaging\Types\AmoMessage;
+use Exception;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
-use App\Exceptions\Messaging\ProviderNotAvailableException;
+use Illuminate\Support\Str;
 
 class SendMessageAmo implements ShouldQueue
 {
@@ -49,7 +46,7 @@ class SendMessageAmo implements ShouldQueue
      *
      * @return array
      */
-    public function backoff(): array
+    public function backoff() : array
     {
         return [10, 30, 60, 120, 300];
     }
@@ -57,7 +54,7 @@ class SendMessageAmo implements ShouldQueue
     /**
      * Determine whether the listener should be queued.
      */
-    public function shouldQueue(MessageReceived $event): bool
+    public function shouldQueue(MessageReceived $event) : bool
     {
         return $event->from === 'whatsapp';
     }
@@ -65,7 +62,7 @@ class SendMessageAmo implements ShouldQueue
     /**
      * Get the name of the listener's queue.
      */
-    public function viaQueue(): string
+    public function viaQueue() : string
     {
         return 'messaging';
     }
@@ -73,7 +70,7 @@ class SendMessageAmo implements ShouldQueue
     /**
      * @throws \App\Exceptions\Messaging\SendMessageException
      */
-    public function handle(MessageReceived $event): void
+    public function handle(MessageReceived $event) : void
     {
         try {
             // Логируем входящие данные для отладки
@@ -155,12 +152,12 @@ class SendMessageAmo implements ShouldQueue
         }
     }
 
-    private function getAmoInstance(WhatsappInstance $whatsappInstance): AmoInstance
+    private function getAmoInstance(WhatsappInstance $whatsappInstance) : AmoInstance
     {
         return $whatsappInstance->user->amo_instance;
     }
 
-    private function getWhatsappInstance(string $id): WhatsappInstance
+    private function getWhatsappInstance(string $id) : WhatsappInstance
     {
         /** @var WhatsappInstance */
         return WhatsappInstance::query()->findOrFail($id);
@@ -170,8 +167,9 @@ class SendMessageAmo implements ShouldQueue
         string $whatsappChatId,
         AmoInstance $amoInstance,
         WhatsappInstance $whatsappInstance
-    ): Chat {
-        return DB::transaction(function() use ($whatsappChatId, $amoInstance, $whatsappInstance) {
+    ) : Chat
+    {
+        return DB::transaction(function () use ($whatsappChatId, $amoInstance, $whatsappInstance) {
             /** @var Chat $chat */
             $chat = Chat::query()
                 ->where([
@@ -182,14 +180,14 @@ class SendMessageAmo implements ShouldQueue
                 ->latest('created_at')
                 ->first();
 
-            if (!$chat) {
+            if (! $chat) {
                 $chat = new Chat();
                 $chat->whatsapp_chat_id = $whatsappChatId;
                 $chat->amo_chat_instance_id = $amoInstance->id;
                 $chat->whatsapp_instance_id = $whatsappInstance->id;
             }
 
-            if (!$chat->amo_chat_instance_id) {
+            if (! $chat->amo_chat_instance_id) {
                 $chat->amo_chat_instance_id = $amoInstance->id;
             }
 
@@ -209,24 +207,25 @@ class SendMessageAmo implements ShouldQueue
         Chat $chat,
         Actor $sender,
         WhatsappInstance $whatsappInstance
-    ): AmoMessage {
+    ) : AmoMessage
+    {
         $source = new Source($whatsappInstance->id);
 
         return new AmoMessage(
-            sender: $sender,
-            payload: $this->mapMessagePayload($payload['messageData']),
-            source: $source,
-            conversation_id: $chat->whatsapp_chat_id,
-            conversation_ref_id: $chat->amo_chat_id,
-            msgid: $payload['idMessage']
+            sender : $sender,
+            payload : $this->mapMessagePayload($payload['messageData']),
+            source : $source,
+            conversation_id : $chat->whatsapp_chat_id,
+            conversation_ref_id : $chat->amo_chat_id,
+            msgid : $payload['idMessage']
         );
     }
 
-    private function mapSender(mixed $senderData): Actor
+    private function mapSender(mixed $senderData) : Actor
     {
         return new Actor(
-            id: $senderData['sender'], name: $senderData['senderName'], profile: new Profile(
-            phone: Str::replace([
+            id : $senderData['sender'], name : $senderData['senderName'], profile : new Profile(
+            phone : Str::replace([
                 "@c.us",
                 "@g.us",
             ], "", $senderData['sender'])
@@ -239,7 +238,7 @@ class SendMessageAmo implements ShouldQueue
      * @throws \App\Exceptions\Messaging\UnknownMessageTypeException
      * @throws \App\Exceptions\Messaging\AdapterNotDefinedException
      */
-    private function mapMessagePayload(array $messageData): IMessage
+    private function mapMessagePayload(array $messageData) : IMessage
     {
         $type = $messageData['typeMessage'];
 
@@ -253,21 +252,21 @@ class SendMessageAmo implements ShouldQueue
     /**
      * Determine the time at which the job should timeout.
      */
-    public function retryUntil(): \DateTime
+    public function retryUntil() : \DateTime
     {
-        // return now()->addSeconds(10);
         return now()->addMinutes(5);
     }
 
     /**
      * TODO: Метод для проверки доступности AmoCRM
      * Будет использоваться после включения проверки доступности
+     * @throws \App\Exceptions\ProviderNotAvailableException
      */
-    private function checkAmoAvailability(AmoInstance $amoInstance): void
+    private function checkAmoAvailability(AmoInstance $amoInstance) : void
     {
         try {
             $messenger = AmoChat::messaging($amoInstance->scope_id);
-            if (!$messenger->isAvailable()) {
+            if (! $messenger->isAvailable()) {
                 throw new ProviderNotAvailableException("AmoCRM API недоступен или токен невалиден");
             }
         } catch (Exception $e) {
@@ -278,7 +277,9 @@ class SendMessageAmo implements ShouldQueue
                     'scope_id' => $amoInstance->scope_id
                 ]
             );
-            throw new ProviderNotAvailableException("Ошибка при проверке доступности AmoCRM: " . $e->getMessage());
+            throw new ProviderNotAvailableException(
+                "Ошибка при проверке доступности AmoCRM: ".$e->getMessage()
+            );
         }
     }
 }

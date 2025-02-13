@@ -10,7 +10,6 @@ use App\Exceptions\Messaging\SendMessageException;
 use App\Exceptions\Messaging\UpdateMessageDeliveryStatusException;
 use App\Services\AmoChat\Client\ApiClientInterface;
 use App\Services\AmoChat\Client\ChatEndpoint;
-use Exception;
 
 class AmoMessaging implements AmoMessagingInterface
 {
@@ -21,6 +20,14 @@ class AmoMessaging implements AmoMessagingInterface
      */
     public function __construct(private readonly ApiClientInterface $apiClient)
     {
+    }
+
+    /**
+     * Determine the time at which the job should timeout.
+     */
+    public function retryUntil() : \DateTime
+    {
+        return now()->addMinutes(5);
     }
 
     /**
@@ -94,4 +101,10 @@ class AmoMessaging implements AmoMessagingInterface
     {
         return $this->apiClient->getLastRequestInfo();
     }
+
+    public function isAvailable() : true
+    {
+       return true;
+    }
+
 }
