@@ -43,10 +43,6 @@ class SendMessageStatusAmo implements ShouldQueue
         return [10, 30, 60, 120, 300];
     }
 
-    public function __construct()
-    {
-    }
-
     /**
      * Determine whether the listener should be queued.
      */
@@ -97,5 +93,13 @@ class SendMessageStatusAmo implements ShouldQueue
     {
         /** @var WhatsappInstance */
         return WhatsappInstance::with(['user' => fn($query) => $query->with('amo_instance')])->findOrFail($id);
+    }
+
+    /**
+     * Determine the time at which the job should timeout.
+     */
+    public function retryUntil() : \DateTime
+    {
+        return now()->addMinutes(5);
     }
 }
