@@ -14,6 +14,7 @@ use App\Models\Chat;
 use App\Models\Message;
 use App\Models\WhatsappInstance;
 use App\Services\Whatsapp\Facades\Whatsapp;
+use DateTime;
 use Exception;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -191,5 +192,14 @@ class SendMessageWhatsapp implements ShouldQueue
         $factory->from('amochat')->type($message['message']['type']);
 
         return $factory->to('whatsapp')->getAdaptedMessage($message);
+    }
+
+
+    /**
+     * Determine the time at which the job should timeout.
+     */
+    public function retryUntil() : DateTime
+    {
+        return now()->addMinutes(30);
     }
 }

@@ -6,7 +6,6 @@ use App\Base\Messaging\Factory;
 use App\Base\Messaging\IMessage;
 use App\Enums\InstanceStatus;
 use App\Events\Messaging\MessageReceived;
-use App\Exceptions\ProviderNotAvailableException;
 use App\Exceptions\Whatsapp\InstanceBlockedException;
 use App\Models\AmoInstance;
 use App\Models\Chat;
@@ -17,6 +16,7 @@ use App\Services\AmoChat\Messaging\Actor\Actor;
 use App\Services\AmoChat\Messaging\Actor\Profile;
 use App\Services\AmoChat\Messaging\Source\Source;
 use App\Services\AmoChat\Messaging\Types\AmoMessage;
+use DateTime;
 use Exception;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
@@ -273,34 +273,8 @@ class SendMessageAmo implements ShouldQueue
     /**
      * Determine the time at which the job should timeout.
      */
-    public function retryUntil() : \DateTime
+    public function retryUntil() : DateTime
     {
-        return now()->addMinutes(5);
-    }
-
-    /**
-     * TODO: Метод для проверки доступности AmoCRM
-     * Будет использоваться после включения проверки доступности
-     * @throws \App\Exceptions\ProviderNotAvailableException
-     */
-    private function checkAmoAvailability(AmoInstance $amoInstance) : void
-    {
-        try {
-            $messenger = AmoChat::messaging($amoInstance->scope_id);
-            if (! $messenger->isAvailable()) {
-                throw new ProviderNotAvailableException("AmoCRM API недоступен или токен невалиден");
-            }
-        } catch (Exception $e) {
-            do_log("messaging/".class_basename($this))->error(
-                "Ошибка проверки доступности AmoCRM",
-                [
-                    'error' => $e->getMessage(),
-                    'scope_id' => $amoInstance->scope_id
-                ]
-            );
-            throw new ProviderNotAvailableException(
-                "Ошибка при проверке доступности AmoCRM: ".$e->getMessage()
-            );
-        }
+        return now()->addMinutes(30);
     }
 }
