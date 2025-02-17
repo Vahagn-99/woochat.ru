@@ -92,6 +92,10 @@ class Factory
      */
     public function getAdaptedStatus(string $status): mixed
     {
+        if($status === 'noAccount') {
+            throw UnknownMessageStatusException::status($status, $this->from);
+        }
+
         $statuses = $this->config['providers'][$this->from]['delivery_status'];
         $adaptedStatuses = $this->config['providers'][$this->to]['delivery_status'];
 
