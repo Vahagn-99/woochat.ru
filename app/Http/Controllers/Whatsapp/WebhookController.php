@@ -24,7 +24,7 @@ class WebhookController extends Controller
                 'key' => $webhookKey,
                 'payload' => $payload
             ]);
-            return response()->json(['status' => 'duplicate']);
+            return response()->json();
         }
 
         Cache::put($webhookKey, true, now()->addHour());

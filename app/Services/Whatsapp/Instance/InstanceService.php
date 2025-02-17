@@ -72,6 +72,8 @@ class InstanceService implements InstanceServiceInterface
             return true;
         }
 
+        $this->api->setInstance($this->instance);
+
         $this->api->rebootInstance();
 
         return true;
@@ -87,6 +89,8 @@ class InstanceService implements InstanceServiceInterface
 
             return true;
         }
+
+        $this->api->setInstance($this->instance);
 
         $this->api->logoutInstance();
 
@@ -115,6 +119,8 @@ class InstanceService implements InstanceServiceInterface
 
             return true;
         }
+
+        $this->api->setInstance($this->instance);
 
         return $this->api->deleteInstance();
     }
