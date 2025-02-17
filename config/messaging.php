@@ -110,6 +110,7 @@ return [
             ],
             'delivery_status' => [
                 'sent' => 'sent',
+                'noAccount' => 'sent',
                 'delivered' => 'delivered',
                 'read' => 'read',
                 'failed' => 'failed',

@@ -11,6 +11,7 @@ use App\Models\Message;
 use App\Models\WhatsappInstance;
 use App\Services\AmoChat\Facades\AmoChat;
 use App\Services\AmoChat\Messaging\Status\Status;
+use DateTime;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Queue\InteractsWithQueue;
@@ -98,8 +99,8 @@ class SendMessageStatusAmo implements ShouldQueue
     /**
      * Determine the time at which the job should timeout.
      */
-    public function retryUntil() : \DateTime
+    public function retryUntil() : DateTime
     {
-        return now()->addMinutes(5);
+        return now()->addMinutes(30);
     }
 }
