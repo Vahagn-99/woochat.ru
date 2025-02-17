@@ -15,23 +15,8 @@ class WebhookController extends Controller
         $webhookType = $request->input('typeWebhook');
         $payload = $request->all();
 
-        // Проверка на дубликаты вебхуков
-        $webhookKey = 'webhook_' . ($payload['idMessage'] ?? $payload['instanceData']['idInstance'] . '_' . $payload['timestamp']);
-
-        if (Cache::has($webhookKey)) {
-            do_log('webhooks/whatsapp')->info("Дубликат вебхука проигнорирован", [
-                'type' => $webhookType,
-                'key' => $webhookKey,
-                'payload' => $payload
-            ]);
-            return response()->json();
-        }
-
-        Cache::put($webhookKey, true, now()->addHour());
-
         do_log('webhooks/whatsapp')->info("Вебхук по типу [$webhookType] был получен и передан на обработку.", [
             'type' => $webhookType,
-            'key' => $webhookKey,
             'payload' => $payload
         ]);
 
