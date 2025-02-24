@@ -14,6 +14,7 @@ use App\Services\AmoCRM\Core\Facades\Amo;
 use Exception;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
+use Throwable;
 
 class ConnectSource implements ShouldQueue
 {
@@ -70,7 +71,7 @@ class ConnectSource implements ShouldQueue
             try {
                 $source = $api->get((new SourcesFilter())->setExternalIds([(string) $settings->instance_id]))->first();
                 $source = $api->updateOne($source);
-            } catch (Exception) {
+            } catch (Throwable) {
                 $source = $api->addOne($source);
             }
 
