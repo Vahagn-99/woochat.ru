@@ -11,7 +11,6 @@ use App\Events\Messengers\Whatsapp\SettingsSaved;
 use App\Models\Settings;
 use App\Models\User;
 use App\Services\AmoCRM\Core\Facades\Amo;
-use Exception;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Throwable;
@@ -57,8 +56,8 @@ class ConnectSource implements ShouldQueue
                 ],
                 "pages" => [
                     [
-                        "id" => $settings->id,
-                        "name" => $settings->name." ".$settings->instance->phone_number,
+                        "id" => $settings->instance->id,
+                        "name" => "Woochat[".$settings->name."]"." ".$settings->instance->clearPhone(),
                         "link" => $settings->instance->clearPhone()
                     ]
                 ]
@@ -77,7 +76,7 @@ class ConnectSource implements ShouldQueue
 
             $settings->source_id = $source->getId();
         } catch (AmoCRMApiException|AmoCRMoAuthApiException $e) {
-            do_log('amochat/sources')->error($e->getMessage(), [
+            do_log('amochat_sources')->error($e->getMessage(), [
                 'data' => $e->getLastRequestInfo(),
             ]);
 
