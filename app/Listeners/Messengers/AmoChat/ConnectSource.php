@@ -47,7 +47,7 @@ class ConnectSource implements ShouldQueue
         $source->setName($settings->name);
         $source->setPipelineId($settings->pipeline_id);
         $source->setExternalId($settings->instance_id);
-        $source->setServices(SourceServicesCollection::fromArray( [
+        $source->setServices(SourceServicesCollection::fromArray([
             [
                 "type" => "whatsapp",
                 "params" => [
