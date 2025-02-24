@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Str;
 
 /**
  * @property string $id
@@ -52,43 +53,43 @@ final class WhatsappInstance extends Model
         'blocked_at' => 'date',
     ];
 
-    public static function firstInAccount(User $user): ?WhatsappInstance
+    public static function firstInAccount(User $user) : ?WhatsappInstance
     {
         /** @var ?WhatsappInstance */
         return $user->whatsapp_instances()->where('status', InstanceStatus::AUTHORIZED)->first();
     }
 
-    protected static function booted(): void
+    protected static function booted() : void
     {
         WhatsappInstance::created(fn(WhatsappInstance $instance) => InstanceCreated::dispatch($instance));
     }
 
-    public function user(): BelongsTo
+    public function user() : BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
-    public function settings(): HasOne
+    public function settings() : HasOne
     {
         return $this->hasOne(Settings::class, 'instance_id', 'id');
     }
 
-    public function chats(): HasMany
+    public function chats() : HasMany
     {
         return $this->hasMany(Chat::class, 'whatsapp_instance_id', 'id');
     }
 
-    public function scopeWhereFree(Builder $query): Builder
+    public function scopeWhereFree(Builder $query) : Builder
     {
         return $query->where('status', InstanceStatus::NOT_AUTHORIZED);
     }
 
-    public function scopeWhereBlocked(Builder $query): Builder
+    public function scopeWhereBlocked(Builder $query) : Builder
     {
         return $query->where('status', InstanceStatus::BLOCKED);
     }
 
-    public static function dto(string $instanceId): InstanceDTO
+    public static function dto(string $instanceId) : InstanceDTO
     {
         /** @var WhatsappInstance $instance */
         $instance = self::query()->findOrFail($instanceId);
@@ -96,8 +97,13 @@ final class WhatsappInstance extends Model
         return new InstanceDTO($instance->id, $instance->token);
     }
 
-    public function transformToDto(): InstanceDTO
+    public function transformToDto() : InstanceDTO
     {
         return new InstanceDTO($this->id, $this->token);
+    }
+
+    public function clearPhone() : string
+    {
+        return "+".Str::numbers($this->phone);
     }
 }

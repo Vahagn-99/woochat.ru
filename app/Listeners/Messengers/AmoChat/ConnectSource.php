@@ -2,6 +2,7 @@
 
 namespace App\Listeners\Messengers\AmoChat;
 
+use AmoCRM\Collections\Sources\SourceServicesCollection;
 use AmoCRM\Exceptions\AmoCRMApiException;
 use AmoCRM\Exceptions\AmoCRMoAuthApiException;
 use AmoCRM\Filters\SourcesFilter;
@@ -46,6 +47,22 @@ class ConnectSource implements ShouldQueue
         $source->setName($settings->name);
         $source->setPipelineId($settings->pipeline_id);
         $source->setExternalId($settings->instance_id);
+        $source->setServices(SourceServicesCollection::fromArray( [
+            [
+                "type" => "whatsapp",
+                "params" => [
+                    "waba" => true,
+                    "is_supports_list_message" => true
+                ],
+                "pages" => [
+                    [
+                        "id" => $settings->id,
+                        "name" => $settings->name." ".$settings->instance->phone_number,
+                        "link" => $settings->instance->clearPhone()
+                    ]
+                ]
+            ]
+        ]));
 
         try {
             $api = Amo::domain($user->domain)->api()->sources();
