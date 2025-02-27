@@ -51,7 +51,7 @@ class ConnectSource implements ShouldQueue
             [
                 "type" => "whatsapp",
                 "params" => [
-                    "waba" => true,
+                    "waba" => false,
                     "is_supports_list_message" => true
                 ],
                 "pages" => [
