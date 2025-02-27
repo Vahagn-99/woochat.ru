@@ -68,8 +68,9 @@ class ConnectSource implements ShouldQueue
             $api = Amo::domain($user->domain)->api()->sources();
 
             try {
-                $source = $api->get((new SourcesFilter())->setExternalIds([(string) $settings->instance_id]))->first();
-                $source = $api->updateOne($source);
+                $source = $api->get((new SourcesFilter())->setExternalIds([(string)$settings->instance_id]))->first();
+                $api->deleteOne($source);
+                $source = $api->addOne($source);
             } catch (Throwable) {
                 $source = $api->addOne($source);
             }
