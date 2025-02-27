@@ -6,7 +6,6 @@ namespace App\GraphQL\Mutations\WhatsappInstance;
 
 use App\Events\Messengers\Whatsapp\SettingsSaved;
 use App\Models\WhatsappInstance;
-use Illuminate\Support\Facades\Gate;
 
 final readonly class SaveInstanceSettings
 {
