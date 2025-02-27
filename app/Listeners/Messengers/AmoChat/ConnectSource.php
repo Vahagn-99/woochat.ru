@@ -43,11 +43,11 @@ class ConnectSource implements ShouldQueue
         Settings $settings
     ): SourceModel {
 
-        $source = new SourceModel();
-        $source->setName($settings->name);
-        $source->setPipelineId($settings->pipeline_id);
-        $source->setExternalId($settings->instance_id);
-        $source->setServices(SourceServicesCollection::fromArray([
+        $new = new SourceModel();
+        $new->setName($settings->name);
+        $new->setPipelineId($settings->pipeline_id);
+        $new->setExternalId($settings->instance_id);
+        $new->setServices(SourceServicesCollection::fromArray([
             [
                 "type" => "whatsapp",
                 "params" => [
@@ -69,9 +69,12 @@ class ConnectSource implements ShouldQueue
 
             try {
                 $source = $api->get((new SourcesFilter())->setExternalIds([(string) $settings->instance_id]))->first();
-                $source = $api->updateOne($source);
+
+                $new->setId($source->getId());
+
+                $source = $api->updateOne($new);
             } catch (Throwable) {
-                $source = $api->addOne($source);
+                $source = $api->addOne($new);
             }
 
             $settings->source_id = $source->getId();
