@@ -52,7 +52,7 @@ class ConnectSource implements ShouldQueue
                 "type" => "whatsapp",
                 "params" => [
                     "waba" => false,
-                    "is_supports_list_message" => true
+                    "is_supports_list_message" => false
                 ],
                 "pages" => [
                     [
@@ -68,9 +68,8 @@ class ConnectSource implements ShouldQueue
             $api = Amo::domain($user->domain)->api()->sources();
 
             try {
-                $source = $api->get((new SourcesFilter())->setExternalIds([(string)$settings->instance_id]))->first();
-                $api->deleteOne($source);
-                $source = $api->addOne($source);
+                $source = $api->get((new SourcesFilter())->setExternalIds([(string) $settings->instance_id]))->first();
+                $source = $api->updateOne($source);
             } catch (Throwable) {
                 $source = $api->addOne($source);
             }
